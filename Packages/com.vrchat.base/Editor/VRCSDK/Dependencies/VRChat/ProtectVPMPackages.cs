@@ -28,9 +28,9 @@ namespace VRC.SDKBase.Editor
                     var extension = Path.GetExtension(path);
                     if (directories[0] == "Packages" && directories[1].StartsWith("com.vrchat") && !(filename == "MirrorReflection.mat") && ! path.Contains("UdonProgramSources") && !path.Contains("SerializedUdonPrograms") && !(extension == ".meta"))
                     {
-                        Debug.LogWarning(
-                            $"Something tried to change {path}, which is part of a VRC Package, and will not be changed. Use \"Save As...\" instead if you want to make your own version.");
-                        continue;
+                        //Debug.LogWarning(
+                        //    $"Something tried to change {path}, which is part of a VRC Package, and will not be changed. Use \"Save As...\" instead if you want to make your own version.");
+                        //continue;
                     }
                 }
                 pathsToSave.Add(path);
