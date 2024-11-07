@@ -101,6 +101,7 @@ namespace VRC.SDK3.ClientSim
         public bool displayLogs = true;
         public bool deleteEditorOnly = true;
         public bool spawnPlayer = true;
+        public bool spawnInEditorView = false;
         public bool hideMenuOnLaunch = false;
         public bool setTargetFrameRate = true;
         public int targetFrameRate = 90;
