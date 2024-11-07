@@ -26,7 +26,7 @@ namespace VRC.SDK3.ClientSim.Editor
         // Player Controller content
         private readonly GUIContent _playerControllerFoldoutGuiContent = new GUIContent("Player Controller Settings", "");
         private readonly GUIContent _playerControllerToggleGuiContent = new GUIContent("Spawn Player Controller", "If enabled, a player controller will spawn and allow you to move around your world as if in desktop mode. Supports interacts and pickups.");
-
+        private readonly GUIContent _spawnInEditorView = new GUIContent("Spawn in Editor View", "");
         private readonly GUIContent _showDesktopReticleGuiContent = new GUIContent("Show Desktop Reticle", "Show or hide the center Desktop reticle image.");
         private readonly GUIContent _showTooltipsGuiContent = new GUIContent("Show Tooltips", "If enabled, hovering over an interactable object or pickup will display a tooltip above the object.");
         private readonly GUIContent _invertMouseLookGuiContent = new GUIContent("Invert Mouse Look", "If enabled, moving the mouse up or down will invert the direction the player will look up and down.");
@@ -388,6 +388,7 @@ namespace VRC.SDK3.ClientSim.Editor
 
                 EditorGUI.BeginDisabledGroup(!_settings.spawnPlayer);
                 
+                _settings.spawnInEditorView = EditorGUILayout.Toggle(_spawnInEditorView, _settings.spawnInEditorView);
                 _settings.showDesktopReticle = EditorGUILayout.Toggle(_showDesktopReticleGuiContent, _settings.showDesktopReticle);
                 _settings.showTooltips = EditorGUILayout.Toggle(_showTooltipsGuiContent, _settings.showTooltips);
                 _settings.invertMouseLook = EditorGUILayout.Toggle(_invertMouseLookGuiContent, _settings.invertMouseLook);
