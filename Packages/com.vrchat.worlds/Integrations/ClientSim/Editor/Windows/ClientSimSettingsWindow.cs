@@ -121,11 +121,6 @@ namespace VRC.SDK3.ClientSim.Editor
         {
             ClientSimSteamVRSetup.InitializeXRSettings();
         }
-        
-        private void OnValidate()
-        {
-            ClientSimSteamVRSetup.InitializeXRSettings();
-        }
 
         private void DrawWindow()
         {
