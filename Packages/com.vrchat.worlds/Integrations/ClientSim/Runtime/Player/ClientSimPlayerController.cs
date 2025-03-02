@@ -37,14 +37,14 @@ namespace VRC.SDK3.ClientSim
         private IClientSimEventDispatcher _eventDispatcher;
         private IClientSimInput _input;
         private IClientSimTrackingProvider _trackingProvider;
-        
+
         private CharacterController _characterController;
         private Transform _cameraProxyObject;
 
         private bool _isDead;
         private bool _isWalking = true; // Player defaults to walking
         private bool _jump;
-        
+
         private Vector2 _prevInput;
         // Check if the directionality changed to apply "stutter stepping" for legacy locomotion.
         private bool _directionChanged;
@@ -83,10 +83,10 @@ namespace VRC.SDK3.ClientSim
             _stationManager = stationManager;
 
             _cameraProxyObject = proxyProvider.CameraProxy().transform;
-            
+
             Subscribe();
         }
-        
+
         private void Start()
         {
             NotifyPlayerMoved();
@@ -96,7 +96,7 @@ namespace VRC.SDK3.ClientSim
         {
             Dispose();
         }
-        
+
         private void Subscribe()
         {
             // Input will be null with incorrect Unity input project settings.
@@ -109,7 +109,7 @@ namespace VRC.SDK3.ClientSim
             _eventDispatcher.Subscribe<ClientSimPlayerDeathStatusChangedEvent>(CombatStatusEvent);
             _eventDispatcher.Subscribe<ClientSimOnTrackingScaleUpdateEvent>(OnTrackingScaleUpdated);
         }
-        
+
         public void Dispose()
         {
             _input?.UnsubscribeJump(JumpInput);
@@ -151,17 +151,17 @@ namespace VRC.SDK3.ClientSim
         {
             _menuIsOpen = stateChangedEvent.isMenuOpen;
         }
-        
+
         private void MenuRespawnEvent(ClientSimMenuRespawnClickedEvent stateChangedEvent)
         {
             Respawn();
         }
-        
+
         private void MouseReleasedEvent(ClientSimMouseReleasedEvent mouseReleasedEvent)
         {
             _mouseReleased = mouseReleasedEvent.isReleased;
         }
-        
+
         private void CombatStatusEvent(ClientSimPlayerDeathStatusChangedEvent combatStatusEvent)
         {
             _isDead = combatStatusEvent.isDead;
@@ -173,7 +173,7 @@ namespace VRC.SDK3.ClientSim
         }
 
         #endregion
-        
+
         public Vector3 GetPosition()
         {
             return transform.position;
@@ -188,7 +188,7 @@ namespace VRC.SDK3.ClientSim
         {
             return _characterController.velocity;
         }
-        
+
         public void SetVelocity(Vector3 velocity)
         {
             _playerRetainedVelocity = velocity;
@@ -209,7 +209,7 @@ namespace VRC.SDK3.ClientSim
 
         public void Respawn(int index)
         {
-            
+
             Transform spawnPoint = _sceneManager.GetSpawnPoint(index);
             if (spawnPoint == null)
             {
@@ -217,7 +217,7 @@ namespace VRC.SDK3.ClientSim
                 spawnPoint = _sceneManager.GetSpawnPoint(0);
             }
             Teleport(spawnPoint, false);
-            _eventDispatcher.SendEvent(new ClientSimOnPlayerRespawnEvent { player =  _playerApi.Player });
+            _eventDispatcher.SendEvent(new ClientSimOnPlayerRespawnEvent { player = _playerApi.Player });
         }
 
         public void Teleport(Transform point, bool fromPlaySpace)
@@ -246,7 +246,7 @@ namespace VRC.SDK3.ClientSim
 
             NotifyPlayerMoved();
             _eventDispatcher.SendEvent(new ClientSimOnPlayerTeleportedEvent { player = _playerApi.Player });
-            
+
             Physics.SyncTransforms();
         }
 
@@ -271,10 +271,10 @@ namespace VRC.SDK3.ClientSim
             {
                 Teleport(station.ExitLocation(), false);
             }
-            
+
             _jump = false;
         }
-        
+
         public void SitPosition(Transform seat)
         {
             transform.SetPositionAndRotation(seat.position, seat.rotation);
@@ -290,12 +290,12 @@ namespace VRC.SDK3.ClientSim
             {
                 Respawn();
             }
-            
+
             GetInput();
 
             NotifyPlayerMoved();
         }
-   
+
         private void FixedUpdate()
         {
             Physics.SyncTransforms();
@@ -401,13 +401,16 @@ namespace VRC.SDK3.ClientSim
             // Only allow these input actions while the menu is closed
             //if (!_menuIsOpen)
             {
-                GetMovementInput();
-                GetSteamVRMovementInput();
-                RotateView();
-                SteamVRRotateView();
+
+                    GetSteamVRMovementInput();
+                    SteamVRRotateView();
+
+                    GetMovementInput();
+                    RotateView();
+                
             }
         }
-        
+
         private void GetMovementInput()
         {
             Vector2 input = _input.GetMovementAxes();
@@ -434,7 +437,7 @@ namespace VRC.SDK3.ClientSim
             _directionChanged = (input.sqrMagnitude < 1e-3 ^ _prevInput.sqrMagnitude < 1e-3);
             _prevInput = input;
         }
-        
+
         // TODO Move rotation of the player controller to be done in the tracking provider and have the player controller
         // copy the head rotation. This would allow more generic handling of mouse released, VR snap turning, and locked in station.
         private void RotateView()
@@ -447,7 +450,7 @@ namespace VRC.SDK3.ClientSim
                 transform.rotation *= Quaternion.Euler(0f, yRot, 0f);
             }
         }
-        
+
         private void SteamVRRotateView()
         {
             // Allow player controller to look left and right when not in a locked station and for desktop users
@@ -458,7 +461,7 @@ namespace VRC.SDK3.ClientSim
                 transform.rotation *= Quaternion.Euler(0f, yRot, 0f);
             }
         }
-        
+
         // Used in tests to help look a specific direction
         public void LookTowardsPoint(Vector3 point)
         {
@@ -484,14 +487,14 @@ namespace VRC.SDK3.ClientSim
             }
             var cameraTrackingData = _trackingProvider.GetTrackingData(VRCPlayerApi.TrackingDataType.Head);
             _cameraProxyObject.SetPositionAndRotation(cameraTrackingData.position, cameraTrackingData.rotation);
-            _cameraProxyObject.localScale = _trackingProvider.GetTrackingScale() * Vector3.one; 
+            _cameraProxyObject.localScale = _trackingProvider.GetTrackingScale() * Vector3.one;
         }
 
         private Vector2 GetSpeed()
         {
             // TODO check current bindings to see if non keyboard and only use runspeed.
             Vector2 speed = new Vector2(
-                _isWalking? _playerLocomotionData.GetWalkSpeed() : _playerLocomotionData.GetRunSpeed(),
+                _isWalking ? _playerLocomotionData.GetWalkSpeed() : _playerLocomotionData.GetRunSpeed(),
                 _playerLocomotionData.GetStrafeSpeed());
 
             switch (_trackingProvider.GetPlayerStance())
