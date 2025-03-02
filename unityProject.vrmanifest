@@ -5,7 +5,7 @@
       "app_key": "application.generated.unity.clientsimvr.exe",
       "launch_type": "url",
       "url": "steam://launch/",
-      "action_manifest_path": "/home/fairplex/Documents/Unity/ClientSimVR/Assets/StreamingAssets/SteamVR/actions.json",
+      "action_manifest_path": "/home/fairplex/Documents/Unity/ClientSim-Enhanced/Assets/StreamingAssets/SteamVR/actions.json",
       "strings": {
         "en_us": {
           "name": "ClientSimVR [Testing]"

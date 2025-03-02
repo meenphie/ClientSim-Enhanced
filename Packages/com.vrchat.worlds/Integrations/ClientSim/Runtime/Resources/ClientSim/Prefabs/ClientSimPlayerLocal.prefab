@@ -197,6 +197,7 @@ GameObject:
   - component: {fileID: 2879604618624032515}
   - component: {fileID: 6987989042310722051}
   - component: {fileID: 426529448652689727}
+  - component: {fileID: 2807191040249725332}
   - component: {fileID: 2594058383979682957}
   - component: {fileID: 7511341561770424139}
   m_Layer: 10
@@ -223,6 +224,7 @@ Transform:
   - {fileID: 4543718553141955561}
   - {fileID: 1068071324215617096}
   - {fileID: 5997934662479437569}
+  - {fileID: 365910677761942839}
   m_Father: {fileID: 9201486100010084664}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2879604618624032515
@@ -237,6 +239,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 978f5eb2f40732b4a90c6107b7610ecf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveAction:
+    actionPath: /actions/VRChat/in/Move
+    needsReinit: 0
+  jumpAction:
+    actionPath: /actions/VRChat/in/Jump
+    needsReinit: 0
 --- !u!114 &6987989042310722051
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -263,6 +271,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leftHand: {fileID: 1428030017342660723}
   rightHand: {fileID: 7332653421116794219}
+--- !u!114 &2807191040249725332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8104978433573980496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27991c206a5e66147bb8ee3ef31c8bac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionSet:
+    actionSetPath: /actions/VRChat
+  forSources: 0
+  disableAllOtherActionSets: 0
+  activateOnStart: 1
+  deactivateOnDestroy: 1
+  initialPriority: 0
 --- !u!54 &2594058383979682957
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -519,6 +546,68 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cdb19253bd15ee4296b716139111626, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &365910677761788187
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4166223426551178936}
+    m_Modifications:
+    - target: {fileID: 146900, guid: a8decf5b9e8c053738025c60ea0a1beb, type: 3}
+      propertyPath: m_Name
+      value: SteamVR
+      objectReference: {fileID: 0}
+    - target: {fileID: 420908, guid: a8decf5b9e8c053738025c60ea0a1beb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420908, guid: a8decf5b9e8c053738025c60ea0a1beb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420908, guid: a8decf5b9e8c053738025c60ea0a1beb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420908, guid: a8decf5b9e8c053738025c60ea0a1beb, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 420908, guid: a8decf5b9e8c053738025c60ea0a1beb, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420908, guid: a8decf5b9e8c053738025c60ea0a1beb, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420908, guid: a8decf5b9e8c053738025c60ea0a1beb, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420908, guid: a8decf5b9e8c053738025c60ea0a1beb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420908, guid: a8decf5b9e8c053738025c60ea0a1beb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420908, guid: a8decf5b9e8c053738025c60ea0a1beb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a8decf5b9e8c053738025c60ea0a1beb, type: 3}
+--- !u!4 &365910677761942839 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 420908, guid: a8decf5b9e8c053738025c60ea0a1beb, type: 3}
+  m_PrefabInstance: {fileID: 365910677761788187}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2587133980147067326
 PrefabInstance:
   m_ObjectHideFlags: 0

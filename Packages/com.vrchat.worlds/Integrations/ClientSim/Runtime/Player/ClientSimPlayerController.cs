@@ -1,6 +1,7 @@
 ﻿
 using System;
 using UnityEngine;
+using Valve.VR;
 using VRC.SDKBase;
 using VRC.Udon.Common;
 
@@ -386,6 +387,10 @@ namespace VRC.SDK3.ClientSim
 
         #region Input
 
+        public SteamVR_Action_Vector2 moveAction = SteamVR_Input.GetAction<SteamVR_Action_Vector2>("VRChat", "Move");
+        public SteamVR_Action_Vector2 rotateAction = SteamVR_Input.GetAction<SteamVR_Action_Vector2>("VRChat", "Rotate");
+        public SteamVR_Action_Boolean jumpAction = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("VRChat", "Jump");
+
         private void GetInput()
         {
             GetMovementInput();
@@ -394,20 +399,38 @@ namespace VRC.SDK3.ClientSim
                 _input.SendToggleMenuEvent(true, HandType.RIGHT);
             }
             // Only allow these input actions while the menu is closed
-            if (!_menuIsOpen)
+            //if (!_menuIsOpen)
             {
+                GetMovementInput();
+                GetSteamVRMovementInput();
                 RotateView();
+                SteamVRRotateView();
             }
         }
         
         private void GetMovementInput()
         {
             Vector2 input = _input.GetMovementAxes();
+
             if (input.sqrMagnitude > 1)
             {
                 input.Normalize();
             }
-            
+
+            _directionChanged = (input.sqrMagnitude < 1e-3 ^ _prevInput.sqrMagnitude < 1e-3);
+            _prevInput = input;
+        }
+
+        private void GetSteamVRMovementInput()
+        {
+            Vector2 input = moveAction.GetAxis(SteamVR_Input_Sources.LeftHand);
+            Debug.Log(input);
+
+            if (input.sqrMagnitude > 1)
+            {
+                input.Normalize();
+            }
+
             _directionChanged = (input.sqrMagnitude < 1e-3 ^ _prevInput.sqrMagnitude < 1e-3);
             _prevInput = input;
         }
@@ -421,6 +444,17 @@ namespace VRC.SDK3.ClientSim
             if (!_mouseReleased && !_stationManager.IsLockedInStation())
             {
                 float yRot = _input.GetLookHorizontal();
+                transform.rotation *= Quaternion.Euler(0f, yRot, 0f);
+            }
+        }
+        
+        private void SteamVRRotateView()
+        {
+            // Allow player controller to look left and right when not in a locked station and for desktop users
+            // when the mouse is not released..
+            if (!_stationManager.IsLockedInStation())
+            {
+                float yRot = rotateAction.GetAxis(SteamVR_Input_Sources.RightHand).x;
                 transform.rotation *= Quaternion.Euler(0f, yRot, 0f);
             }
         }

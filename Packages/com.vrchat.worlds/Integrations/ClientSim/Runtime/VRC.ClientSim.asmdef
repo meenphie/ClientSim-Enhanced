@@ -12,7 +12,9 @@
         "VRC.Udon.Editor",
         "Unity.XR.Management",
         "Unity.XR.Management.Editor",
-        "Unity.XR.Oculus"
+        "Unity.XR.Oculus",
+        "SteamVR",
+        "SteamVR_Actions"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
