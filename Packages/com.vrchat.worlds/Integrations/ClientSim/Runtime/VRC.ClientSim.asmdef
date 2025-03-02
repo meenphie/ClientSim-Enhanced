@@ -9,7 +9,10 @@
         "VRC.ClientSim.SelectionHighlight",
         "UniTask",
         "UdonSharp.Runtime",
-        "VRC.Udon.Editor"
+        "VRC.Udon.Editor",
+        "Unity.XR.Management",
+        "Unity.XR.Management.Editor",
+        "Unity.XR.Oculus"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
