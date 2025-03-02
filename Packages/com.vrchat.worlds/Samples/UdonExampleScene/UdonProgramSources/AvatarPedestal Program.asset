@@ -12,18 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f11136daadff0b44ac2278a314682ab, type: 3}
   m_Name: AvatarPedestal Program
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 1288dced0b0080c4a9c9363ad61c4290,
-    type: 2}
-  udonAssembly: ".data_start\r\n\r\n    \r\n    __instance_0: %VRCSDK3ComponentsVRCAvatarPedestal,
-    null\r\n    __instigator_0: %VRCSDKBaseVRCPlayerApi, null\r\n    __instance_1:
-    %UnityEngineGameObject, this\r\n    __type_0: %SystemType, null\r\n    __Type_0:
-    %SystemType, null\r\n    pedestal: %VRCSDK3ComponentsVRCAvatarPedestal, null\r\n\r\n.data_end\r\n\r\n.code_start\r\n\r\n   
-    .export _interact\r\n    \r\n    _interact:\r\n    \r\n        PUSH, __Type_0\r\n       
-    PUSH, __type_0\r\n        COPY\r\n        PUSH, __instance_1\r\n        PUSH,
-    __type_0\r\n        PUSH, __instance_0\r\n        EXTERN, \"UnityEngineGameObject.__GetComponent__SystemType__UnityEngineComponent\"\r\n       
-    PUSH, __instigator_0\r\n        EXTERN, \"VRCSDKBaseNetworking.__get_LocalPlayer__VRCSDKBaseVRCPlayerApi\"\r\n       
-    PUSH, __instance_0\r\n        PUSH, __instigator_0\r\n        EXTERN, \"VRCSDK3ComponentsVRCAvatarPedestal.__SetAvatarUse__VRCSDKBaseVRCPlayerApi__SystemVoid\"\r\n       
-    JUMP, 0xFFFFFFFC\r\n    \r\n\r\n.code_end\r\n"
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 41405f589a7565db5b205a1ba451f69a, type: 2}
+  udonAssembly: ".data_start\n\n    \n    __instance_0: %VRCSDK3ComponentsVRCAvatarPedestal,
+    null\n    __instigator_0: %VRCSDKBaseVRCPlayerApi, null\n    __instance_1: %UnityEngineGameObject,
+    this\n    __type_0: %SystemType, null\n    __Type_0: %SystemType, null\n    pedestal:
+    %VRCSDK3ComponentsVRCAvatarPedestal, null\n\n.data_end\n\n.code_start\n\n   
+    .export _interact\n    \n    _interact:\n    \n        PUSH, __Type_0\n       
+    PUSH, __type_0\n        COPY\n        PUSH, __instance_1\n        PUSH, __type_0\n       
+    PUSH, __instance_0\n        EXTERN, \"UnityEngineGameObject.__GetComponent__SystemType__UnityEngineComponent\"\n       
+    PUSH, __instigator_0\n        EXTERN, \"VRCSDKBaseNetworking.__get_LocalPlayer__VRCSDKBaseVRCPlayerApi\"\n       
+    PUSH, __instance_0\n        PUSH, __instigator_0\n        EXTERN, \"VRCSDK3ComponentsVRCAvatarPedestal.__SetAvatarUse__VRCSDKBaseVRCPlayerApi__SystemVoid\"\n       
+    JUMP, 0xFFFFFFFC\n    \n\n.code_end\n"
   assemblyError: 
   graphData:
     name: 
@@ -113,8 +112,5 @@ MonoBehaviour:
   - type: 4
     uid: 660ed7e9-fdef-48a0-be18-1e45b935b733
     jsonData: '{"visible":true,"layout":{"serializedVersion":"2","x":10.0,"y":20.0,"width":0.0,"height":0.0}}'
-  viewTransform:
-    position: {x: 951.5367, y: 659.19214}
-    scale: 0.7561437
   version: 1.0.0
   showAssembly: 0

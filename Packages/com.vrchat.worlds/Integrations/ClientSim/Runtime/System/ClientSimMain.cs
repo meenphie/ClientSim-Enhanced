@@ -374,6 +374,11 @@ namespace VRC.SDK3.ClientSim
                     _player.EnablePlayer(_sceneManager.GetSpawnPoint(false));
                 }
             }
+            
+            if (_settings._enableVRMode)
+            {
+                _player.EnableVR();
+            }
 
             // Notify UdonManager that ClientSim is ready. This will then notify all registered UdonBehaviours that
             // they can begin running. Udon will initialize in the next frame in the next Update call.

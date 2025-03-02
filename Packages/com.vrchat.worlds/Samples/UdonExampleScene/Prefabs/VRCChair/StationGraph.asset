@@ -12,31 +12,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f11136daadff0b44ac2278a314682ab, type: 3}
   m_Name: StationGraph
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: ce1bb6dd9a8f30143ae4dc9ab6ab89eb,
-    type: 2}
-  udonAssembly: ".data_start\r\n\r\n    \r\n    __instance_0: %VRCSDKBaseVRCPlayerApi,
-    null\r\n    __message_0: %SystemObject, null\r\n    __format_0: %SystemString,
-    null\r\n    __arg0_0: %SystemObject, null\r\n    __instance_1: %VRCSDKBaseVRCPlayerApi,
-    null\r\n    onStationEnteredPlayer: %VRCSDKBaseVRCPlayerApi, null\r\n    __message_1:
-    %SystemObject, null\r\n    __format_1: %SystemString, null\r\n    __arg0_1: %SystemObject,
-    null\r\n    __instance_2: %VRCSDKBaseVRCPlayerApi, null\r\n    onStationExitedPlayer:
-    %VRCSDKBaseVRCPlayerApi, null\r\n\r\n.data_end\r\n\r\n.code_start\r\n\r\n   
-    .export _interact\r\n    \r\n    _interact:\r\n    \r\n        PUSH, __instance_0\r\n       
-    EXTERN, \"VRCSDKBaseNetworking.__get_LocalPlayer__VRCSDKBaseVRCPlayerApi\"\r\n       
-    PUSH, __instance_0\r\n        EXTERN, \"VRCSDKBaseVRCPlayerApi.__UseAttachedStation__SystemVoid\"\r\n       
-    JUMP, 0xFFFFFFFC\r\n    \r\n    .export _onStationEntered\r\n    \r\n    _onStationEntered:\r\n   
-    \r\n        PUSH, onStationEnteredPlayer\r\n        PUSH, __instance_1\r\n       
-    COPY\r\n        PUSH, __instance_1\r\n        PUSH, __arg0_0\r\n        EXTERN,
-    \"VRCSDKBaseVRCPlayerApi.__get_displayName__SystemString\"\r\n        PUSH, __format_0\r\n       
-    PUSH, __arg0_0\r\n        PUSH, __message_0\r\n        EXTERN, \"SystemString.__Format__SystemString_SystemObject__SystemString\"\r\n       
-    PUSH, __message_0\r\n        EXTERN, \"UnityEngineDebug.__Log__SystemObject__SystemVoid\"\r\n       
-    JUMP, 0xFFFFFFFC\r\n    \r\n    .export _onStationExited\r\n    \r\n    _onStationExited:\r\n   
-    \r\n        PUSH, onStationExitedPlayer\r\n        PUSH, __instance_2\r\n       
-    COPY\r\n        PUSH, __instance_2\r\n        PUSH, __arg0_1\r\n        EXTERN,
-    \"VRCSDKBaseVRCPlayerApi.__get_displayName__SystemString\"\r\n        PUSH, __format_1\r\n       
-    PUSH, __arg0_1\r\n        PUSH, __message_1\r\n        EXTERN, \"SystemString.__Format__SystemString_SystemObject__SystemString\"\r\n       
-    PUSH, __message_1\r\n        EXTERN, \"UnityEngineDebug.__Log__SystemObject__SystemVoid\"\r\n       
-    JUMP, 0xFFFFFFFC\r\n    \r\n\r\n.code_end\r\n"
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 82baf8d0e8c3b93409ffd0cc0e4bd28a, type: 2}
+  udonAssembly: ".data_start\n\n    \n    __instance_0: %VRCSDKBaseVRCPlayerApi,
+    null\n    __message_0: %SystemObject, null\n    __format_0: %SystemString, null\n   
+    __arg0_0: %SystemObject, null\n    __instance_1: %VRCSDKBaseVRCPlayerApi, null\n   
+    onStationEnteredPlayer: %VRCSDKBaseVRCPlayerApi, null\n    __message_1: %SystemObject,
+    null\n    __format_1: %SystemString, null\n    __arg0_1: %SystemObject, null\n   
+    __instance_2: %VRCSDKBaseVRCPlayerApi, null\n    onStationExitedPlayer: %VRCSDKBaseVRCPlayerApi,
+    null\n\n.data_end\n\n.code_start\n\n    .export _interact\n    \n    _interact:\n   
+    \n        PUSH, __instance_0\n        EXTERN, \"VRCSDKBaseNetworking.__get_LocalPlayer__VRCSDKBaseVRCPlayerApi\"\n       
+    PUSH, __instance_0\n        EXTERN, \"VRCSDKBaseVRCPlayerApi.__UseAttachedStation__SystemVoid\"\n       
+    JUMP, 0xFFFFFFFC\n    \n    .export _onStationEntered\n    \n    _onStationEntered:\n   
+    \n        PUSH, onStationEnteredPlayer\n        PUSH, __instance_1\n        COPY\n       
+    PUSH, __instance_1\n        PUSH, __arg0_0\n        EXTERN, \"VRCSDKBaseVRCPlayerApi.__get_displayName__SystemString\"\n       
+    PUSH, __format_0\n        PUSH, __arg0_0\n        PUSH, __message_0\n       
+    EXTERN, \"SystemString.__Format__SystemString_SystemObject__SystemString\"\n       
+    PUSH, __message_0\n        EXTERN, \"UnityEngineDebug.__Log__SystemObject__SystemVoid\"\n       
+    JUMP, 0xFFFFFFFC\n    \n    .export _onStationExited\n    \n    _onStationExited:\n   
+    \n        PUSH, onStationExitedPlayer\n        PUSH, __instance_2\n        COPY\n       
+    PUSH, __instance_2\n        PUSH, __arg0_1\n        EXTERN, \"VRCSDKBaseVRCPlayerApi.__get_displayName__SystemString\"\n       
+    PUSH, __format_1\n        PUSH, __arg0_1\n        PUSH, __message_1\n       
+    EXTERN, \"SystemString.__Format__SystemString_SystemObject__SystemString\"\n       
+    PUSH, __message_1\n        EXTERN, \"UnityEngineDebug.__Log__SystemObject__SystemVoid\"\n       
+    JUMP, 0xFFFFFFFC\n    \n\n.code_end\n"
   assemblyError: 
   graphData:
     name: 

@@ -12,30 +12,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f11136daadff0b44ac2278a314682ab, type: 3}
   m_Name: VRCWorldSettings
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 5d1c7f7499215ef4aaeace6a2d3da336,
-    type: 2}
-  udonAssembly: ".data_start\r\n\r\n    .export jumpImpulse\r\n    .export walkSpeed\r\n   
-    .export runSpeed\r\n    .export strafeSpeed\r\n    \r\n    __object_0: %SystemObject,
-    null\r\n    __result_0: %SystemBoolean, null\r\n    __instance_0: %VRCSDKBaseVRCPlayerApi,
-    null\r\n    __impulse_0: %SystemSingle, null\r\n    __instance_1: %VRCSDKBaseVRCPlayerApi,
-    null\r\n    __speed_0: %SystemSingle, null\r\n    __instance_2: %VRCSDKBaseVRCPlayerApi,
-    null\r\n    __speed_1: %SystemSingle, null\r\n    __instance_3: %VRCSDKBaseVRCPlayerApi,
-    null\r\n    __speed_2: %SystemSingle, null\r\n    jumpImpulse: %SystemSingle,
-    null\r\n    walkSpeed: %SystemSingle, null\r\n    runSpeed: %SystemSingle, null\r\n   
-    strafeSpeed: %SystemSingle, null\r\n\r\n.data_end\r\n\r\n.code_start\r\n\r\n   
-    .export _start\r\n    \r\n    _start:\r\n    \r\n        PUSH, __object_0\r\n       
-    EXTERN, \"VRCSDKBaseNetworking.__get_LocalPlayer__VRCSDKBaseVRCPlayerApi\"\r\n       
-    PUSH, __object_0\r\n        PUSH, __result_0\r\n        EXTERN, \"VRCSDKBaseUtilities.__IsValid__SystemObject__SystemBoolean\"\r\n       
-    PUSH, __result_0\r\n        JUMP_IF_FALSE, 0x000000EC\r\n        PUSH, __instance_0\r\n       
-    EXTERN, \"VRCSDKBaseNetworking.__get_LocalPlayer__VRCSDKBaseVRCPlayerApi\"\r\n       
-    PUSH, __instance_0\r\n        PUSH, jumpImpulse\r\n        EXTERN, \"VRCSDKBaseVRCPlayerApi.__SetJumpImpulse__SystemSingle__SystemVoid\"\r\n       
-    PUSH, __instance_0\r\n        PUSH, __instance_1\r\n        COPY\r\n        PUSH,
-    __instance_0\r\n        PUSH, walkSpeed\r\n        EXTERN, \"VRCSDKBaseVRCPlayerApi.__SetWalkSpeed__SystemSingle__SystemVoid\"\r\n       
-    PUSH, __instance_0\r\n        PUSH, __instance_2\r\n        COPY\r\n        PUSH,
-    __instance_0\r\n        PUSH, runSpeed\r\n        EXTERN, \"VRCSDKBaseVRCPlayerApi.__SetRunSpeed__SystemSingle__SystemVoid\"\r\n       
-    PUSH, __instance_0\r\n        PUSH, __instance_3\r\n        COPY\r\n        PUSH,
-    __instance_0\r\n        PUSH, strafeSpeed\r\n        EXTERN, \"VRCSDKBaseVRCPlayerApi.__SetStrafeSpeed__SystemSingle__SystemVoid\"\r\n       
-    JUMP, 0x000000EC\r\n        JUMP, 0xFFFFFFFC\r\n    \r\n\r\n.code_end\r\n"
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 8b5a53532df1cec95a9d0621a9b5c3b7, type: 2}
+  udonAssembly: ".data_start\n\n    .export jumpImpulse\n    .export walkSpeed\n   
+    .export runSpeed\n    .export strafeSpeed\n    \n    __object_0: %SystemObject,
+    null\n    __result_0: %SystemBoolean, null\n    __instance_0: %VRCSDKBaseVRCPlayerApi,
+    null\n    __impulse_0: %SystemSingle, null\n    __instance_1: %VRCSDKBaseVRCPlayerApi,
+    null\n    __speed_0: %SystemSingle, null\n    __instance_2: %VRCSDKBaseVRCPlayerApi,
+    null\n    __speed_1: %SystemSingle, null\n    __instance_3: %VRCSDKBaseVRCPlayerApi,
+    null\n    __speed_2: %SystemSingle, null\n    jumpImpulse: %SystemSingle, null\n   
+    walkSpeed: %SystemSingle, null\n    runSpeed: %SystemSingle, null\n    strafeSpeed:
+    %SystemSingle, null\n\n.data_end\n\n.code_start\n\n    .export _start\n    \n   
+    _start:\n    \n        PUSH, __object_0\n        EXTERN, \"VRCSDKBaseNetworking.__get_LocalPlayer__VRCSDKBaseVRCPlayerApi\"\n       
+    PUSH, __object_0\n        PUSH, __result_0\n        EXTERN, \"VRCSDKBaseUtilities.__IsValid__SystemObject__SystemBoolean\"\n       
+    PUSH, __result_0\n        JUMP_IF_FALSE, 0x000000EC\n        PUSH, __instance_0\n       
+    EXTERN, \"VRCSDKBaseNetworking.__get_LocalPlayer__VRCSDKBaseVRCPlayerApi\"\n       
+    PUSH, __instance_0\n        PUSH, jumpImpulse\n        EXTERN, \"VRCSDKBaseVRCPlayerApi.__SetJumpImpulse__SystemSingle__SystemVoid\"\n       
+    PUSH, __instance_0\n        PUSH, __instance_1\n        COPY\n        PUSH, __instance_0\n       
+    PUSH, walkSpeed\n        EXTERN, \"VRCSDKBaseVRCPlayerApi.__SetWalkSpeed__SystemSingle__SystemVoid\"\n       
+    PUSH, __instance_0\n        PUSH, __instance_2\n        COPY\n        PUSH, __instance_0\n       
+    PUSH, runSpeed\n        EXTERN, \"VRCSDKBaseVRCPlayerApi.__SetRunSpeed__SystemSingle__SystemVoid\"\n       
+    PUSH, __instance_0\n        PUSH, __instance_3\n        COPY\n        PUSH, __instance_0\n       
+    PUSH, strafeSpeed\n        EXTERN, \"VRCSDKBaseVRCPlayerApi.__SetStrafeSpeed__SystemSingle__SystemVoid\"\n       
+    JUMP, 0x000000EC\n        JUMP, 0xFFFFFFFC\n    \n\n.code_end\n"
   assemblyError: 
   graphData:
     name: 
