@@ -12,54 +12,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f11136daadff0b44ac2278a314682ab, type: 3}
   m_Name: ImageDownload
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 18c87093a349bbe49a4926c569250ff1,
-    type: 2}
-  udonAssembly: ".data_start\r\n\r\n    .export Material\r\n    .export VRCURL\r\n   
-    .export TextureInfo\r\n    \r\n    onImageLoadErrorIVRCImageDownload: %VRCSDK3ImageIVRCImageDownload,
-    null\r\n    __String_0: %SystemString, null\r\n    __message_0: %SystemObject,
-    null\r\n    __String_1: %SystemString, null\r\n    __String_2: %SystemString,
-    null\r\n    __String_3: %SystemString, null\r\n    __String_4: %SystemString,
-    null\r\n    __instance_0: %VRCSDK3ImageVRCImageDownloadError, null\r\n    __instance_1:
-    %VRCSDK3ImageIVRCImageDownload, null\r\n    __instance_2: %VRCSDK3ImageIVRCImageDownload,
-    null\r\n    __message_1: %SystemObject, null\r\n    __String_5: %SystemString,
-    null\r\n    __instance_3: %VRCSDK3ImageVRCImageDownloader, null\r\n    __url_0:
-    %VRCSDKBaseVRCUrl, null\r\n    __material_0: %UnityEngineMaterial, null\r\n   
-    __udonBehaviour_0: %VRCUdonUdonBehaviour, this\r\n    __textureInfo_0: %VRCSDK3ImageTextureInfo,
-    null\r\n    __IVRCImageDownload_0: %VRCSDK3ImageIVRCImageDownload, null\r\n   
-    __instance_4: %VRCSDK3ImageVRCImageDownloader, null\r\n    Material: %UnityEngineMaterial,
-    null\r\n    VRCURL: %VRCSDKBaseVRCUrl, null\r\n    ImageDownloader: %VRCSDK3ImageVRCImageDownloader,
-    null\r\n    TextureInfo: %VRCSDK3ImageTextureInfo, null\r\n\r\n.data_end\r\n\r\n.code_start\r\n\r\n   
-    .export _onImageLoadError\r\n    \r\n    _onImageLoadError:\r\n    \r\n       
-    PUSH, onImageLoadErrorIVRCImageDownload\r\n        PUSH, __instance_1\r\n       
-    COPY\r\n        PUSH, __instance_1\r\n        PUSH, __instance_0\r\n        EXTERN,
-    \"VRCSDK3ImageIVRCImageDownload.__get_Error__VRCSDK3ImageVRCImageDownloadError\"\r\n       
-    PUSH, __instance_0\r\n        PUSH, __String_0\r\n        EXTERN, \"VRCSDK3ImageVRCImageDownloadError.__ToString__SystemString\"\r\n       
-    PUSH, onImageLoadErrorIVRCImageDownload\r\n        PUSH, __instance_1\r\n       
-    COPY\r\n        PUSH, __String_0\r\n        PUSH, __String_3\r\n        COPY\r\n       
-    PUSH, __String_0\r\n        PUSH, __String_4\r\n        PUSH, __String_1\r\n       
-    EXTERN, \"SystemString.__op_Addition__SystemString_SystemString__SystemString\"\r\n       
-    PUSH, onImageLoadErrorIVRCImageDownload\r\n        PUSH, __instance_2\r\n       
-    COPY\r\n        PUSH, __instance_2\r\n        PUSH, __String_2\r\n        EXTERN,
-    \"VRCSDK3ImageIVRCImageDownload.__get_ErrorMessage__SystemString\"\r\n       
-    PUSH, __String_1\r\n        PUSH, __String_2\r\n        PUSH, __message_0\r\n       
-    EXTERN, \"SystemString.__op_Addition__SystemString_SystemString__SystemString\"\r\n       
-    PUSH, __message_0\r\n        EXTERN, \"UnityEngineDebug.__Log__SystemObject__SystemVoid\"\r\n       
-    JUMP, 0xFFFFFFFC\r\n    \r\n    .export _onImageLoadSuccess\r\n    \r\n    _onImageLoadSuccess:\r\n   
-    \r\n        PUSH, __String_5\r\n        PUSH, __message_1\r\n        COPY\r\n       
-    PUSH, __message_1\r\n        EXTERN, \"UnityEngineDebug.__Log__SystemObject__SystemVoid\"\r\n       
-    JUMP, 0xFFFFFFFC\r\n    \r\n    .export _start\r\n    \r\n    _start:\r\n   
-    \r\n        PUSH, ImageDownloader\r\n        EXTERN, \"VRCSDK3ImageVRCImageDownloader.__ctor____VRCSDK3ImageVRCImageDownloader\"\r\n       
-    PUSH, ImageDownloader\r\n        PUSH, __instance_3\r\n        COPY\r\n       
-    PUSH, VRCURL\r\n        PUSH, __url_0\r\n        COPY\r\n        PUSH, Material\r\n       
-    PUSH, __material_0\r\n        COPY\r\n        PUSH, TextureInfo\r\n        PUSH,
-    __textureInfo_0\r\n        COPY\r\n        PUSH, __instance_3\r\n        PUSH,
-    __url_0\r\n        PUSH, __material_0\r\n        PUSH, __udonBehaviour_0\r\n       
-    PUSH, __textureInfo_0\r\n        PUSH, __IVRCImageDownload_0\r\n        EXTERN,
-    \"VRCSDK3ImageVRCImageDownloader.__DownloadImage__VRCSDKBaseVRCUrl_UnityEngineMaterial_VRCUdonCommonInterfacesIUdonEventReceiver_VRCSDK3ImageTextureInfo__VRCSDK3ImageIVRCImageDownload\"\r\n       
-    JUMP, 0xFFFFFFFC\r\n    \r\n    .export _onDestroy\r\n    \r\n    _onDestroy:\r\n   
-    \r\n        PUSH, ImageDownloader\r\n        PUSH, __instance_4\r\n        COPY\r\n       
-    PUSH, __instance_4\r\n        EXTERN, \"VRCSDK3ImageVRCImageDownloader.__Dispose__SystemVoid\"\r\n       
-    JUMP, 0xFFFFFFFC\r\n    \r\n\r\n.code_end\r\n"
+  serializedUdonProgramAsset: {fileID: 11400000, guid: dabafec12c86865fda1b3538f170d20b, type: 2}
+  udonAssembly: ".data_start\n\n    .export Material\n    .export VRCURL\n    .export
+    TextureInfo\n    \n    onImageLoadErrorIVRCImageDownload: %VRCSDK3ImageIVRCImageDownload,
+    null\n    __String_0: %SystemString, null\n    __message_0: %SystemObject, null\n   
+    __String_1: %SystemString, null\n    __String_2: %SystemString, null\n    __String_3:
+    %SystemString, null\n    __String_4: %SystemString, null\n    __instance_0: %VRCSDK3ImageVRCImageDownloadError,
+    null\n    __instance_1: %VRCSDK3ImageIVRCImageDownload, null\n    __instance_2:
+    %VRCSDK3ImageIVRCImageDownload, null\n    __message_1: %SystemObject, null\n   
+    __String_5: %SystemString, null\n    __instance_3: %VRCSDK3ImageVRCImageDownloader,
+    null\n    __url_0: %VRCSDKBaseVRCUrl, null\n    __material_0: %UnityEngineMaterial,
+    null\n    __udonBehaviour_0: %VRCUdonUdonBehaviour, this\n    __textureInfo_0:
+    %VRCSDK3ImageTextureInfo, null\n    __IVRCImageDownload_0: %VRCSDK3ImageIVRCImageDownload,
+    null\n    __instance_4: %VRCSDK3ImageVRCImageDownloader, null\n    Material:
+    %UnityEngineMaterial, null\n    VRCURL: %VRCSDKBaseVRCUrl, null\n    ImageDownloader:
+    %VRCSDK3ImageVRCImageDownloader, null\n    TextureInfo: %VRCSDK3ImageTextureInfo,
+    null\n\n.data_end\n\n.code_start\n\n    .export _onImageLoadError\n    \n   
+    _onImageLoadError:\n    \n        PUSH, onImageLoadErrorIVRCImageDownload\n       
+    PUSH, __instance_1\n        COPY\n        PUSH, __instance_1\n        PUSH, __instance_0\n       
+    EXTERN, \"VRCSDK3ImageIVRCImageDownload.__get_Error__VRCSDK3ImageVRCImageDownloadError\"\n       
+    PUSH, __instance_0\n        PUSH, __String_0\n        EXTERN, \"VRCSDK3ImageVRCImageDownloadError.__ToString__SystemString\"\n       
+    PUSH, onImageLoadErrorIVRCImageDownload\n        PUSH, __instance_1\n       
+    COPY\n        PUSH, __String_0\n        PUSH, __String_3\n        COPY\n       
+    PUSH, __String_0\n        PUSH, __String_4\n        PUSH, __String_1\n       
+    EXTERN, \"SystemString.__op_Addition__SystemString_SystemString__SystemString\"\n       
+    PUSH, onImageLoadErrorIVRCImageDownload\n        PUSH, __instance_2\n       
+    COPY\n        PUSH, __instance_2\n        PUSH, __String_2\n        EXTERN, \"VRCSDK3ImageIVRCImageDownload.__get_ErrorMessage__SystemString\"\n       
+    PUSH, __String_1\n        PUSH, __String_2\n        PUSH, __message_0\n       
+    EXTERN, \"SystemString.__op_Addition__SystemString_SystemString__SystemString\"\n       
+    PUSH, __message_0\n        EXTERN, \"UnityEngineDebug.__Log__SystemObject__SystemVoid\"\n       
+    JUMP, 0xFFFFFFFC\n    \n    .export _onImageLoadSuccess\n    \n    _onImageLoadSuccess:\n   
+    \n        PUSH, __String_5\n        PUSH, __message_1\n        COPY\n       
+    PUSH, __message_1\n        EXTERN, \"UnityEngineDebug.__Log__SystemObject__SystemVoid\"\n       
+    JUMP, 0xFFFFFFFC\n    \n    .export _start\n    \n    _start:\n    \n       
+    PUSH, ImageDownloader\n        EXTERN, \"VRCSDK3ImageVRCImageDownloader.__ctor____VRCSDK3ImageVRCImageDownloader\"\n       
+    PUSH, ImageDownloader\n        PUSH, __instance_3\n        COPY\n        PUSH,
+    VRCURL\n        PUSH, __url_0\n        COPY\n        PUSH, Material\n       
+    PUSH, __material_0\n        COPY\n        PUSH, TextureInfo\n        PUSH, __textureInfo_0\n       
+    COPY\n        PUSH, __instance_3\n        PUSH, __url_0\n        PUSH, __material_0\n       
+    PUSH, __udonBehaviour_0\n        PUSH, __textureInfo_0\n        PUSH, __IVRCImageDownload_0\n       
+    EXTERN, \"VRCSDK3ImageVRCImageDownloader.__DownloadImage__VRCSDKBaseVRCUrl_UnityEngineMaterial_VRCUdonCommonInterfacesIUdonEventReceiver_VRCSDK3ImageTextureInfo__VRCSDK3ImageIVRCImageDownload\"\n       
+    JUMP, 0xFFFFFFFC\n    \n    .export _onDestroy\n    \n    _onDestroy:\n    \n       
+    PUSH, ImageDownloader\n        PUSH, __instance_4\n        COPY\n        PUSH,
+    __instance_4\n        EXTERN, \"VRCSDK3ImageVRCImageDownloader.__Dispose__SystemVoid\"\n       
+    JUMP, 0xFFFFFFFC\n    \n\n.code_end\n"
   assemblyError: 
   graphData:
     name: 

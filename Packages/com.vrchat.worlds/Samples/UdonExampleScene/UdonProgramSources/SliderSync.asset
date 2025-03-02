@@ -12,40 +12,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f11136daadff0b44ac2278a314682ab, type: 3}
   m_Name: SliderSync
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: c0be0a8c517995a458fd900c40362246,
-    type: 2}
-  udonAssembly: ".data_start\r\n\r\n    .export uiSlider\r\n    .export uiText\r\n   
-    .sync sliderValue, none\r\n    \r\n    __Boolean_0: %SystemBoolean, null\r\n   
-    __Single_0: %SystemSingle, null\r\n    __Single_1: %SystemSingle, null\r\n   
-    __player_0: %VRCSDKBaseVRCPlayerApi, null\r\n    __obj_0: %UnityEngineGameObject,
-    this\r\n    __instance_1: %VRCUdonUdonBehaviour, this\r\n    __symbolName_0:
-    %SystemString, null\r\n    __value_0: %SystemObject, null\r\n    __instance_0:
-    %UnityEngineUISlider, null\r\n    __instance_2: %VRCUdonUdonBehaviour, this\r\n   
-    __instance_3: %UnityEngineUIText, null\r\n    __value_1: %SystemString, null\r\n   
-    __instance_4: %SystemSingle, null\r\n    __instance_5: %UnityEngineUISlider,
-    null\r\n    __value_2: %SystemSingle, null\r\n    __name_0: %SystemString, null\r\n   
-    sliderValue: %SystemSingle, null\r\n    uiSlider: %UnityEngineUISlider, null\r\n   
-    uiText: %UnityEngineUIText, null\r\n    __returnValue: %SystemObject, null\r\n\r\n.data_end\r\n\r\n.code_start\r\n\r\n   
-    .export OnValueChanged\r\n    \r\n    OnValueChanged:\r\n    \r\n        PUSH,
-    uiSlider\r\n        PUSH, __instance_0\r\n        COPY\r\n        PUSH, __instance_0\r\n       
-    PUSH, __Single_0\r\n        EXTERN, \"UnityEngineUISlider.__get_value__SystemSingle\"\r\n       
-    PUSH, __Single_0\r\n        PUSH, sliderValue\r\n        PUSH, __Boolean_0\r\n       
-    EXTERN, \"SystemSingle.__op_Inequality__SystemSingle_SystemSingle__SystemBoolean\"\r\n       
-    PUSH, __Boolean_0\r\n        JUMP_IF_FALSE, 0x000000E4\r\n        PUSH, __player_0\r\n       
-    EXTERN, \"VRCSDKBaseNetworking.__get_LocalPlayer__VRCSDKBaseVRCPlayerApi\"\r\n       
-    PUSH, __player_0\r\n        PUSH, __obj_0\r\n        EXTERN, \"VRCSDKBaseNetworking.__SetOwner__VRCSDKBaseVRCPlayerApi_UnityEngineGameObject__SystemVoid\"\r\n       
-    PUSH, uiSlider\r\n        PUSH, __instance_0\r\n        COPY\r\n        PUSH,
-    __Single_0\r\n        PUSH, __value_0\r\n        COPY\r\n        PUSH, __instance_1\r\n       
-    PUSH, __symbolName_0\r\n        PUSH, __Single_0\r\n        EXTERN, \"VRCUdonCommonInterfacesIUdonEventReceiver.__SetProgramVariable__SystemString_SystemObject__SystemVoid\"\r\n       
-    PUSH, __instance_2\r\n        EXTERN, \"VRCUdonCommonInterfacesIUdonEventReceiver.__RequestSerialization__SystemVoid\"\r\n       
-    JUMP, 0x000000E4\r\n        JUMP, 0xFFFFFFFC\r\n    \r\n    .export _onVarChange_sliderValue\r\n   
-    \r\n    _onVarChange_sliderValue:\r\n    \r\n        PUSH, uiText\r\n       
-    PUSH, __instance_3\r\n        COPY\r\n        PUSH, sliderValue\r\n        PUSH,
-    __value_1\r\n        EXTERN, \"SystemSingle.__ToString__SystemString\"\r\n       
-    PUSH, __instance_3\r\n        PUSH, __value_1\r\n        EXTERN, \"UnityEngineUIText.__set_text__SystemString__SystemVoid\"\r\n       
-    PUSH, uiSlider\r\n        PUSH, __instance_5\r\n        COPY\r\n        PUSH,
-    __instance_5\r\n        PUSH, sliderValue\r\n        EXTERN, \"UnityEngineUISlider.__set_value__SystemSingle__SystemVoid\"\r\n       
-    JUMP, 0xFFFFFFFC\r\n    \r\n\r\n.code_end\r\n"
+  serializedUdonProgramAsset: {fileID: 11400000, guid: c0be0a8c517995a458fd900c40362246, type: 2}
+  udonAssembly: ".data_start\n\n    .export uiSlider\n    .export uiText\n    .sync
+    sliderValue, none\n    \n    __Boolean_0: %SystemBoolean, null\n    __Single_0:
+    %SystemSingle, null\n    __Single_1: %SystemSingle, null\n    __player_0: %VRCSDKBaseVRCPlayerApi,
+    null\n    __obj_0: %UnityEngineGameObject, this\n    __instance_1: %VRCUdonUdonBehaviour,
+    this\n    __symbolName_0: %SystemString, null\n    __value_0: %SystemObject,
+    null\n    __instance_0: %UnityEngineUISlider, null\n    __instance_2: %VRCUdonUdonBehaviour,
+    this\n    __instance_3: %UnityEngineUIText, null\n    __value_1: %SystemString,
+    null\n    __instance_4: %SystemSingle, null\n    __instance_5: %UnityEngineUISlider,
+    null\n    __value_2: %SystemSingle, null\n    __name_0: %SystemString, null\n   
+    sliderValue: %SystemSingle, null\n    uiSlider: %UnityEngineUISlider, null\n   
+    uiText: %UnityEngineUIText, null\n    __returnValue: %SystemObject, null\n\n.data_end\n\n.code_start\n\n   
+    .export OnValueChanged\n    \n    OnValueChanged:\n    \n        PUSH, uiSlider\n       
+    PUSH, __instance_0\n        COPY\n        PUSH, __instance_0\n        PUSH, __Single_0\n       
+    EXTERN, \"UnityEngineUISlider.__get_value__SystemSingle\"\n        PUSH, __Single_0\n       
+    PUSH, sliderValue\n        PUSH, __Boolean_0\n        EXTERN, \"SystemSingle.__op_Inequality__SystemSingle_SystemSingle__SystemBoolean\"\n       
+    PUSH, __Boolean_0\n        JUMP_IF_FALSE, 0x000000E4\n        PUSH, __player_0\n       
+    EXTERN, \"VRCSDKBaseNetworking.__get_LocalPlayer__VRCSDKBaseVRCPlayerApi\"\n       
+    PUSH, __player_0\n        PUSH, __obj_0\n        EXTERN, \"VRCSDKBaseNetworking.__SetOwner__VRCSDKBaseVRCPlayerApi_UnityEngineGameObject__SystemVoid\"\n       
+    PUSH, uiSlider\n        PUSH, __instance_0\n        COPY\n        PUSH, __Single_0\n       
+    PUSH, __value_0\n        COPY\n        PUSH, __instance_1\n        PUSH, __symbolName_0\n       
+    PUSH, __Single_0\n        EXTERN, \"VRCUdonCommonInterfacesIUdonEventReceiver.__SetProgramVariable__SystemString_SystemObject__SystemVoid\"\n       
+    PUSH, __instance_2\n        EXTERN, \"VRCUdonCommonInterfacesIUdonEventReceiver.__RequestSerialization__SystemVoid\"\n       
+    JUMP, 0x000000E4\n        JUMP, 0xFFFFFFFC\n    \n    .export _onVarChange_sliderValue\n   
+    \n    _onVarChange_sliderValue:\n    \n        PUSH, uiText\n        PUSH, __instance_3\n       
+    COPY\n        PUSH, sliderValue\n        PUSH, __value_1\n        EXTERN, \"SystemSingle.__ToString__SystemString\"\n       
+    PUSH, __instance_3\n        PUSH, __value_1\n        EXTERN, \"UnityEngineUIText.__set_text__SystemString__SystemVoid\"\n       
+    PUSH, uiSlider\n        PUSH, __instance_5\n        COPY\n        PUSH, __instance_5\n       
+    PUSH, sliderValue\n        EXTERN, \"UnityEngineUISlider.__set_value__SystemSingle__SystemVoid\"\n       
+    JUMP, 0xFFFFFFFC\n    \n\n.code_end\n"
   assemblyError: 
   graphData:
     name: 
@@ -337,8 +333,5 @@ MonoBehaviour:
   - type: 4
     uid: 375ae574-056c-4f5d-a57b-0c9c2c87c61a
     jsonData: '{"visible":true,"layout":{"serializedVersion":"2","x":10.0,"y":20.0,"width":0.0,"height":0.0}}'
-  viewTransform:
-    position: {x: 701.6493, y: 806.1245}
-    scale: 1
   version: 1.0.0
   showAssembly: 1

@@ -413,12 +413,16 @@ namespace VRC.SDK3.ClientSim
                 _input.SendToggleMenuEvent(true, HandType.RIGHT);
             }
             // Only allow these input actions while the menu is closed
-            //if (!_menuIsOpen)
+            if (!_menuIsOpen)
             {
                 GetMovementInput();
-                GetSteamVRMovementInput();
                 RotateView();
-                SteamVRRotateView();
+
+                if (ClientSimSettings.Instance._enableVRMode)
+                {
+                    SteamVRRotateView();
+                    GetSteamVRMovementInput();
+                }
             }
         }
 

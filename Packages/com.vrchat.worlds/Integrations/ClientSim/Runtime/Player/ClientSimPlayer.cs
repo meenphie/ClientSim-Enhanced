@@ -40,6 +40,8 @@ namespace VRC.SDK3.ClientSim
         private ClientSimPlayerAvatarManager playerAvatar;
         [SerializeField]
         private ClientSimReticle reticle;
+        [SerializeField]
+        private GameObject steamVR;
 
         private ClientSimCombatSystemHelper _combatSystemHelper;
 
@@ -424,6 +426,11 @@ namespace VRC.SDK3.ClientSim
         {
             playerController.Teleport(spawnPoint, false);
             gameObject.SetActive(true);
+        }
+        
+        public void EnableVR()
+        {
+            steamVR.SetActive(true);
         }
 
         public ClientSimPlayerController GetPlayerController()

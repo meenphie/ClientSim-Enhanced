@@ -12,59 +12,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f11136daadff0b44ac2278a314682ab, type: 3}
   m_Name: OnCharacterControllerHitExampleGraph
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 6c5d58ed510bca54b858b46bd8355895,
-    type: 2}
-  udonAssembly: ".data_start\r\n\r\n    .export characterController\r\n    .export
-    moveSpeed\r\n    .export hitNameText\r\n    .export characterControllerStartPos\r\n   
-    \r\n    __instance_0: %TMProTextMeshProUGUI, null\r\n    __value_0: %SystemString,
-    null\r\n    __instance_1: %VRCSDKBaseVRCPlayerApi, null\r\n    __instance_2:
-    %VRCSDK3ControllerColliderPlayerHit, null\r\n    onControllerColliderHitPlayerHit:
-    %VRCSDK3ControllerColliderPlayerHit, null\r\n    __instance_3: %VRCUdonUdonBehaviour,
-    this\r\n    __eventName_0: %SystemString, null\r\n    __instance_4: %TMProTextMeshProUGUI,
-    null\r\n    __value_1: %SystemString, null\r\n    __instance_5: %UnityEngineGameObject,
-    this\r\n    __instance_6: %UnityEngineControllerColliderHit, null\r\n    onControllerColliderHitHit:
-    %UnityEngineControllerColliderHit, null\r\n    __instance_7: %VRCUdonUdonBehaviour,
-    this\r\n    __eventName_1: %SystemString, null\r\n    __instance_8: %UnityEngineCharacterController,
-    null\r\n    __motion_0: %UnityEngineVector3, null\r\n    __Single_0: %SystemSingle,
-    null\r\n    __Vector3_0: %UnityEngineVector3, null\r\n    __Single_1: %SystemSingle,
-    null\r\n    __Vector3_1: %UnityEngineVector3, null\r\n    __instance_9: %UnityEngineTransform,
-    this\r\n    __CollisionFlags_0: %UnityEngineCollisionFlags, null\r\n    __instance_A:
-    %UnityEngineTransform, this\r\n    __value_2: %UnityEngineVector3, null\r\n   
-    __instance_B: %UnityEngineTransform, this\r\n    characterController: %UnityEngineCharacterController,
-    null\r\n    moveSpeed: %SystemSingle, null\r\n    hitNameText: %TMProTextMeshProUGUI,
-    null\r\n    characterControllerStartPos: %UnityEngineTransform, this\r\n\r\n.data_end\r\n\r\n.code_start\r\n\r\n   
-    .export _onControllerColliderHitPlayer\r\n    \r\n    _onControllerColliderHitPlayer:\r\n   
-    \r\n        PUSH, hitNameText\r\n        PUSH, __instance_0\r\n        COPY\r\n       
-    PUSH, onControllerColliderHitPlayerHit\r\n        PUSH, __instance_2\r\n       
-    COPY\r\n        PUSH, __instance_2\r\n        PUSH, __instance_1\r\n        EXTERN,
-    \"VRCSDK3ControllerColliderPlayerHit.__get_player__VRCSDKBaseVRCPlayerApi\"\r\n       
-    PUSH, __instance_1\r\n        PUSH, __value_0\r\n        EXTERN, \"VRCSDKBaseVRCPlayerApi.__get_displayName__SystemString\"\r\n       
-    PUSH, __instance_0\r\n        PUSH, __value_0\r\n        EXTERN, \"TMProTextMeshProUGUI.__set_text__SystemString__SystemVoid\"\r\n       
-    PUSH, __instance_3\r\n        PUSH, __eventName_0\r\n        EXTERN, \"VRCUdonCommonInterfacesIUdonEventReceiver.__SendCustomEvent__SystemString__SystemVoid\"\r\n       
-    JUMP, 0xFFFFFFFC\r\n    \r\n    .export _onControllerColliderHit\r\n    \r\n   
-    _onControllerColliderHit:\r\n    \r\n        PUSH, hitNameText\r\n        PUSH,
-    __instance_4\r\n        COPY\r\n        PUSH, onControllerColliderHitHit\r\n       
-    PUSH, __instance_6\r\n        COPY\r\n        PUSH, __instance_6\r\n        PUSH,
-    __instance_5\r\n        EXTERN, \"UnityEngineControllerColliderHit.__get_gameObject__UnityEngineGameObject\"\r\n       
-    PUSH, __instance_5\r\n        PUSH, __value_1\r\n        EXTERN, \"UnityEngineGameObject.__get_name__SystemString\"\r\n       
-    PUSH, __instance_4\r\n        PUSH, __value_1\r\n        EXTERN, \"TMProTextMeshProUGUI.__set_text__SystemString__SystemVoid\"\r\n       
-    PUSH, __instance_7\r\n        PUSH, __eventName_1\r\n        EXTERN, \"VRCUdonCommonInterfacesIUdonEventReceiver.__SendCustomEvent__SystemString__SystemVoid\"\r\n       
-    JUMP, 0xFFFFFFFC\r\n    \r\n    .export _update\r\n    \r\n    _update:\r\n   
-    \r\n        PUSH, characterController\r\n        PUSH, __instance_8\r\n       
-    COPY\r\n        PUSH, __Single_0\r\n        EXTERN, \"UnityEngineTime.__get_deltaTime__SystemSingle\"\r\n       
-    PUSH, __instance_9\r\n        PUSH, __Vector3_1\r\n        EXTERN, \"UnityEngineTransform.__get_forward__UnityEngineVector3\"\r\n       
-    PUSH, moveSpeed\r\n        PUSH, __Vector3_1\r\n        PUSH, __Vector3_0\r\n       
-    EXTERN, \"UnityEngineVector3.__op_Multiply__SystemSingle_UnityEngineVector3__UnityEngineVector3\"\r\n       
-    PUSH, __Single_0\r\n        PUSH, __Vector3_0\r\n        PUSH, __motion_0\r\n       
-    EXTERN, \"UnityEngineVector3.__op_Multiply__SystemSingle_UnityEngineVector3__UnityEngineVector3\"\r\n       
-    PUSH, __instance_8\r\n        PUSH, __motion_0\r\n        PUSH, __CollisionFlags_0\r\n       
-    EXTERN, \"UnityEngineCharacterController.__Move__UnityEngineVector3__UnityEngineCollisionFlags\"\r\n       
-    JUMP, 0xFFFFFFFC\r\n    \r\n    .export _ResetCharacterController\r\n    \r\n   
-    _ResetCharacterController:\r\n    \r\n        PUSH, characterControllerStartPos\r\n       
-    PUSH, __instance_B\r\n        COPY\r\n        PUSH, __instance_B\r\n        PUSH,
-    __value_2\r\n        EXTERN, \"UnityEngineTransform.__get_position__UnityEngineVector3\"\r\n       
-    PUSH, __instance_A\r\n        PUSH, __value_2\r\n        EXTERN, \"UnityEngineTransform.__set_position__UnityEngineVector3__SystemVoid\"\r\n       
-    JUMP, 0xFFFFFFFC\r\n    \r\n\r\n.code_end\r\n"
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 79f019ddb79496288b32b20cd12923e5, type: 2}
+  udonAssembly: ".data_start\n\n    .export characterController\n    .export moveSpeed\n   
+    .export hitNameText\n    .export characterControllerStartPos\n    \n    __instance_0:
+    %TMProTextMeshProUGUI, null\n    __value_0: %SystemString, null\n    __instance_1:
+    %VRCSDKBaseVRCPlayerApi, null\n    __instance_2: %VRCSDK3ControllerColliderPlayerHit,
+    null\n    onControllerColliderHitPlayerHit: %VRCSDK3ControllerColliderPlayerHit,
+    null\n    __instance_3: %VRCUdonUdonBehaviour, this\n    __eventName_0: %SystemString,
+    null\n    __instance_4: %TMProTextMeshProUGUI, null\n    __value_1: %SystemString,
+    null\n    __instance_5: %UnityEngineGameObject, this\n    __instance_6: %UnityEngineControllerColliderHit,
+    null\n    onControllerColliderHitHit: %UnityEngineControllerColliderHit, null\n   
+    __instance_7: %VRCUdonUdonBehaviour, this\n    __eventName_1: %SystemString,
+    null\n    __instance_8: %UnityEngineCharacterController, null\n    __motion_0:
+    %UnityEngineVector3, null\n    __Single_0: %SystemSingle, null\n    __Vector3_0:
+    %UnityEngineVector3, null\n    __Single_1: %SystemSingle, null\n    __Vector3_1:
+    %UnityEngineVector3, null\n    __instance_9: %UnityEngineTransform, this\n   
+    __CollisionFlags_0: %UnityEngineCollisionFlags, null\n    __instance_A: %UnityEngineTransform,
+    this\n    __value_2: %UnityEngineVector3, null\n    __instance_B: %UnityEngineTransform,
+    this\n    characterController: %UnityEngineCharacterController, null\n    moveSpeed:
+    %SystemSingle, null\n    hitNameText: %TMProTextMeshProUGUI, null\n    characterControllerStartPos:
+    %UnityEngineTransform, this\n\n.data_end\n\n.code_start\n\n    .export _onControllerColliderHitPlayer\n   
+    \n    _onControllerColliderHitPlayer:\n    \n        PUSH, hitNameText\n       
+    PUSH, __instance_0\n        COPY\n        PUSH, onControllerColliderHitPlayerHit\n       
+    PUSH, __instance_2\n        COPY\n        PUSH, __instance_2\n        PUSH, __instance_1\n       
+    EXTERN, \"VRCSDK3ControllerColliderPlayerHit.__get_player__VRCSDKBaseVRCPlayerApi\"\n       
+    PUSH, __instance_1\n        PUSH, __value_0\n        EXTERN, \"VRCSDKBaseVRCPlayerApi.__get_displayName__SystemString\"\n       
+    PUSH, __instance_0\n        PUSH, __value_0\n        EXTERN, \"TMProTextMeshProUGUI.__set_text__SystemString__SystemVoid\"\n       
+    PUSH, __instance_3\n        PUSH, __eventName_0\n        EXTERN, \"VRCUdonCommonInterfacesIUdonEventReceiver.__SendCustomEvent__SystemString__SystemVoid\"\n       
+    JUMP, 0xFFFFFFFC\n    \n    .export _onControllerColliderHit\n    \n    _onControllerColliderHit:\n   
+    \n        PUSH, hitNameText\n        PUSH, __instance_4\n        COPY\n       
+    PUSH, onControllerColliderHitHit\n        PUSH, __instance_6\n        COPY\n       
+    PUSH, __instance_6\n        PUSH, __instance_5\n        EXTERN, \"UnityEngineControllerColliderHit.__get_gameObject__UnityEngineGameObject\"\n       
+    PUSH, __instance_5\n        PUSH, __value_1\n        EXTERN, \"UnityEngineGameObject.__get_name__SystemString\"\n       
+    PUSH, __instance_4\n        PUSH, __value_1\n        EXTERN, \"TMProTextMeshProUGUI.__set_text__SystemString__SystemVoid\"\n       
+    PUSH, __instance_7\n        PUSH, __eventName_1\n        EXTERN, \"VRCUdonCommonInterfacesIUdonEventReceiver.__SendCustomEvent__SystemString__SystemVoid\"\n       
+    JUMP, 0xFFFFFFFC\n    \n    .export _update\n    \n    _update:\n    \n       
+    PUSH, characterController\n        PUSH, __instance_8\n        COPY\n       
+    PUSH, __Single_0\n        EXTERN, \"UnityEngineTime.__get_deltaTime__SystemSingle\"\n       
+    PUSH, __instance_9\n        PUSH, __Vector3_1\n        EXTERN, \"UnityEngineTransform.__get_forward__UnityEngineVector3\"\n       
+    PUSH, moveSpeed\n        PUSH, __Vector3_1\n        PUSH, __Vector3_0\n       
+    EXTERN, \"UnityEngineVector3.__op_Multiply__SystemSingle_UnityEngineVector3__UnityEngineVector3\"\n       
+    PUSH, __Single_0\n        PUSH, __Vector3_0\n        PUSH, __motion_0\n       
+    EXTERN, \"UnityEngineVector3.__op_Multiply__SystemSingle_UnityEngineVector3__UnityEngineVector3\"\n       
+    PUSH, __instance_8\n        PUSH, __motion_0\n        PUSH, __CollisionFlags_0\n       
+    EXTERN, \"UnityEngineCharacterController.__Move__UnityEngineVector3__UnityEngineCollisionFlags\"\n       
+    JUMP, 0xFFFFFFFC\n    \n    .export _ResetCharacterController\n    \n    _ResetCharacterController:\n   
+    \n        PUSH, characterControllerStartPos\n        PUSH, __instance_B\n       
+    COPY\n        PUSH, __instance_B\n        PUSH, __value_2\n        EXTERN, \"UnityEngineTransform.__get_position__UnityEngineVector3\"\n       
+    PUSH, __instance_A\n        PUSH, __value_2\n        EXTERN, \"UnityEngineTransform.__set_position__UnityEngineVector3__SystemVoid\"\n       
+    JUMP, 0xFFFFFFFC\n    \n\n.code_end\n"
   assemblyError: 
   graphData:
     name: 
@@ -429,8 +425,5 @@ MonoBehaviour:
     uid: 5a4fc292-4859-4679-80f3-f97a796a7d04
     jsonData: '{"uid":"5a4fc292-4859-4679-80f3-f97a796a7d04","layout":{"serializedVersion":"2","x":640.0,"y":712.0,"width":757.0,"height":268.0},"containedElements":["f879f5d1-0287-4509-afb9-224289ce5c1d","f9314cd1-5cfd-4bf0-9fc1-70c8004b174b","2cf09254-8add-435e-bc9c-636f14bcab59","d63d949c-de7a-4eee-ba1d-cb14d703feff"],"title":"Reset
       Character Controller","layer":0,"elementTypeColor":{"r":0.0,"g":0.0,"b":0.0,"a":0.0}}'
-  viewTransform:
-    position: {x: 359, y: 437}
-    scale: 0.8695652
   version: 1.0.0
   showAssembly: 0
