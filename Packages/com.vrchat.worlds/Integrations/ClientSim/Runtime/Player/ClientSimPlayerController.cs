@@ -57,6 +57,8 @@ namespace VRC.SDK3.ClientSim
         private bool _menuIsOpen;
         private bool _mouseReleased;
 
+        private ClientSimSettings _settings;
+
         protected override void Awake()
         {
             base.Awake();
@@ -81,6 +83,7 @@ namespace VRC.SDK3.ClientSim
             _sceneManager = sceneManager;
             _trackingProvider = trackingProvider;
             _stationManager = stationManager;
+            _settings = ClientSimSettings.Instance;
 
             _cameraProxyObject = proxyProvider.CameraProxy().transform;
 
@@ -302,6 +305,8 @@ namespace VRC.SDK3.ClientSim
             Vector2 speed = GetSpeed();
             Vector2 input = _prevInput;
 
+            Debug.Log(_prevInput);
+
             if (!_stationManager.CanPlayerMove(input.magnitude))
             {
                 return;
@@ -387,33 +392,39 @@ namespace VRC.SDK3.ClientSim
 
         #region Input
 
-        public SteamVR_Action_Vector2 moveAction = SteamVR_Input.GetAction<SteamVR_Action_Vector2>("VRChat", "Move");
-        public SteamVR_Action_Vector2 rotateAction = SteamVR_Input.GetAction<SteamVR_Action_Vector2>("VRChat", "Rotate");
-        public SteamVR_Action_Boolean jumpAction = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("VRChat", "Jump");
+        private SteamVR_Action_Vector2 moveAction = SteamVR_Input.GetAction<SteamVR_Action_Vector2>("VRChat", "Move");
+        private SteamVR_Action_Vector2 rotateAction = SteamVR_Input.GetAction<SteamVR_Action_Vector2>("VRChat", "Rotate");
+        private SteamVR_Action_Boolean jumpAction = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("VRChat", "Jump");
 
         private void GetInput()
         {
+            if (_settings._enableVRMode)
+            {
+                GetSteamVRJumpInput();
+                GetSteamVRRotateView();
+            }
+
             GetMovementInput();
+
             if (_menuIsOpen && Mathf.Max(_prevInput.x, _prevInput.y) > 0)
             {
                 _input.SendToggleMenuEvent(true, HandType.RIGHT);
             }
             // Only allow these input actions while the menu is closed
-            //if (!_menuIsOpen)
+            if (!_menuIsOpen)
             {
-
-                    GetSteamVRMovementInput();
-                    SteamVRRotateView();
-
-                    GetMovementInput();
-                    RotateView();
-                
+                RotateView();
             }
         }
 
         private void GetMovementInput()
         {
             Vector2 input = _input.GetMovementAxes();
+            
+            if (_settings._enableVRMode)
+            {
+                input = moveAction.GetAxis(SteamVR_Input_Sources.LeftHand);
+            }
 
             if (input.sqrMagnitude > 1)
             {
@@ -424,18 +435,9 @@ namespace VRC.SDK3.ClientSim
             _prevInput = input;
         }
 
-        private void GetSteamVRMovementInput()
+        private void GetSteamVRJumpInput()
         {
-            Vector2 input = moveAction.GetAxis(SteamVR_Input_Sources.LeftHand);
-            Debug.Log(input);
-
-            if (input.sqrMagnitude > 1)
-            {
-                input.Normalize();
-            }
-
-            _directionChanged = (input.sqrMagnitude < 1e-3 ^ _prevInput.sqrMagnitude < 1e-3);
-            _prevInput = input;
+            _jump = jumpAction.GetStateDown(SteamVR_Input_Sources.RightHand);
         }
 
         // TODO Move rotation of the player controller to be done in the tracking provider and have the player controller
@@ -451,7 +453,7 @@ namespace VRC.SDK3.ClientSim
             }
         }
 
-        private void SteamVRRotateView()
+        private void GetSteamVRRotateView()
         {
             // Allow player controller to look left and right when not in a locked station and for desktop users
             // when the mouse is not released..
@@ -496,6 +498,8 @@ namespace VRC.SDK3.ClientSim
             Vector2 speed = new Vector2(
                 _isWalking ? _playerLocomotionData.GetWalkSpeed() : _playerLocomotionData.GetRunSpeed(),
                 _playerLocomotionData.GetStrafeSpeed());
+
+            if (_settings._enableVRMode) return speed;
 
             switch (_trackingProvider.GetPlayerStance())
             {
