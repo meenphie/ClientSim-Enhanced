@@ -1,6 +1,7 @@
 ﻿
 using System;
 using UnityEngine;
+using UnityEngine.XR;
 using Valve.VR;
 using VRC.SDKBase;
 using VRC.Udon.Common;
@@ -301,6 +302,7 @@ namespace VRC.SDK3.ClientSim
 
         private void FixedUpdate()
         {
+            //I dont know why its used for
             Physics.SyncTransforms();
             Vector2 speed = GetSpeed();
             Vector2 input = _prevInput;
@@ -392,9 +394,9 @@ namespace VRC.SDK3.ClientSim
 
         #region Input
 
-        private SteamVR_Action_Vector2 moveAction = SteamVR_Input.GetAction<SteamVR_Action_Vector2>("VRChat", "Move");
-        private SteamVR_Action_Vector2 rotateAction = SteamVR_Input.GetAction<SteamVR_Action_Vector2>("VRChat", "Rotate");
-        private SteamVR_Action_Boolean jumpAction = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("VRChat", "Jump");
+        public SteamVR_Action_Vector2 moveAction = SteamVR_Input.GetAction<SteamVR_Action_Vector2>("VRChat", "Move");
+        public SteamVR_Action_Vector2 rotateAction = SteamVR_Input.GetAction<SteamVR_Action_Vector2>("VRChat", "Rotate");
+        public SteamVR_Action_Boolean jumpAction = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("VRChat", "Jump");
 
         private void GetInput()
         {
@@ -411,20 +413,18 @@ namespace VRC.SDK3.ClientSim
                 _input.SendToggleMenuEvent(true, HandType.RIGHT);
             }
             // Only allow these input actions while the menu is closed
-            if (!_menuIsOpen)
+            //if (!_menuIsOpen)
             {
+                GetMovementInput();
+                GetSteamVRMovementInput();
                 RotateView();
+                SteamVRRotateView();
             }
         }
 
         private void GetMovementInput()
         {
             Vector2 input = _input.GetMovementAxes();
-            
-            if (_settings._enableVRMode)
-            {
-                input = moveAction.GetAxis(SteamVR_Input_Sources.LeftHand);
-            }
 
             if (input.sqrMagnitude > 1)
             {
@@ -435,9 +435,20 @@ namespace VRC.SDK3.ClientSim
             _prevInput = input;
         }
 
-        private void GetSteamVRJumpInput()
+
+
+        private void GetSteamVRMovementInput()
         {
-            _jump = jumpAction.GetStateDown(SteamVR_Input_Sources.RightHand);
+            Vector2 input = moveAction.GetAxis(SteamVR_Input_Sources.LeftHand);
+            Debug.Log(input);
+
+            if (input.sqrMagnitude > 1)
+            {
+                input.Normalize();
+            }
+
+            _directionChanged = (input.sqrMagnitude < 1e-3 ^ _prevInput.sqrMagnitude < 1e-3);
+            _prevInput = input;
         }
 
         // TODO Move rotation of the player controller to be done in the tracking provider and have the player controller
@@ -453,7 +464,7 @@ namespace VRC.SDK3.ClientSim
             }
         }
 
-        private void GetSteamVRRotateView()
+        private void SteamVRRotateView()
         {
             // Allow player controller to look left and right when not in a locked station and for desktop users
             // when the mouse is not released..
