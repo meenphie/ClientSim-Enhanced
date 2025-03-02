@@ -72,7 +72,7 @@ namespace VRC.Editor
         };
 
         private static bool _requestConfigureSettings = true;
-        
+
         static EnvConfig()
         {
             EditorApplication.update += EditorUpdate;
@@ -243,6 +243,7 @@ namespace VRC.Editor
             SetAudioSettings();
             SetPlayerSettings();
             SetVRSDKs(EditorUserBuildSettings.selectedBuildTargetGroup, new string[] { "None", "Oculus" });
+            SetTextureSettings();
         }
 
         internal static void EnableBatching(bool enable)
@@ -332,6 +333,7 @@ namespace VRC.Editor
                 }
                 
                 var assignedLoaders = new bool[loadersToAssign.Count];
+                var validLoaders = new bool[loadersToAssign.Count];
                 Array.Fill(assignedLoaders, false);
 
                 {
@@ -362,7 +364,8 @@ namespace VRC.Editor
                         if (loaderIndex != -1)
                         {
                             assignedLoaders[loaderIndex] = true;
-
+                            validLoaders[loaderIndex] = true;
+                            
                             if (loadersThatNeedsRestart.Contains(loader.loaderType) && 
                                 !XRPackageMetadataStore.IsLoaderAssigned(loader.loaderType, buildTargetGroup))
                             {
@@ -394,7 +397,8 @@ namespace VRC.Editor
 
                 for  (int i = 0; i < assignedLoaders.Length; ++i)
                 {
-                    if (!assignedLoaders[i])
+                    // Only create an error for loaders that are valid for the particular platform
+                    if (!assignedLoaders[i] && validLoaders[i])
                     {
                         VRC.Core.Logger.LogError($"Failed to assign loader '{loadersToAssign[i]}'. Ensure the plugin is configured for the project correctly.");
 
@@ -434,6 +438,17 @@ namespace VRC.Editor
             }
             
             return false;
+        }
+
+        private static void SetTextureSettings()
+        {
+            // We only force-apply this setting outside of mobile targets to avoid a sudden texture reimport without user consent
+            if (EditorUserBuildSettings.activeBuildTarget != BuildTarget.Android &&
+                EditorUserBuildSettings.androidBuildSubtarget != MobileTextureSubtarget.ASTC)
+            {
+                EditorUserBuildSettings.androidBuildSubtarget = MobileTextureSubtarget.ASTC;
+            }
+            
         }
 
         private static void RequestRestart(string loader)
@@ -1211,6 +1226,20 @@ namespace VRC.Editor
                 defines.Remove("VRC_SDK_VRCSDK3");
             }
 
+            // TODO remove once player persistence is enabled by default
+            if(assemblies.Any(assembly => assembly.GetType("VRC.SDK3.ClientSim.Persistence.ClientSimPlayerDataStorage") != null))
+            {
+                if(!defines.Contains("VRC_ENABLE_PLAYER_PERSISTENCE", StringComparer.OrdinalIgnoreCase))
+                {
+                    defines.Add("VRC_ENABLE_PLAYER_PERSISTENCE");
+                    definesChanged = true;
+                }
+            }
+            else if(defines.Contains("VRC_ENABLE_PLAYER_PERSISTENCE"))
+            {
+                defines.Remove("VRC_ENABLE_PLAYER_PERSISTENCE");
+            }
+            
             if(definesChanged)
             {
                 PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, string.Join(";", defines.ToArray()));

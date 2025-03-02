@@ -388,10 +388,14 @@ namespace VRC.SDK3.ClientSim
 
         private void GetInput()
         {
+            GetMovementInput();
+            if (_menuIsOpen && Mathf.Max(_prevInput.x, _prevInput.y) > 0)
+            {
+                _input.SendToggleMenuEvent(true, HandType.RIGHT);
+            }
             // Only allow these input actions while the menu is closed
             if (!_menuIsOpen)
             {
-                GetMovementInput();
                 RotateView();
             }
         }

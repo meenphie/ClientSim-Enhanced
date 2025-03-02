@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 using VRC.Core;
+using VRC.SDKBase;
 using VRC.SDKBase.Editor;
 
 // This file handles the Settings tab of the SDK Panel
@@ -50,28 +49,39 @@ public partial class VRCSdkControlPanel : EditorWindow
             if (enableLogging != isLoggingEnabled)
             {
                 if (enableLogging)
-                    VRC.Core.Logger.AddDebugLevel(DebugLevel.API);
+                    VRC.Core.Logger.EnableCategory(DebugLevel.API);
                 else
-                    VRC.Core.Logger.RemoveDebugLevel(DebugLevel.API);
+                    VRC.Core.Logger.DisableCategory(DebugLevel.API);
 
                 UnityEditor.EditorPrefs.SetBool("apiLoggingEnabled", enableLogging);
             }
         }
 
+        // Dry Builds
+        if (APIUser.CurrentUser != null && APIUser.CurrentUser.hasSuperPowers) {
+            var newDryRun = EditorGUILayout.ToggleLeft(new GUIContent("Dry Run Builds", "This will skip actual builds and uploads and instead pass as if they succeeded"), VRC_EditorTools.DryRunState);
+            if (newDryRun != VRC_EditorTools.DryRunState)
+            {
+                VRC_EditorTools.DryRunState = newDryRun;
+            }
+        }
+
+        EditorGUILayout.Space();
+
         // DPID based mipmap generation
-        bool prevDpidMipmaps = VRCSettings.DpidMipmaps;
+        bool prevDpidMipmaps = VRCPackageSettings.Instance.dpidMipmaps;
         GUIContent dpidContent = new GUIContent("Override Kaiser mipmapping with Detail-Preserving Image Downscaling (BETA)", 
                 "Use a state of the art algorithm (DPID) for mipmap generation when Kaiser is selected. This can improve the quality of mipmaps.");
-        VRCSettings.DpidMipmaps = EditorGUILayout.ToggleLeft(dpidContent, VRCSettings.DpidMipmaps);
+        VRCPackageSettings.Instance.dpidMipmaps = EditorGUILayout.ToggleLeft(dpidContent, VRCPackageSettings.Instance.dpidMipmaps);
 
-        bool prevDpidConservative = VRCSettings.DpidConservative;
+        bool prevDpidConservative = VRCPackageSettings.Instance.dpidConservative;
         GUIContent dpidConservativeContent = new GUIContent("Use conservative settings for DPID mipmapping", 
                 "Use conservative settings for DPID mipmapping. This can avoid issues with over-emphasis of details.");
-        VRCSettings.DpidConservative = EditorGUILayout.ToggleLeft(dpidConservativeContent, VRCSettings.DpidConservative);
+        VRCPackageSettings.Instance.dpidConservative = EditorGUILayout.ToggleLeft(dpidConservativeContent, VRCPackageSettings.Instance.dpidConservative);
         
         // When DPID setting changed, mark all textures as dirty
-        if (VRCSettings.DpidMipmaps != prevDpidMipmaps || 
-                (VRCSettings.DpidMipmaps && VRCSettings.DpidConservative != prevDpidConservative))
+        if (VRCPackageSettings.Instance.dpidMipmaps != prevDpidMipmaps || 
+                (VRCPackageSettings.Instance.dpidMipmaps && VRCPackageSettings.Instance.dpidConservative != prevDpidConservative))
         {
             VRC.Core.Logger.Log("DPID mipmaps setting changed, marking all textures as dirty");
             string[] guids = AssetDatabase.FindAssets("t:Texture");
@@ -84,8 +94,23 @@ public partial class VRCSdkControlPanel : EditorWindow
                     importer.SaveAndReimport();
                 }
             }
+
+            VRCPackageSettings.Instance.Save();
         }
         
+        EditorGUILayout.Space();
+
+        // Running VRChat constraints in edit mode
+        bool prevVrcConstraintsInEditMode = VRCSettings.VrcConstraintsInEditMode;
+        GUIContent vrcConstraintsInEditModeContent = new GUIContent("Execute VRChat Constraints in Edit Mode", 
+            "Allow VRChat Constraints to run while Unity is in Edit mode.");
+        VRCSettings.VrcConstraintsInEditMode = EditorGUILayout.ToggleLeft(vrcConstraintsInEditModeContent, prevVrcConstraintsInEditMode);
+
+        if (VRCSettings.VrcConstraintsInEditMode != prevVrcConstraintsInEditMode)
+        {
+            VRC.Dynamics.VRCConstraintManager.CanExecuteConstraintJobsInEditMode = VRCSettings.VrcConstraintsInEditMode;
+        }
+
         EditorGUILayout.EndVertical();
 
         EditorGUILayout.Separator();
@@ -107,9 +132,9 @@ public partial class VRCSdkControlPanel : EditorWindow
                 if (enableLogging != isLoggingEnabled)
                 {
                     if (enableLogging)
-                        VRC.Core.Logger.AddDebugLevel(DebugLevel.All);
+                        VRC.Core.Logger.EnableCategory(DebugLevel.All);
                     else
-                        VRC.Core.Logger.RemoveDebugLevel(DebugLevel.All);
+                        VRC.Core.Logger.DisableCategory(DebugLevel.All);
 
                     UnityEditor.EditorPrefs.SetBool("allLoggingEnabled", enableLogging);
                 }

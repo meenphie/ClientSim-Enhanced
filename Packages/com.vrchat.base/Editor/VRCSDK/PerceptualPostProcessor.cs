@@ -44,7 +44,7 @@ public class PerceptualPostProcessor : AssetPostprocessor
 {
     void OnPostprocessTexture(Texture2D texture)
     {
-        if (!VRCSettings.DpidMipmaps)
+        if (!VRCPackageSettings.Instance.dpidMipmaps)
             return;
         TextureImporter textureImporter = (TextureImporter)assetImporter;
         // Skip for Box filtered textures
@@ -82,8 +82,7 @@ public class PerceptualPostProcessor : AssetPostprocessor
             fullTexture = texture;
         }
 
-
-        DPIDMipmapper.GenerateDPIDMipmaps(fullTexture, texture, alphaIsTransparency, textureImporter.sRGBTexture, conservative: VRCSettings.DpidConservative, inPlace: !fromFile, normalMap: normalMap);
+        DPIDMipmapper.GenerateDPIDMipmaps(fullTexture, texture, alphaIsTransparency, textureImporter.sRGBTexture, conservative: VRCPackageSettings.Instance.dpidConservative, inPlace: !fromFile, normalMap: normalMap);
         if (!DPIDMipmapper.ComputeShaderReady)
         {
             textureImporter.SaveAndReimport();

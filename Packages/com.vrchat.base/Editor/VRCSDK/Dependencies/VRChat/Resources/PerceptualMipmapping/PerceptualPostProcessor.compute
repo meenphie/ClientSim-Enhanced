@@ -46,7 +46,6 @@
 #define THREADS 64
 #define USE_WARP_REDUCTION 1
 #define FLT_EPS 1.192092896e-07
-#define FLT_EPS_NORM_MAX 2.384185792e-7 // sqrt((FLT_EPS * FLT_EPS) * 4)
 //#define DEBUG_GUIDANCE 1
 //#define DEBUG_INVERT 1
 //#define DEBUG_BOXBLUR 1
@@ -62,6 +61,7 @@ RWTexture2D<unorm float4> _Output;
 // For summation
 groupshared float4 colorResultBuffer[THREADS]; // Output buffer where the results will be written
 groupshared float factorResultBuffer[THREADS]; // Output buffer where the results will be written
+groupshared float factorAlphaResultBuffer[THREADS]; // Output buffer where the results will be written
 
 uint oWidth;
 uint oHeight;
@@ -70,6 +70,7 @@ uint iHeight;
 float pWidth;
 float pHeight;
 float lambda;
+// Desired behavior for alpha handling is that, for example, a pure-white-on-black linear RGB star will end up the same as a pure alpha-on-transparent star
 bool premultiplyAlpha;
 bool sRGB;
 bool normalMap;
@@ -78,13 +79,47 @@ struct ColorFactor
 {
     float4 color;
     float factor;
+    float factorAlpha;
 };
 
 // Helper functions
-inline void normalize(inout ColorFactor var)
+inline void normalize(inout ColorFactor var, float4 fallbackColor)
 {
-    var.color /= var.factor;
-    var.factor = 1.0f;
+    if (!premultiplyAlpha)
+    {
+        if (var.factor < FLT_EPS)
+        {
+            var.color = fallbackColor;
+        }
+        else
+        {
+            var.color /= var.factor;
+        }
+    }
+    else
+    {
+        // Edge case where we have a single transparent pixel for 4 inputs, 
+        // results in the non-transparent color becoming dominant.
+        // Then when we try and get contributions, it ends up re-emphasizing the hidden ones
+        if (var.factor < FLT_EPS)
+        {
+            var.color.rgb = fallbackColor.rgb;
+        }
+        else
+        {
+            var.color.rgb /= var.factor;
+        }
+
+        if (var.factorAlpha < FLT_EPS)
+        {
+            var.color.a = fallbackColor.a;
+        }
+        else
+        {
+            var.color.a /= var.factorAlpha;
+        }
+    }
+    var.factor = var.factorAlpha = 1.0f;
 }
 
 inline float3 LinearToSRGB(float3 color)
@@ -106,11 +141,12 @@ inline float3 SRGBToLinear(float3 color)
 }
 
 // Sum up everything within our one group
-void WarpReduce(inout float4 value, inout float factor, uint indexInGroup)
+void WarpReduce(inout float4 value, inout float factor, inout float factorAlpha, uint indexInGroup)
 {
     // Store the value in global buffer
     colorResultBuffer[indexInGroup] = value;
     factorResultBuffer[indexInGroup] = factor;
+    factorAlphaResultBuffer[indexInGroup] = factorAlpha;
 
     // Synchronize to ensure all values are written
     GroupMemoryBarrierWithGroupSync();
@@ -121,6 +157,7 @@ void WarpReduce(inout float4 value, inout float factor, uint indexInGroup)
         // A coyote informed me that lanes can get out-of-order reads on some hardware
         float4 c = colorResultBuffer[indexInGroup + stride];
         float f = factorResultBuffer[indexInGroup + stride];
+        float fa = factorAlphaResultBuffer[indexInGroup + stride];
 
         GroupMemoryBarrierWithGroupSync();
 
@@ -128,6 +165,7 @@ void WarpReduce(inout float4 value, inout float factor, uint indexInGroup)
         {
             colorResultBuffer[indexInGroup] += c;
             factorResultBuffer[indexInGroup] += f;
+            factorAlphaResultBuffer[indexInGroup] += fa;
         }
         
         GroupMemoryBarrierWithGroupSync();
@@ -136,15 +174,28 @@ void WarpReduce(inout float4 value, inout float factor, uint indexInGroup)
     // Return the reduced sum for this warp
     value = colorResultBuffer[0];
     factor = factorResultBuffer[0];
+    factorAlpha = factorAlphaResultBuffer[0];
 }
 
-inline void add(inout ColorFactor var, float4 color, float factor)
+inline void add(inout ColorFactor var, float4 color, float factorColor, float factorAlpha)
 {
-    var.color += color * factor;
-    var.factor += factor;
+    // Without the 'max' term here, normalizing produces invalid results
+    if (!premultiplyAlpha)
+    {
+        var.color += color * factorColor;
+        var.factor += factorColor;
+    }
+    else
+    {
+        float premultFactor = factorColor * color.a;
+        var.color.rgb += color.rgb * premultFactor;
+        var.color.a += factorAlpha * color.a;
+        var.factor += premultFactor;
+    }
+    var.factorAlpha += factorAlpha;
 }
 
-inline float calclambda(float dist, float lambdaValue)
+inline float applyLambda(float dist, float lambdaValue)
 {
     if (lambdaValue == 0.0f)
         return 1.0f;
@@ -154,9 +205,10 @@ inline float calclambda(float dist, float lambdaValue)
     return pow(dist, lambdaValue);
 }
 
-inline float contribution(float2 max_f, float2 min_f, uint x, uint y, float f)
+inline float contribution(float2 max_f, float2 min_f, uint x, uint y)
 {
-    float fx = (float)x, fy = (float)y;
+    float f = 1.0f;
+    float fx = (float)x, fy = (float)y;  
     if (fx < max_f.x) f *= 1.0f - (max_f.x - fx);
     if ((fx + 1.0f) > min_f.x) f *= 1.0f - ((fx + 1.0f) - min_f.x);
     if (fy < max_f.y) f *= 1.0f - (max_f.y - fy);
@@ -170,11 +222,23 @@ inline float distance(float4 avg, float4 color)
     return length(diff) / 2.0f; // sqrt(2)
 }
 
+inline float distance(float3 avg, float3 color)
+{
+    float3 diff = avg - color;
+    return length(diff) / sqrt(3.0f); // sqrt(2)
+}
+
+inline float distance(float avg, float color)
+{
+    return abs(avg - color);
+}
+
+// Same as add but does optional srgb conversion
 inline void addBoxBlur(inout ColorFactor var, float4 color, float factor)
 {
     if (sRGB)
         color.rgb = SRGBToLinear(color.rgb);
-    add(var, color, max(premultiplyAlpha ? factor * color.a : factor, FLT_EPS));
+    add(var, color, factor, factor);
 }
 
 #if defined(DPID_SAMPLING)
@@ -184,7 +248,7 @@ float4 BoxBlurSample(uint PX, uint PY) {
 	const float center	= 4.0;
 
 	// calculate average color
-        ColorFactor avg = { float4(0, 0, 0, 0), 0.0f };
+        ColorFactor avg = { float4(0, 0, 0, 0), 0.0f, 0.0f };
 
 	// TOP
 	if(PY > 0) {
@@ -219,7 +283,7 @@ float4 BoxBlurSample(uint PX, uint PY) {
 			addBoxBlur(avg, _Guidance[int2(PX + 1, PY + 1)], corner);
 	}
 
-        normalize(avg);
+        normalize(avg, avg.color);
 	return avg.color;
 }
 #endif
@@ -243,9 +307,11 @@ void Downsampling(uint3 id, uint3 gid, uint gtid)
 
 #if defined(DPID_SAMPLING)
     float4 avg = BoxBlurSample(PX, PY); 
+#else
+    float4 avg = float4(1, 0, 1, 1);
 #endif
 
-    ColorFactor color = { float4(0, 0, 0, 0), 0.0f };
+    ColorFactor color = { float4(0, 0, 0, 0), 0.0f, 0.0f };
 #if USE_WARP_REDUCTION
     for (uint i = indexInGroup; i < pixelCount; i += THREADS) 
 #else
@@ -259,38 +325,38 @@ void Downsampling(uint3 id, uint3 gid, uint gtid)
             pixel.ba = 1.0f;
 
 #if defined(DPID_SAMPLING)
-        float f = distance(avg, pixel);
-        f = calclambda(f, lambda);
-        // Without the 'max' term here, normalizing produces invalid results
-        f = contribution(max_f, min_f, x, y, max(premultiplyAlpha ? f * pixel.a : f, FLT_EPS));
+        float f_c = 0.0f, f_a = 0.0f; 
+        if (premultiplyAlpha)
+        {
+            f_c = distance(avg.rgb, pixel.rgb);
+            f_a = distance(avg.a, pixel.a);
+        }
+        else
+        {
+            f_c = f_a = distance(avg, pixel);
+        }
+        f_c = applyLambda(f_c, lambda);
+        f_a = applyLambda(f_a, lambda);
+        float contrib = contribution(max_f, min_f, x, y);
+        f_c *= contrib;
+        f_a *= contrib;
 #elif defined(GUIDANCE_SAMPLING)
-        // Without the 'max' term here, normalizing produces invalid results
-        float f = contribution(max_f, min_f, x, y, premultiplyAlpha ? max(pixel.a, FLT_EPS) : 1.0f);
+        float contrib = contribution(max_f, min_f, x, y);
+        float f_c = contrib, f_a = contrib;
 #endif
 
         bool b = (PX >= oWidth || PY >= oHeight);
-        add(color, pixel, b ? 0.0f : f);
+        add(color, pixel, b ? 0.0f : f_c, b ? 0.0f : f_a);
     }
 #if USE_WARP_REDUCTION
-    WarpReduce(color.color, color.factor, indexInGroup);
+    WarpReduce(color.color, color.factor, color.factorAlpha, indexInGroup);
 #endif
     if (PX >= oWidth || PY >= oHeight)
         return;
 
     if (indexInGroup == 0)
     {
-#if defined(DPID_SAMPLING)
-        // Edge case where we have a single transparent pixel for 4 inputs, 
-        // results in the non-transparent color becoming dominant.
-        // Then when we try and get contributions, it ends up re-emphasizing the hidden ones
-        if (color.factor <= FLT_EPS_NORM_MAX * 2)
-        {
-            color.color = avg;
-            color.factor = 1.0f;
-        }
-#endif
-
-        normalize(color);
+        normalize(color, avg);
 #ifdef DEBUG_INVERT
         color.color.xyz = 1 - color.color.xyz;
 #endif

@@ -11,8 +11,9 @@ namespace VRC.SDKBase.Editor.Elements
 
         public new class UxmlTraits : TextField.UxmlTraits
         {
-            private readonly UxmlStringAttributeDescription _placeholder = new UxmlStringAttributeDescription { name = "placeholder" };
-            private readonly UxmlBoolAttributeDescription _required = new UxmlBoolAttributeDescription { name = "required" };
+            private readonly UxmlStringAttributeDescription _placeholder = new() { name = "placeholder" };
+            private readonly UxmlBoolAttributeDescription _required = new() { name = "required" };
+            private readonly UxmlBoolAttributeDescription _vertical = new() { name="vertical" };
             
             public override IEnumerable<UxmlChildElementDescription> uxmlChildElementsDescription
             {
@@ -25,13 +26,23 @@ namespace VRC.SDKBase.Editor.Elements
                 var textField = (VRCTextField) ve;
                 textField._placeholder = _placeholder.GetValueFromBag(bag, cc);
                 textField._required = _required.GetValueFromBag(bag, cc);
+                var vertical = _vertical.GetValueFromBag(bag, cc);
+                if (textField._required)
+                {
+                    textField.label += "*";
+                }
+                if (vertical)
+                {
+                    textField.AddToClassList("col");
+                }
             }
         }
 
         private string _placeholder;
-        private static readonly string PlaceholderClass = TextField.ussClassName + "__placeholder";
+        private static readonly string PlaceholderClass = ussClassName + "__placeholder";
         private bool _required;
         private bool _loading;
+        private bool _vertical;
 
         public bool Loading
         {

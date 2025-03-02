@@ -441,14 +441,14 @@ namespace VRC.SDKBase.Editor.Api {
                 "canPublish");
         }
         
-        public static async Task<VRCWorld> PublishWorld(string id, CancellationToken cancellationToken = default)
+        public static async Task<JObject> PublishWorld(string id, CancellationToken cancellationToken = default)
         {
-            return await Put<VRCWorld>($"worlds/{id}/publish", cancellationToken: cancellationToken);
+            return await Put<JObject>($"worlds/{id}/publish", cancellationToken: cancellationToken);
         }
         
-        public static async Task<VRCWorld> UnpublishWorld(string id, CancellationToken cancellationToken = default)
+        public static async Task<JObject> UnpublishWorld(string id, CancellationToken cancellationToken = default)
         {
-            return await Delete<VRCWorld>($"worlds/{id}/unpublish", cancellationToken: cancellationToken);
+            return await Delete<JObject>($"worlds/{id}/publish", cancellationToken: cancellationToken);
         }
         
         [PublicAPI]
@@ -746,7 +746,7 @@ namespace VRC.SDKBase.Editor.Api {
             // This setting often gets cleared on assembly reload, so we re-enable it here
             if (UnityEditor.EditorPrefs.GetBool("apiLoggingEnabled"))
             {
-                Core.Logger.AddDebugLevel(DebugLevel.API);
+                Core.Logger.EnableCategory(DebugLevel.API);
             }
             
             var extension = Path.GetExtension(filename);

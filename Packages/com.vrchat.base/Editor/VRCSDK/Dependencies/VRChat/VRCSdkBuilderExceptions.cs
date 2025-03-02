@@ -73,4 +73,14 @@ namespace VRC.SDKBase.Editor
         {
         }
     }
+    
+    /// <summary>
+    /// This bundle has already been uploaded
+    /// </summary>
+    public class BundleExistsException : Exception
+    {
+        public BundleExistsException(string message) : base(message)
+        {
+        }
+    }
 }

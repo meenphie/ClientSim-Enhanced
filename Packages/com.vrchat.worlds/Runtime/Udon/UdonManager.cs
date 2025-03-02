@@ -40,6 +40,8 @@ namespace VRC.Udon
 
         public UdonBehaviour currentlyExecuting;
 
+        public bool HasLoaded { get; private set; } = false;
+        
         #region Singleton
 
         private static UdonManager _instance;
@@ -126,20 +128,30 @@ namespace VRC.Udon
 
         [PublicAPI]
         public const string UDON_EVENT_ONPLAYERRESPAWN = "_onPlayerRespawn";
-
+        
         [PublicAPI]
         public const string UDON_EVENT_ONPLAYERDATAUPDATED = "_onPlayerDataUpdated";
-
+        
+        [PublicAPI]
+        public const string UDON_EVENT_ONPLAYERRESTORED = "_onPlayerRestored";
+        
+        [PublicAPI]
+        public const string UDON_EVENT_ONINSTANCERESTORED = "_onInstanceRestored";
+        
         [PublicAPI]
         public const string UDON_EVENT_ONDESERIALIZATION = "_onDeserialization";
-
-        [PublicAPI]
-        public const string UDON_EVENT_ONOBJECTRESTORED = "_onObjectRestored";
-
+        
         [PublicAPI]
         public const string UDON_EVENT_ONSCREENUPDATE = "_onScreenUpdate";
         
         private const int UDON_MAX_RUNPROGRAM_DEPTH = 1000;
+
+        [PublicAPI]
+        public const string UDON_EVENT_ONPOSTSERIALIZATION = "_onPostSerialization";
+
+        [PublicAPI]
+        public const string UDON_EVENT_ONPRESERIALIZATION = "_onPreSerialization";
+        
 
         #region Input Actions and Axes
 
@@ -180,7 +192,7 @@ namespace VRC.Udon
 
         [PublicAPI]
         public const string UDON_LOOK_HORIZONTAL = "_inputLookHorizontal";
-        
+
         [PublicAPI]
         public const string UDON_EVENT_ONINPUTMETHODCHANGED = "_onInputMethodChanged";
 
@@ -189,6 +201,9 @@ namespace VRC.Udon
         
         #endregion
 
+        [PublicAPI]
+        public const string UDON_EVENT_ONVRCPLUSMASSGIFT = "_onVRCPlusMassGift";
+        
         #endregion
 
         private readonly IUdonClientInterface _udonClientInterface = new UdonClientInterface();
@@ -221,6 +236,8 @@ namespace VRC.Udon
                     }
                 }
             }
+            
+            udonManager.HasLoaded = true;
         }
         #endif
 
@@ -237,7 +254,7 @@ namespace VRC.Udon
         public int SignatureVerificationSkipped => _signatureVerificationSkipped;
 
         public bool SignatureVerificationEnabled { get; private set; }
-        private VRCFastCrypto.VerifyKey _signatureVerificationKey;
+        private VRCFastCrypto_Client.VerifyKey _signatureVerificationKey;
 
         // used as thread-safe HashSet for signature holders, since we loop behaviours but verify programs
         private readonly ConcurrentDictionary<IUdonSignatureHolder, byte> _verificationCache = new();
@@ -255,7 +272,7 @@ namespace VRC.Udon
         public void EnableSignatureVerification(byte[] key)
         {
             SignatureVerificationEnabled = true;
-            _signatureVerificationKey = new VRCFastCrypto.VerifyKey(key);
+            _signatureVerificationKey = new VRCFastCrypto_Client.VerifyKey(key);
         }
 
         #endif
@@ -698,8 +715,8 @@ namespace VRC.Udon
             {
                 var data = signatureHolder.SignedData;
                 var signature = signatureHolder.Signature;
-                var result = VRCFastCrypto.VerifyMessage(_signatureVerificationKey, data, signature);
-                if (result is VRCFastCrypto.LibResult.Success)
+                var result = VRCFastCrypto_Client.VerifyMessage(_signatureVerificationKey, data, signature);
+                if (result is VRCFastCrypto_Client.LibResult.Success)
                     Interlocked.Increment(ref _signatureVerificationSuccess);
                 else
                     Interlocked.Increment(ref _signatureVerificationFailed);
@@ -927,7 +944,7 @@ namespace VRC.Udon
 
             udonBehaviour.InitializeUdonContent();
         }
-
+        
         [PublicAPI]
         public void UnregisterUdonBehaviour(UdonBehaviour udonBehaviour)
         {
@@ -1004,7 +1021,7 @@ namespace VRC.Udon
         public void RunEvent<T0>(string eventName, (string symbolName, T0 value) parameter0)
         {
             _isRunningEvent = true;
-            foreach(Dictionary<GameObject, HashSet<UdonBehaviour>> sceneUdonBehaviourDirectory in 
+            foreach(Dictionary<GameObject, HashSet<UdonBehaviour>> sceneUdonBehaviourDirectory in
                 _sceneUdonBehaviourDirectories.Values)
             {
                 foreach(HashSet<UdonBehaviour> udonBehaviourList in sceneUdonBehaviourDirectory.Values)

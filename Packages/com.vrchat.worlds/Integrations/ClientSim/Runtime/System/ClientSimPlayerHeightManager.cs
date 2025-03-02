@@ -35,7 +35,7 @@ namespace VRC.SDK3.ClientSim
         
         public void Dispose()
         {
-            eventDispatcher.Unsubscribe<ClientSimOnPlayerJoinedEvent>(OnPlayerJoined);
+            eventDispatcher?.Unsubscribe<ClientSimOnPlayerJoinedEvent>(OnPlayerJoined);
 
             eventDispatcher = null;
             udonEventSender = null;
@@ -46,7 +46,7 @@ namespace VRC.SDK3.ClientSim
             udonEventSender.RunEvent("_onAvatarChanged", ("player", joinEvent.player));
             udonEventSender.RunEvent("_onAvatarEyeHeightChanged",
                 ("player", joinEvent.player),
-                ("prevEyeHeightAsMeters", 0));
+                ("prevEyeHeightAsMeters", 0f));
         }
         
         public bool GetManualAvatarScalingAllowed() => manualScalingAllowed;

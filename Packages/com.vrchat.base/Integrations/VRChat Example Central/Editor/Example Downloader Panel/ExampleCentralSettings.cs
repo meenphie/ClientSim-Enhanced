@@ -57,29 +57,10 @@ namespace VRC.ExampleCentral.Window
                         }
                     });
                     container.Add(showCEField);
-                    
-                    var showPersistenceField = new Toggle("Show Persistence Examples")
-                    {
-                        value = settings.ShowPersistencePackages,
-                        name = "show-persistence-packages-field"
-                    };
-                    showPersistenceField.RegisterValueChangedCallback(evt =>
-                    {
-                        settings.ShowPersistencePackages = evt.newValue;
-                        settings.Save();
-
-                        var existingExampleCentralWindows = Resources.FindObjectsOfTypeAll<ExampleDownloaderPanel>();
-                        if (existingExampleCentralWindows.Length > 0)
-                        {
-                            var target = existingExampleCentralWindows[0];
-                            target.Refresh();
-                        }
-                    });
-                    container.Add(showPersistenceField);
                 },
 
                 // Populate the search keywords to enable smart search filtering and label highlighting
-                keywords = new[] { "example", "central", "vrchat", "show creator economy examples", "show persistence examples" }
+                keywords = new[] { "example", "central", "vrchat", "show creator economy examples" }
             };
 
             return provider;
@@ -96,8 +77,6 @@ namespace VRC.ExampleCentral.Window
         {
             public bool ShowEconomyPackages;
 
-            public bool ShowPersistencePackages;
-
             private static Data _data;
 
             public static Data Instance
@@ -111,7 +90,6 @@ namespace VRC.ExampleCentral.Window
                         
                         // Set properties from EditorPrefs
                         _data.ShowEconomyPackages = EditorPrefs.GetBool(nameof(ShowEconomyPackages));
-                        _data.ShowPersistencePackages = EditorPrefs.GetBool(nameof(ShowPersistencePackages));
                     }
                     return _data;
                 }
@@ -120,7 +98,6 @@ namespace VRC.ExampleCentral.Window
             public void Save()
             {
                 EditorPrefs.SetBool(nameof(ShowEconomyPackages), ShowEconomyPackages);
-                EditorPrefs.SetBool(nameof(ShowPersistencePackages), ShowPersistencePackages);
             }
         }
     }
