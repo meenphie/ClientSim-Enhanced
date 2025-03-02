@@ -48,7 +48,7 @@ namespace VRC.SDKBase.Validation
             "UnityEngine.Camera",
             "UnityEngine.AudioSource",
             "ONSPAudioSource",
-            #endif
+            #endif // UNITY_STANDALONE
             #if !VRC_CLIENT
             "VRC.Core.PipelineSaver",
             #endif

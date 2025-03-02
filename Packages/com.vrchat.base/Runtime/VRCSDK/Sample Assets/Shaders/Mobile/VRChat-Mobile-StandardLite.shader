@@ -149,7 +149,7 @@
             o.Smoothness = metallicGlossMap.a * _Glossiness;
 
             // Occlusion is sampled from the Green channel to match up with Standard. Can be packed to Metallic if you insert it into multiple slots.
-            o.Occlusion = UNITY_SAMPLE_TEX2D(_OcclusionMap, IN.texcoord0).g * _OcclusionStrength;
+            o.Occlusion = LerpOneTo(UNITY_SAMPLE_TEX2D(_OcclusionMap, IN.texcoord0).g, _OcclusionStrength);
 
             // only takes into account directional lights, so only use if using noforwardadd!
             float dx0 = ddx(IN.texcoord0);

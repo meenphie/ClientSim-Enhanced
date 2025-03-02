@@ -249,7 +249,7 @@ inline half ComputeSpecularGGX(half3 nL1, half3 viewDir, half3 normalWorld, half
 
 #ifdef _MONOSH
 // MonoSH by Bakery Lightmapper https://assetstore.unity.com/packages/tools/level-design/bakery-gpu-lightmapper-122218
-inline void BakeryMonoSH(out half3 diffuseColor, out half3 specularContrib, float2 lmUV, half3 normalWorld, half3 viewDir, half smoothness)
+inline void BakeryMonoSH(out half3 diffuseColor, out half3 specularContrib, float2 lmUV, half3 normalWorld, half3 viewDir, half smoothness, half occlusion)
 {
     half3 dominantDir = MAYBE_BICUBIC_SAMPLE(unity_LightmapInd, samplerunity_Lightmap, lmUV).xyz;;
     half3 L0 = DecodeLightmap(MAYBE_BICUBIC_SAMPLE(unity_Lightmap, samplerunity_Lightmap, lmUV));
@@ -275,6 +275,10 @@ inline void BakeryMonoSH(out half3 diffuseColor, out half3 specularContrib, floa
         sh = L0 + mul(nL1, L1);
 
         specularContrib = max(specularTerm * sh, 0.0);
+
+        // Reflection Probes use occlusion, direct lights don't. MonoSH and Specular Hack are both somewhere in between,
+        // so we use focus to split the difference - 1.0 is direct, 0.0 is reflection probe, so we invert.
+        specularContrib *= LerpOneTo(occlusion, 1 - focus);
     #else
         specularContrib = 0;
     #endif
@@ -298,7 +302,7 @@ inline UnityGI UnityGI_BaseVRC(UnityGIInput data, half occlusion, half3 normalWo
 
     #if defined(LIGHTMAP_ON)
         #ifdef _MONOSH
-            BakeryMonoSH(o_gi.indirect.diffuse, o_gi.indirect.specular, data.lightmapUV.xy, normalWorld, eyeVec, smoothness);
+            BakeryMonoSH(o_gi.indirect.diffuse, o_gi.indirect.specular, data.lightmapUV.xy, normalWorld, eyeVec, smoothness, occlusion);
         #else
             // Baked lightmaps
             half4 bakedColorTex = UNITY_SAMPLE_TEX2D(unity_Lightmap, data.lightmapUV.xy);
@@ -346,8 +350,12 @@ inline UnityGI UnityGI_BaseVRC(UnityGIInput data, half occlusion, half3 normalWo
                 // a dimensionless version, shEvaluateDiffuseL1Geometrics but applied to just the ratio.
                 half energyFactor = shEvaluateDiffuseL1Normalized(dot(L0rgb, 1), L1, normalWorld);
                 half3 sh = (L0rgb + mul(dominantDir, L1rgb)) * energyFactor;
-        
+                    
                 o_gi.indirect.specular = max(specularTerm * sh, 0.0); 
+
+                // Reflection Probes use occlusion, direct lights don't. MonoSH and Specular Hack are both somewhere in between,
+                // so we use focus to split the difference - 1.0 is direct, 0.0 is reflection probe, so we invert.
+                o_gi.indirect.specular *= LerpOneTo(occlusion, 1 - focus);
             }
             else
             {

@@ -142,7 +142,7 @@ namespace UdonSharpEditor
             }
         }
 
-        private const string MATCH_STR = "\\n\\n\\r\\n\\d{4}.\\d{2}.\\d{2} \\d{2}:\\d{2}:\\d{2} ";
+        private const string MATCH_STR = "\\r\\n\\d{4}.\\d{2}.\\d{2} \\d{2}:\\d{2}:\\d{2} ";
         private static Regex _lineMatch;
 
         private static void OnEditorUpdate()
@@ -380,7 +380,7 @@ namespace UdonSharpEditor
 
             string playerName = state.playerName ?? "Unknown";
 
-            if (trimmedStr.StartsWith("Log"))
+            if (trimmedStr.StartsWith("Debug"))
                 Debug.Log($"[<color=#{state.nameColor}>{playerName}</color>]{message}");
             else if (trimmedStr.StartsWith("Warning"))
                 Debug.LogWarning($"[<color=#{state.nameColor}>{playerName}</color>]{message}");

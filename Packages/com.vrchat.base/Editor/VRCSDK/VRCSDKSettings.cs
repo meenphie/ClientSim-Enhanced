@@ -47,6 +47,17 @@ namespace VRC.SDKBase.Editor
                         VRCSettings.AndroidPackageName = evt.newValue;
                     });
                     container.Add(androidAppNameField);
+                    
+                    var questAppNameField = new UnityEngine.UIElements.TextField("Quest App Package Name")
+                    {
+                        value = VRCSettings.QuestPackageName,
+                        name = "quest-app-package-name-field"
+                    };
+                    questAppNameField.RegisterValueChangedCallback(evt =>
+                    {
+                        VRCSettings.QuestPackageName = evt.newValue;
+                    });
+                    container.Add(questAppNameField);
                 },
 
                 // Populate the search keywords to enable smart search filtering and label highlighting

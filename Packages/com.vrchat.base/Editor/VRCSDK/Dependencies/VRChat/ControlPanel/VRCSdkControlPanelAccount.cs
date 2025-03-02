@@ -4,7 +4,6 @@ using UnityEditor;
 using VRC.Core;
 using System.Text.RegularExpressions;
 using UnityEngine.UIElements;
-using VRC.SDKBase;
 using VRC.SDKBase.Editor;
 
 public enum TwoFactorType

@@ -18,8 +18,8 @@ namespace VRC.Udon.ProgramSources
 {
     public sealed class SerializedUdonProgramAsset : AbstractSerializedUdonProgramAsset, IUdonSignatureHolder
     {
-        private static readonly Lazy<int> _debugLevel = new Lazy<int>(InitializeLogging);
-        private static int DebugLevel => _debugLevel.Value;
+        private static readonly Lazy<string> _debugCategory = new Lazy<string>(InitializeLogging);
+        private static string DebugCategoryName => _debugCategory.Value;
 
         private const DataFormat DEFAULT_SERIALIZATION_DATA_FORMAT = DataFormat.Binary;
         private const int MAXIMUM_CACHED_PROGRAM_SIZE = 1024 * 1024 * 2; // 2 MB
@@ -58,7 +58,7 @@ namespace VRC.Udon.ProgramSources
                 {
                     Core.Logger.LogWarning(
                         $"Skipping caching of UdonProgram '{name}' as the total program size ({totalProgramSize}) is higher than '{MAXIMUM_CACHED_PROGRAM_SIZE}'",
-                        DebugLevel);
+                        DebugCategoryName);
 
                     _serializationCache = null;
                     return;
@@ -82,7 +82,7 @@ namespace VRC.Udon.ProgramSources
             }
             catch(Exception e)
             {
-                Core.Logger.LogWarning($"Failed to deserialize Udon Program due to :\n{e}.", DebugLevel);
+                Core.Logger.LogWarning($"Failed to deserialize Udon Program due to :\n{e}.", DebugCategoryName);
             }
 #endif
         }
@@ -179,14 +179,14 @@ namespace VRC.Udon.ProgramSources
                     // Odin can't deserialize Unity Gradients properly off the main-thread 
                     if(!e.Message.StartsWith("Failed to read Gradient.mode, due to Unity's API"))
                     {
-                        Core.Logger.LogWarning($"Failed to deserialize Udon Program due to an exception:\n{e}.", DebugLevel);
+                        Core.Logger.LogWarning($"Failed to deserialize Udon Program due to an exception:\n{e}.", DebugCategoryName);
                     }
 
                     return null;
                 }
                 catch(Exception e)
                 {
-                    Core.Logger.LogWarning($"Failed to deserialize Udon Program due to an exception:\n{e}.", DebugLevel);
+                    Core.Logger.LogWarning($"Failed to deserialize Udon Program due to an exception:\n{e}.", DebugCategoryName);
                     return null;
                 }
             }
@@ -250,17 +250,17 @@ namespace VRC.Udon.ProgramSources
             return 0L;
         }
 
-        private static int InitializeLogging()
+        private static string InitializeLogging()
         {
-            int hashCode = typeof(SerializedUdonProgramAsset).GetHashCode();
-            if(Core.Logger.DebugLevelIsDescribed(hashCode))
+            const string categoryName = "SerializedUdonProgramAsset";
+            if(Core.Logger.CategoryIsDescribed(categoryName))
             {
-                return hashCode;
+                return categoryName;
             }
 
-            Core.Logger.DescribeDebugLevel(hashCode, "SerializedUdonProgramAsset", Core.Logger.Color.blue);
-            Core.Logger.AddDebugLevel(hashCode);
-            return hashCode;
+            Core.Logger.DescribeCategory(categoryName, Core.Logger.Color.blue);
+            Core.Logger.EnableCategory(categoryName);
+            return categoryName;
         }
 
         private void OnDisable()

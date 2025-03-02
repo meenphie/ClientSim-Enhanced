@@ -13,15 +13,15 @@ namespace VRC.SDKBase.Validation
 {
     public static class WorldValidation
     {
-        private static readonly Lazy<int> _debugLevel = new Lazy<int>(InitializeLogging);
-        private static int DebugLevel => _debugLevel.Value;
+        private static readonly Lazy<string> _debugCategoryName = new Lazy<string>(InitializeLogging);
+        private static string DebugCategoryName => _debugCategoryName.Value;
 
-        private static int InitializeLogging()
+        private static string InitializeLogging()
         {
-            int hashCode = typeof(WorldValidation).GetHashCode();
-            VRC.Core.Logger.DescribeDebugLevel(hashCode, "WorldValidation", VRC.Core.Logger.Color.red);
-            VRC.Core.Logger.AddDebugLevel(hashCode);
-            return hashCode;
+            const string categoryName = "WorldValidation";
+            VRC.Core.Logger.DescribeCategory(categoryName, VRC.Core.Logger.Color.red);
+            VRC.Core.Logger.EnableCategory(categoryName);
+            return categoryName;
         }
 
         static string[] ComponentTypeWhiteList = null;
@@ -424,9 +424,7 @@ namespace VRC.SDKBase.Validation
             "RenderHeads.Media.AVProVideo.MediaPlayer",
             "RenderHeads.Media.AVProVideo.SubtitlesUGUI",
             "AlphaButtonClickMask",
-            "EventSystemChecker",
-            "VirtualMarketplaceItem",
-            "SDK2UrlLauncher"
+            "EventSystemChecker"
         };
 
         static readonly string[] ComponentTypeWhiteListSdk3 = new string[]
@@ -448,7 +446,7 @@ namespace VRC.SDKBase.Validation
             "VRC.SDK3.Components.VRCPlayerObject",
 #endif
 #if VRC_ENABLE_PLAYER_PERSISTENCE || VRC_ENABLE_INSTANCE_PERSISTENCE
-            "VRC.SDK3.Components.VRCDisablePersistence",
+            "VRC.SDK3.Components.VRCEnablePersistence",
 #endif
             "VRC.SDK3.Video.Components.VRCUnityVideoPlayer",
             "VRC.SDK3.Video.Components.AVPro.VRCAVProVideoPlayer",
@@ -714,7 +712,7 @@ namespace VRC.SDKBase.Validation
                     if(clip.asset is ControlPlayableAsset controlPlayableAsset && controlPlayableAsset.prefabGameObject != null)
                     {
                         UnityEngine.Object.Destroy(playableDirector);
-                        VRC.Core.Logger.LogWarning("PlayableDirector containing prefab removed", DebugLevel, playableDirector.gameObject);
+                        VRC.Core.Logger.LogWarning("PlayableDirector containing prefab removed", DebugCategoryName, playableDirector.gameObject);
                     }
                 }
             }

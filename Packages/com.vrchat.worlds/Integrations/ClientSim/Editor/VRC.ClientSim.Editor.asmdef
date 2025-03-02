@@ -1,14 +1,10 @@
 {
     "name": "VRC.ClientSim.Editor",
-    "rootNamespace": "",
     "references": [
         "VRC.ClientSim",
         "VRC.Udon",
         "VRC.Udon.Editor",
-        "Unity.InputSystem",
-        "Unity.XR.Management",
-        "Unity.XR.Management.Editor",
-        "Unity.XR.Oculus"
+        "Unity.InputSystem"
     ],
     "includePlatforms": [
         "Editor"

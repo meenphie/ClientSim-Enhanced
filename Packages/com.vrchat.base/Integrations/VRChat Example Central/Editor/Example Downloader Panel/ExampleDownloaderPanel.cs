@@ -279,10 +279,6 @@ namespace VRC.ExampleCentral.Window
             {
                 tagFilters.Add(new List<string>(){"-ce"});
             }
-            if (!ExampleCentralSettings.Data.Instance.ShowPersistencePackages)
-            {
-                tagFilters.Add(new List<string>(){"-persistence"});
-            }
             
             // Conduct the search, including tag filters from settings
             List<AlgoliaPackage> hits = (await index.SearchAsync<ExampleCentral.Types.Algolia.UnityPackage>(
