@@ -115,6 +115,13 @@ namespace VRC.SDK3.ClientSim.Editor
             
             EditorGUILayout.EndScrollView();
             EditorGUIUtility.labelWidth = tempLabelWidth;
+            
+            ClientSimSteamVRSetup.InitializeXRSettings();
+        }
+        
+        private void OnValidate()
+        {
+            ClientSimSteamVRSetup.InitializeXRSettings();
         }
         
         private void OnValidate()
