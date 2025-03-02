@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 using UnityEditor;
 using VRC.Core;
 #endif
@@ -119,6 +119,7 @@ namespace VRC.SDK3.ClientSim
         public string currentLanguage = "en";
         public string[] availableDisplayLanguages = Array.Empty<string>();
         public string[] availableLanguages = Array.Empty<string>();
+        public bool _enableVRMode = false;
         
 #if UNITY_EDITOR
         private static ClientSimSettings LoadSettings()
