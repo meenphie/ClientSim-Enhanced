@@ -240,6 +240,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 978f5eb2f40732b4a90c6107b7610ecf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveAction:
+    actionPath: /actions/VRChat/in/Move
+    needsReinit: 0
+  jumpAction:
+    actionPath: /actions/VRChat/in/Jump
+    needsReinit: 0
 --- !u!114 &6987989042310722051
 MonoBehaviour:
   m_ObjectHideFlags: 0
