@@ -1,7 +1,6 @@
 ﻿
 using System;
 using UnityEngine;
-using UnityEngine.XR;
 using Valve.VR;
 using VRC.SDKBase;
 using VRC.Udon.Common;
@@ -302,7 +301,6 @@ namespace VRC.SDK3.ClientSim
 
         private void FixedUpdate()
         {
-            //I dont know why its used for
             Physics.SyncTransforms();
             Vector2 speed = GetSpeed();
             Vector2 input = _prevInput;
@@ -415,20 +413,18 @@ namespace VRC.SDK3.ClientSim
             // Only allow these input actions while the menu is closed
             if (!_menuIsOpen)
             {
-                GetMovementInput();
                 RotateView();
-
-                if (ClientSimSettings.Instance._enableVRMode)
-                {
-                    SteamVRRotateView();
-                    GetSteamVRMovementInput();
-                }
             }
         }
 
         private void GetMovementInput()
         {
             Vector2 input = _input.GetMovementAxes();
+            
+            if (_settings._enableVRMode)
+            {
+                input = moveAction.GetAxis(SteamVR_Input_Sources.LeftHand);
+            }
 
             if (input.sqrMagnitude > 1)
             {
@@ -439,20 +435,9 @@ namespace VRC.SDK3.ClientSim
             _prevInput = input;
         }
 
-
-
-        private void GetSteamVRMovementInput()
+        private void GetSteamVRJumpInput()
         {
-            Vector2 input = moveAction.GetAxis(SteamVR_Input_Sources.LeftHand);
-            Debug.Log(input);
-
-            if (input.sqrMagnitude > 1)
-            {
-                input.Normalize();
-            }
-
-            _directionChanged = (input.sqrMagnitude < 1e-3 ^ _prevInput.sqrMagnitude < 1e-3);
-            _prevInput = input;
+            _jump = jumpAction.GetStateDown(SteamVR_Input_Sources.RightHand);
         }
 
         // TODO Move rotation of the player controller to be done in the tracking provider and have the player controller
@@ -468,7 +453,7 @@ namespace VRC.SDK3.ClientSim
             }
         }
 
-        private void SteamVRRotateView()
+        private void GetSteamVRRotateView()
         {
             // Allow player controller to look left and right when not in a locked station and for desktop users
             // when the mouse is not released..
