@@ -6,6 +6,4 @@
     }
     
     public class ClientSimMenuRespawnClickedEvent : IClientSimEvent { }
-    
-    public class ClientSimStackedCameraReadyEvent : IClientSimEvent { }
 }

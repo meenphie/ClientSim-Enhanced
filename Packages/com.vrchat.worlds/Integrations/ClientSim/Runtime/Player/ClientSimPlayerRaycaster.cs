@@ -78,7 +78,8 @@ namespace VRC.SDK3.ClientSim
             _eventDispatcher.Subscribe<ClientSimPlayerDeathStatusChangedEvent>(CombatStatusEvent);
             
             // Create raycasters
-
+            if (_trackingProvider.IsVR())
+            {
                 _leftHandRaycaster = new ClientSimRaycaster(
                     new ClientSimTransformRayProvider(_trackingProvider.GetHandRaycastTransform(HandType.LEFT)),
                     _interactiveLayerProvider, 
@@ -88,8 +89,18 @@ namespace VRC.SDK3.ClientSim
                     new ClientSimTransformRayProvider(_trackingProvider.GetHandRaycastTransform(HandType.RIGHT)),
                     _interactiveLayerProvider, 
                     _interactManager);
-            
-
+            }
+            else
+            {
+                // Left hand is always null for desktop users.
+                _leftHandRaycaster = null;
+                
+                // Right hand is from the player's camera.
+                _rightHandRaycaster = new ClientSimRaycaster(
+                    new ClientSimCameraRayProvider(cameraProvider, mousePositionProvider), 
+                    _interactiveLayerProvider, 
+                    _interactManager);
+            }
         }
 
         private void OnDestroy()

@@ -1,4 +1,4 @@
-#if UNITY_EDITOR
+﻿#if UNITY_EDITOR
 using UnityEditor;
 using VRC.Core;
 #endif
@@ -101,9 +101,7 @@ namespace VRC.SDK3.ClientSim
         public bool displayLogs = true;
         public bool deleteEditorOnly = true;
         public bool spawnPlayer = true;
-        public bool spawnInEditorView = false;
 
-        public bool hideMenuOnLaunch = false;
         public bool setTargetFrameRate = true;
         public int targetFrameRate = 90;
 
@@ -121,7 +119,6 @@ namespace VRC.SDK3.ClientSim
         public string currentLanguage = "en";
         public string[] availableDisplayLanguages = Array.Empty<string>();
         public string[] availableLanguages = Array.Empty<string>();
-        public bool _enableVRMode = false;
         
 #if UNITY_EDITOR
         private static ClientSimSettings LoadSettings()
@@ -180,7 +177,7 @@ namespace VRC.SDK3.ClientSim
         {
             if (ConfigManager.RemoteConfig.IsInitialized())
             {
-                availableLanguages = ConfigManager.RemoteConfig.GetList(AVAILABLE_LANGUAGES_CODES_KEY).Cast<string>().ToArray();
+                availableLanguages = ConfigManager.RemoteConfig.GetList(AVAILABLE_LANGUAGES_CODES_KEY).ToArray();
                 availableDisplayLanguages = availableLanguages.Where(code => LanguageByCode.ContainsKey(code)).Select(code => LanguageByCode[code]).ToArray();
                 return true;
             }

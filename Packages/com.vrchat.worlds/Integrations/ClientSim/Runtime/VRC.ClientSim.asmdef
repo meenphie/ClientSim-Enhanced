@@ -8,11 +8,8 @@
         "VRC.SDKBase",
         "VRC.ClientSim.SelectionHighlight",
         "UniTask",
-        "Unity.XR.Management",
-        "Unity.XR.Management.Editor",
-        "Unity.XR.Oculus",
-        "SteamVR",
-        "SteamVR_Actions"
+        "UdonSharp.Runtime",
+        "VRC.Udon.Editor"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -284,7 +284,7 @@ namespace VRC.SDK3.ClientSim
             Camera playerCamera = _player.GetCameraProvider().GetCamera();
             tooltipManager.Initialize(_settings, _player.GetTrackingProvider());
             highlightManager.Initialize(playerCamera);
-            stackedCameraSystem.Initialize(playerCamera, menu, _eventDispatcher);
+            stackedCameraSystem.Initialize(playerCamera, menu);
             
             storeManager = new ClientSimStoreManager(_eventDispatcher, new ClientSimUdonManagerEventSender(UdonManager.Instance), _playerManager);
 
@@ -373,11 +373,6 @@ namespace VRC.SDK3.ClientSim
                     _sceneManager.ResetSpawnOrder(); // Avoids any spawn offsets from pre-initialization of players
                     _player.EnablePlayer(_sceneManager.GetSpawnPoint(false));
                 }
-            }
-            
-            if (_settings._enableVRMode)
-            {
-                _player.EnableVR();
             }
 
             // Notify UdonManager that ClientSim is ready. This will then notify all registered UdonBehaviours that

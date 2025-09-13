@@ -92,7 +92,6 @@ namespace VRC.SDK3.ClientSim
 
         private ClientSimDisplayedPage _displayedPage = ClientSimDisplayedPage.WARNING_PAGE;
         private bool _menuIsActive;
-        private bool _stackedCameraReady = false;
 
         private float _playerHeightOriginalMaxvalue;
 
@@ -132,7 +131,6 @@ namespace VRC.SDK3.ClientSim
             _eventDispatcher.Subscribe<ClientSimReadyEvent>(OnReady);
             _eventDispatcher.Subscribe<ClientSimOnPlayerHeightUpdateEvent>(OnPlayerHeightUpdate);
             _eventDispatcher.Subscribe<ClientSimOnToggleManualScalingEvent>(OnManualScalingToggled);
-            _eventDispatcher.Subscribe<ClientSimStackedCameraReadyEvent>(OnStackedCameraReady);
 
             playerNameText.text = "";
             playerIdText.text = "";
@@ -281,12 +279,6 @@ namespace VRC.SDK3.ClientSim
         
         private void ToggleMenu(bool isActive)
         {
-            // Don't allow the menu to be closed if the stacked camera system is not ready.
-            if(!isActive && !_stackedCameraReady)
-            {
-                return;
-            }
-            
             _menuIsActive = isActive;
             menu.SetActive(isActive);
 
@@ -366,6 +358,7 @@ namespace VRC.SDK3.ClientSim
                 return;
             }
 #endif
+            
             ToggleMenu(!_menuIsActive);
         }
 
@@ -387,15 +380,6 @@ namespace VRC.SDK3.ClientSim
                 DisplayInitialPageForPlayer();
                 UpdateCanvasLocation();
             }
-        }
-
-        private void OnStackedCameraReady(ClientSimStackedCameraReadyEvent readyEvent)
-        {
-            _stackedCameraReady = true;
-            _eventDispatcher.Unsubscribe<ClientSimStackedCameraReadyEvent>(OnStackedCameraReady);
-            if(_settings.hideMenuOnLaunch && _sessionState.GetBool(HAS_USER_ACCEPTED_WARNING))
-                ToggleMenu(false);
-            
         }
         
         private void OnPlayerJoined(ClientSimOnPlayerJoinedEvent joinEvent)

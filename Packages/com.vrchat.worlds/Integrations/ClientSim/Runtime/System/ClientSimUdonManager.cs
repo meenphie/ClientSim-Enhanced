@@ -67,7 +67,7 @@ namespace VRC.SDK3.ClientSim
         public void InitUdon(UdonBehaviour behaviour, IUdonProgram program)
         {
             ClientSimUdonHelper[] helpers = behaviour.gameObject.GetComponents<ClientSimUdonHelper>();
-            
+
             foreach (ClientSimUdonHelper helper in helpers)
             {
                 if(helper.GetUdonBehaviour() == behaviour)
@@ -76,9 +76,21 @@ namespace VRC.SDK3.ClientSim
                 }
             }
             
-            ClientSimUdonHelper helperAdded = behaviour.gameObject.AddComponent<ClientSimUdonHelper>();
-            helperAdded.Initialize(behaviour, this, _syncedObjectManager, _isReady);
+            if (helpers.Length == 0)
+            {
+                ClientSimUdonHelper helper = behaviour.gameObject.AddComponent<ClientSimUdonHelper>();
+                helper.Initialize(behaviour, this, _syncedObjectManager, _isReady);
+                return;
+            }
             
+            foreach (ClientSimUdonHelper helper in helpers)
+            {
+                if(helper.GetUdonBehaviour() == null)
+                {
+                    helper.Initialize(behaviour, this, _syncedObjectManager, _isReady);
+                    return;
+                }
+            }
         }
 
         public IEnumerator OnClientSimReady()

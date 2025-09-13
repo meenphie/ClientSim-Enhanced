@@ -16,9 +16,8 @@ namespace VRC.SDK3.ClientSim.Editor
         private readonly GUIContent _displayLogsToggleGuiContent = new GUIContent("Enable Console Logging", "Enabling logging will print messages to the console when certain events happen. Examples include trigger execution, pickup grabbed, station entered, etc.");
         private readonly GUIContent _deleteEditorOnlyToggleGuiContent = new GUIContent("Remove \"EditorOnly\"", "Enabling this setting will ensure that all objects with the tag \"EditorOnly\" are deleted when in playmode. This can be helpful in finding objects that will not be uploaded with your world. Enable console logging to see which objects are deleted.");
         private readonly GUIContent _startupDelayGuiContent = new GUIContent("Startup Delay", "The duration that the Client Sim will wait to simulate the VRChat client loading before spawning the player and initializing Udon. This is useful to test when Unity components behave differently at startup compared to VRChat.");
-        private readonly GUIContent _enableVRMode = new GUIContent("Enable VR Mode", "");
         private readonly GUIContent _stopOnScriptChangesToggleGuiContent = new GUIContent("Stop On Script Changes", "If enabled, the editor will stop if script changes are detected while in play mode. This will override the Unity Editor setting 'Preferences > General > Script Changes While Playing'.");
-        private readonly GUIContent _hideMenuOnLaunchToggleGuiContent = new GUIContent("Hide Menu On Launch", "Enabling this setting will prevent the ClientSim menu from being displayed when initially entering play mode.");
+
         private readonly GUIContent _setTargetFrameRateGuiContent = new GUIContent("Set Target FrameRate", "Should ClientSim set the target framerate on startup? This will automatically set the physics delta time to match expected framerate. Disabling this setting is useful when profiling.");
         private readonly GUIContent _targetFrameRateGuiContent = new GUIContent("Target FrameRate", "The target framerate unity should aim for. Default is 90 fps.");
         
@@ -26,7 +25,7 @@ namespace VRC.SDK3.ClientSim.Editor
         // Player Controller content
         private readonly GUIContent _playerControllerFoldoutGuiContent = new GUIContent("Player Controller Settings", "");
         private readonly GUIContent _playerControllerToggleGuiContent = new GUIContent("Spawn Player Controller", "If enabled, a player controller will spawn and allow you to move around your world as if in desktop mode. Supports interacts and pickups.");
-        private readonly GUIContent _spawnInEditorView = new GUIContent("Spawn in Editor View", "");
+
         private readonly GUIContent _showDesktopReticleGuiContent = new GUIContent("Show Desktop Reticle", "Show or hide the center Desktop reticle image.");
         private readonly GUIContent _showTooltipsGuiContent = new GUIContent("Show Tooltips", "If enabled, hovering over an interactable object or pickup will display a tooltip above the object.");
         private readonly GUIContent _invertMouseLookGuiContent = new GUIContent("Invert Mouse Look", "If enabled, moving the mouse up or down will invert the direction the player will look up and down.");
@@ -115,11 +114,6 @@ namespace VRC.SDK3.ClientSim.Editor
             
             EditorGUILayout.EndScrollView();
             EditorGUIUtility.labelWidth = tempLabelWidth;
-        }
-        
-        private void OnValidate()
-        {
-            ClientSimSteamVRSetup.InitializeXRSettings();
         }
 
         private void DrawWindow()
@@ -353,7 +347,7 @@ namespace VRC.SDK3.ClientSim.Editor
                 EditorGUI.BeginDisabledGroup(Application.isPlaying);
                 
                 _settings.deleteEditorOnly = EditorGUILayout.Toggle(_deleteEditorOnlyToggleGuiContent, _settings.deleteEditorOnly);
-                _settings.hideMenuOnLaunch = EditorGUILayout.Toggle(_hideMenuOnLaunchToggleGuiContent, _settings.hideMenuOnLaunch);
+                
                 _settings.setTargetFrameRate = EditorGUILayout.Toggle(_setTargetFrameRateGuiContent, _settings.setTargetFrameRate);
                 
                 EditorGUI.BeginDisabledGroup(!_settings.setTargetFrameRate);
@@ -363,8 +357,6 @@ namespace VRC.SDK3.ClientSim.Editor
                 
                 _settings.initializationDelay = EditorGUILayout.FloatField(_startupDelayGuiContent, _settings.initializationDelay);
                 _settings.initializationDelay = Mathf.Max(0, _settings.initializationDelay);
-                
-                _settings._enableVRMode = EditorGUILayout.Toggle(_enableVRMode, _settings._enableVRMode);
                 
                 EditorGUI.EndDisabledGroup();
 
@@ -388,7 +380,6 @@ namespace VRC.SDK3.ClientSim.Editor
 
                 EditorGUI.BeginDisabledGroup(!_settings.spawnPlayer);
                 
-                _settings.spawnInEditorView = EditorGUILayout.Toggle(_spawnInEditorView, _settings.spawnInEditorView);
                 _settings.showDesktopReticle = EditorGUILayout.Toggle(_showDesktopReticleGuiContent, _settings.showDesktopReticle);
                 _settings.showTooltips = EditorGUILayout.Toggle(_showTooltipsGuiContent, _settings.showTooltips);
                 _settings.invertMouseLook = EditorGUILayout.Toggle(_invertMouseLookGuiContent, _settings.invertMouseLook);
