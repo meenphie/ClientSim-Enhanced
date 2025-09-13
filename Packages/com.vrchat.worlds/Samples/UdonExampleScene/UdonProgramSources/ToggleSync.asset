@@ -12,33 +12,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f11136daadff0b44ac2278a314682ab, type: 3}
   m_Name: ToggleSync
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: d195993cb22bfbc47af469412be0b7e4, type: 2}
-  udonAssembly: ".data_start\n\n    .export uiToggle\n    .sync toggleValue, none\n   
-    \n    __Boolean_0: %SystemBoolean, null\n    __Boolean_1: %SystemBoolean, null\n   
-    __Boolean_2: %SystemBoolean, null\n    __player_0: %VRCSDKBaseVRCPlayerApi, null\n   
-    __obj_0: %UnityEngineGameObject, this\n    __instance_1: %VRCUdonUdonBehaviour,
-    this\n    __symbolName_0: %SystemString, null\n    __value_0: %SystemObject,
-    null\n    __instance_0: %UnityEngineUIToggle, null\n    __instance_2: %VRCUdonUdonBehaviour,
-    this\n    __instance_3: %UnityEngineUIToggle, null\n    __value_1: %SystemBoolean,
-    null\n    __name_0: %SystemString, null\n    uiToggle: %UnityEngineUIToggle,
-    null\n    toggleValue: %SystemBoolean, null\n    __returnValue: %SystemObject,
-    null\n\n.data_end\n\n.code_start\n\n    .export OnValueChanged\n    \n    OnValueChanged:\n   
-    \n        PUSH, uiToggle\n        PUSH, __instance_0\n        COPY\n        PUSH,
-    __instance_0\n        PUSH, __Boolean_1\n        EXTERN, \"UnityEngineUIToggle.__get_isOn__SystemBoolean\"\n       
-    PUSH, __Boolean_1\n        PUSH, toggleValue\n        PUSH, __Boolean_0\n       
-    EXTERN, \"SystemBoolean.__op_Inequality__SystemBoolean_SystemBoolean__SystemBoolean\"\n       
-    PUSH, __Boolean_0\n        JUMP_IF_FALSE, 0x000000E4\n        PUSH, __player_0\n       
-    EXTERN, \"VRCSDKBaseNetworking.__get_LocalPlayer__VRCSDKBaseVRCPlayerApi\"\n       
-    PUSH, __player_0\n        PUSH, __obj_0\n        EXTERN, \"VRCSDKBaseNetworking.__SetOwner__VRCSDKBaseVRCPlayerApi_UnityEngineGameObject__SystemVoid\"\n       
-    PUSH, uiToggle\n        PUSH, __instance_0\n        COPY\n        PUSH, __Boolean_1\n       
-    PUSH, __value_0\n        COPY\n        PUSH, __instance_1\n        PUSH, __symbolName_0\n       
-    PUSH, __Boolean_1\n        EXTERN, \"VRCUdonCommonInterfacesIUdonEventReceiver.__SetProgramVariable__SystemString_SystemObject__SystemVoid\"\n       
-    PUSH, __instance_2\n        EXTERN, \"VRCUdonCommonInterfacesIUdonEventReceiver.__RequestSerialization__SystemVoid\"\n       
-    JUMP, 0x000000E4\n        JUMP, 0xFFFFFFFC\n    \n    .export _onVarChange_toggleValue\n   
-    \n    _onVarChange_toggleValue:\n    \n        PUSH, uiToggle\n        PUSH,
-    __instance_3\n        COPY\n        PUSH, __instance_3\n        PUSH, toggleValue\n       
-    EXTERN, \"UnityEngineUIToggle.__set_isOn__SystemBoolean__SystemVoid\"\n       
-    JUMP, 0xFFFFFFFC\n    \n\n.code_end\n"
+  serializedUdonProgramAsset: {fileID: 11400000, guid: d195993cb22bfbc47af469412be0b7e4,
+    type: 2}
+  udonAssembly: ".data_start\r\n\r\n    .export uiToggle\r\n    .sync toggleValue,
+    none\r\n    \r\n    __Boolean_0: %SystemBoolean, null\r\n    __Boolean_1: %SystemBoolean,
+    null\r\n    __Boolean_2: %SystemBoolean, null\r\n    __player_0: %VRCSDKBaseVRCPlayerApi,
+    null\r\n    __obj_0: %UnityEngineGameObject, this\r\n    __instance_1: %VRCUdonUdonBehaviour,
+    this\r\n    __symbolName_0: %SystemString, null\r\n    __value_0: %SystemObject,
+    null\r\n    __instance_0: %UnityEngineUIToggle, null\r\n    __instance_2: %VRCUdonUdonBehaviour,
+    this\r\n    __instance_3: %UnityEngineUIToggle, null\r\n    __value_1: %SystemBoolean,
+    null\r\n    __name_0: %SystemString, null\r\n    uiToggle: %UnityEngineUIToggle,
+    null\r\n    toggleValue: %SystemBoolean, null\r\n    __returnValue: %SystemObject,
+    null\r\n\r\n.data_end\r\n\r\n.code_start\r\n\r\n    .export OnValueChanged\r\n   
+    \r\n    OnValueChanged:\r\n    \r\n        PUSH, uiToggle\r\n        PUSH, __instance_0\r\n       
+    COPY\r\n        PUSH, __instance_0\r\n        PUSH, __Boolean_1\r\n        EXTERN,
+    \"UnityEngineUIToggle.__get_isOn__SystemBoolean\"\r\n        PUSH, __Boolean_1\r\n       
+    PUSH, toggleValue\r\n        PUSH, __Boolean_0\r\n        EXTERN, \"SystemBoolean.__op_Inequality__SystemBoolean_SystemBoolean__SystemBoolean\"\r\n       
+    PUSH, __Boolean_0\r\n        JUMP_IF_FALSE, 0x000000E4\r\n        PUSH, __player_0\r\n       
+    EXTERN, \"VRCSDKBaseNetworking.__get_LocalPlayer__VRCSDKBaseVRCPlayerApi\"\r\n       
+    PUSH, __player_0\r\n        PUSH, __obj_0\r\n        EXTERN, \"VRCSDKBaseNetworking.__SetOwner__VRCSDKBaseVRCPlayerApi_UnityEngineGameObject__SystemVoid\"\r\n       
+    PUSH, uiToggle\r\n        PUSH, __instance_0\r\n        COPY\r\n        PUSH,
+    __Boolean_1\r\n        PUSH, __value_0\r\n        COPY\r\n        PUSH, __instance_1\r\n       
+    PUSH, __symbolName_0\r\n        PUSH, __Boolean_1\r\n        EXTERN, \"VRCUdonCommonInterfacesIUdonEventReceiver.__SetProgramVariable__SystemString_SystemObject__SystemVoid\"\r\n       
+    PUSH, __instance_2\r\n        EXTERN, \"VRCUdonCommonInterfacesIUdonEventReceiver.__RequestSerialization__SystemVoid\"\r\n       
+    JUMP, 0x000000E4\r\n        JUMP, 0xFFFFFFFC\r\n    \r\n    .export _onVarChange_toggleValue\r\n   
+    \r\n    _onVarChange_toggleValue:\r\n    \r\n        PUSH, uiToggle\r\n       
+    PUSH, __instance_3\r\n        COPY\r\n        PUSH, __instance_3\r\n        PUSH,
+    toggleValue\r\n        EXTERN, \"UnityEngineUIToggle.__set_isOn__SystemBoolean__SystemVoid\"\r\n       
+    JUMP, 0xFFFFFFFC\r\n    \r\n\r\n.code_end\r\n"
   assemblyError: 
   graphData:
     name: 
@@ -274,5 +275,8 @@ MonoBehaviour:
     uid: e25196e3-3844-48ed-88a3-b8b6f9709516
     jsonData: '{"uid":"e25196e3-3844-48ed-88a3-b8b6f9709516","layout":{"serializedVersion":"2","x":-400.0,"y":-450.0,"width":1354.0,"height":434.0},"containedElements":["0cb40eff-4fec-4eed-ba1d-89008fe8cf27","89f2ad6b-3973-4adf-bcf7-1085cbbc9b8c","a5df33d8-196b-4676-a6e2-17e738e85255","2047edc3-fc6e-4fcc-bb7c-764d203daf10","0e08b1cf-28e9-4023-9916-2acd91d7112f","e7fb03eb-1a6a-4d36-a949-21152420d47f","454bc07a-b74b-40d6-9f1d-e3eeff692150","2116f67d-4065-4215-99d7-d057bc1dd8fa","26f1f7c3-9dee-4b74-b6a2-c41efe73a2c6","84c21bfa-be8b-43e4-aa7d-7fe2400d8b95","1c9ec285-72f7-4e32-a233-e12629f99ad7","7a531c3f-2f21-4ae9-83a1-01c9768e1f84"],"title":"Become
       Owner when you Change it, send the new Value","layer":0,"elementTypeColor":{"r":0.0,"g":0.0,"b":0.0,"a":0.0}}'
+  viewTransform:
+    position: {x: 468.649, y: 578.1555}
+    scale: 0.7561437
   version: 1.0.0
   showAssembly: 0

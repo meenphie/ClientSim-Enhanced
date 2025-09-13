@@ -15,9 +15,6 @@ public interface IVRCSdkControlPanelBuilder
     bool IsValidBuilder(out string message);
     void CreateBuilderErrorGUI(VisualElement root);
     
-    [Obsolete("Legacy method, use CreateValidationsGUI instead", false)]
-    void ShowBuilder();
-    
     void CreateValidationsGUI(VisualElement root);
     
     EventHandler OnContentChanged { get; set; }

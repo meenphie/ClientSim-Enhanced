@@ -12,6 +12,12 @@ namespace VRC.SDKBase.Editor.Api
             Standard,
             Impostor
         }
+
+        public struct AvatarStyles
+        {
+            public string Primary { get; set; }
+            public string Secondary { get; set; }
+        }
         
         [JsonProperty("id")]
         public string ID { get; set; }
@@ -26,6 +32,10 @@ namespace VRC.SDKBase.Editor.Api
         public string ThumbnailImageUrl { get; set; }
         
         public string ReleaseStatus { get; set; }
+        
+        public AvatarStyles Styles { get; set; }
+        public bool Lock { get; set; }
+        public string ActiveAssetReviewId { get; set; }
 
         [JsonProperty("created_at")]
         public DateTime CreatedAt { get; set; }
@@ -75,5 +85,9 @@ namespace VRC.SDKBase.Editor.Api
         public string Description { get; set; }
         public List<string> Tags { get; set; }
         public string ReleaseStatus { get; set; }
+        
+        // Styles should be submitted via style ID and not the style Name
+        public string PrimaryStyle { get; set; }
+        public string SecondaryStyle { get; set; }
     }
 }

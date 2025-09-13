@@ -219,7 +219,9 @@ namespace VRC.Core
                 stringBuilder.AppendLine(type.FullName);
             }
 
+#pragma warning disable RS0030 // Banned APIs
             UnityEngine.Debug.Log(stringBuilder.ToString());
+#pragma warning restore RS0030
         }
         #endif
 

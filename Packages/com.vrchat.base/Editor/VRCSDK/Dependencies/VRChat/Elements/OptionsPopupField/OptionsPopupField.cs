@@ -231,16 +231,8 @@ namespace VRC.SDKBase.Editor.Elements
 
         public void Refresh()
         {
-            // If the new platforms list is smaller than the current selected options list
-            // Filter out the options that are no longer available
-            if (SelectedOptions.Count > GetOptionCount())
-            {
-                var allOptions = GetOptions().ToList();
-                SelectedOptions = SelectedOptions.Where(o => allOptions.Contains(o)).ToList();
-                return;
-            }
-            
-            UpdateOptions(ref _optionsContainer);
+            var allOptions = GetOptions().ToList();
+            SelectedOptions = SelectedOptions.Where(o => allOptions.Contains(o)).ToList();
         }
     }
 }

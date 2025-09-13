@@ -24,6 +24,11 @@
     background-color: var(--unity-colors-highlight-background-hover-lighter);
 }
 
+#modal-icon {
+    width: 18px;
+    height: 18px;
+}
+
 #modal-close-btn {
     border-width: 0;
     background-color: transparent;

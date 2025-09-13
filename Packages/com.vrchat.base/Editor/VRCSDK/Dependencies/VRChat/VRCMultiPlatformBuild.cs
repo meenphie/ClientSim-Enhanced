@@ -4,10 +4,14 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEditor;
+using VRC.SDKBase.Editor.Api;
 
 
 [assembly: InternalsVisibleTo("VRC.SDK3A.Editor")]
 [assembly: InternalsVisibleTo("VRC.SDK3.Editor")]
+#if VRC_ENABLE_PROPS
+[assembly: InternalsVisibleTo("VRC.SDK3P.Editor")]
+#endif
 
 namespace VRC.SDKBase
 {
@@ -244,6 +248,7 @@ namespace VRC.SDKBase
                 // Loop back to initial platform and exit
                 MPBState = MultiPlatformBuildState.Switching;
                 MPBNextPlatform = MPBInitialPlatform;
+                VRCApiCache.Clear();
                 EditorUserBuildSettings.selectedBuildTargetGroup = VRC_EditorTools.GetBuildTargetGroupForTarget(MPBInitialPlatform);
                 EditorUserBuildSettings.SwitchActiveBuildTargetAsync(EditorUserBuildSettings.selectedBuildTargetGroup, MPBInitialPlatform);
                 return true;
@@ -272,6 +277,9 @@ namespace VRC.SDKBase
             
             // Leave time for the UI to update
             await Task.Delay(100, cancellationToken);
+            
+            // Clear the API cache as it sometimes persists during assembly reloads
+            VRCApiCache.Clear();
             
             EditorUserBuildSettings.selectedBuildTargetGroup = nextTargetGroup;
             EditorUserBuildSettings.SwitchActiveBuildTargetAsync(nextTargetGroup, nextTarget);

@@ -2,7 +2,6 @@
 using VRC.SDKBase;
 using System.Reflection;
 using UnityEngine.Rendering.PostProcessing;
-using UnityEditor;
 
 namespace VRC.SDK3.ClientSim
 {
@@ -88,12 +87,6 @@ namespace VRC.SDK3.ClientSim
         
         public Transform GetSpawnPoint(bool remote = false)
         {
-            //Spawn in editor view
-            if(ClientSimSettings.Instance.spawnInEditorView)
-            {
-                return SceneView.lastActiveSceneView.camera.transform;
-            }
-            
             if (!HasSceneDescriptor())
             {
                 throw new ClientSimException("Trying to get a Spawn Point but there is no Scene Descriptor. Add a SceneDescriptor or the VRCWorldPrefab to your scene.");
@@ -143,7 +136,17 @@ namespace VRC.SDK3.ClientSim
             // Fallback to first spawn point
             return _descriptor.spawns[index];
         }
-        
+
+        public float GetSpawnRadius()
+        {
+            if (!HasSceneDescriptor())
+            {
+                throw new ClientSimException("Cannot get spawn radius when there is no scene descriptor.");
+            }
+            
+            return _descriptor.spawnRadius;
+        }
+
         private void CopyCameraValues(Camera refCamera, Camera camera)
         {
             if (refCamera == null)

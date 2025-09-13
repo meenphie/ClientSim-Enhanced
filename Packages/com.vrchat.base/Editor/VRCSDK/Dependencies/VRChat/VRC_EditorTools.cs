@@ -21,6 +21,9 @@ using UnityEngine.Rendering.PostProcessing;
 
 [assembly: InternalsVisibleTo("VRC.SDK3A.Editor")]
 [assembly: InternalsVisibleTo("VRC.SDK3.Editor")]
+#if VRC_ENABLE_PROPS
+[assembly: InternalsVisibleTo("VRC.SDK3P.Editor")]
+#endif
 namespace VRC.SDKBase
 {
     public static class VRC_EditorTools
@@ -651,12 +654,9 @@ namespace VRC.SDKBase
             var options = new List<string>
             {
                 "Windows",
-                "Android"
+                "Android",
+                "iOS"
             };
-            if (ApiUserPlatforms.CurrentUserPlatforms?.SupportsiOS == true)
-            {
-                options.Add("iOS");
-            }
 
             return options;
         }
@@ -666,12 +666,9 @@ namespace VRC.SDKBase
             var options = new List<BuildTarget>
             {
                 BuildTarget.StandaloneWindows64,
-                BuildTarget.Android
+                BuildTarget.Android,
+                BuildTarget.iOS
             };
-            if (ApiUserPlatforms.CurrentUserPlatforms?.SupportsiOS == true)
-            {
-                options.Add(BuildTarget.iOS);
-            }
 
             return options;
         }

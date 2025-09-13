@@ -116,6 +116,9 @@ namespace VRC.SDKBase.Validation
 
             "VRChat/Mobile/Particles/Additive",
             "VRChat/Mobile/Particles/Multiply",
+
+            "VRChat/Mobile/Toon Standard",
+            "VRChat/Mobile/Toon Standard (Outline)", // not in client whitelist, will fall back to non-outline variant on mobile
         };
 
         public const int MAX_AVD_PHYSBONES_PER_AVATAR = 256;

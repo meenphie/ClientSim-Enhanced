@@ -135,6 +135,10 @@ namespace VRC.SDKBase.Editor.Elements
             {
                 return;
             }
+
+            if (_tagInput.IsPlaceholder()) return;
+            
+            if (_tagInput.value.Length == 0) return;
             
             OnAddTag?.Invoke(this, _tagInput.text);
             _tagInput.value = string.Empty;

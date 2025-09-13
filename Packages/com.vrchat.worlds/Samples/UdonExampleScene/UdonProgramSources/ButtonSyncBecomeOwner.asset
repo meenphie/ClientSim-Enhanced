@@ -12,30 +12,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f11136daadff0b44ac2278a314682ab, type: 3}
   m_Name: ButtonSyncBecomeOwner
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 280c6d04ae0aee944ae455d58373f94a, type: 2}
-  udonAssembly: ".data_start\n\n    .export uiText\n    .sync clickCount, none\n   
-    \n    __player_0: %VRCSDKBaseVRCPlayerApi, null\n    __obj_0: %UnityEngineGameObject,
-    this\n    __GameObject_0: %UnityEngineGameObject, this\n    __instance_0: %VRCUdonUdonBehaviour,
-    this\n    __symbolName_0: %SystemString, null\n    __value_0: %SystemObject,
-    null\n    __Int32_0: %SystemInt32, null\n    __Int32_1: %SystemInt32, null\n   
-    __instance_1: %VRCUdonUdonBehaviour, this\n    __instance_2: %UnityEngineUIText,
-    null\n    __value_1: %SystemString, null\n    __instance_3: %SystemInt32, null\n   
-    __name_0: %SystemString, null\n    uiText: %UnityEngineUIText, null\n    clickCount:
-    %SystemInt32, null\n    __returnValue: %SystemObject, null\n\n.data_end\n\n.code_start\n\n   
-    .export OnClick\n    \n    OnClick:\n    \n        PUSH, __player_0\n       
-    EXTERN, \"VRCSDKBaseNetworking.__get_LocalPlayer__VRCSDKBaseVRCPlayerApi\"\n       
-    PUSH, __GameObject_0\n        PUSH, __obj_0\n        COPY\n        PUSH, __player_0\n       
-    PUSH, __obj_0\n        EXTERN, \"VRCSDKBaseNetworking.__SetOwner__VRCSDKBaseVRCPlayerApi_UnityEngineGameObject__SystemVoid\"\n       
-    PUSH, clickCount\n        PUSH, __Int32_1\n        PUSH, __value_0\n        EXTERN,
-    \"SystemInt32.__op_Addition__SystemInt32_SystemInt32__SystemInt32\"\n       
-    PUSH, __instance_0\n        PUSH, __symbolName_0\n        PUSH, __value_0\n       
-    EXTERN, \"VRCUdonCommonInterfacesIUdonEventReceiver.__SetProgramVariable__SystemString_SystemObject__SystemVoid\"\n       
-    PUSH, __instance_1\n        EXTERN, \"VRCUdonCommonInterfacesIUdonEventReceiver.__RequestSerialization__SystemVoid\"\n       
-    JUMP, 0xFFFFFFFC\n    \n    .export _onVarChange_clickCount\n    \n    _onVarChange_clickCount:\n   
-    \n        PUSH, uiText\n        PUSH, __instance_2\n        COPY\n        PUSH,
-    clickCount\n        PUSH, __value_1\n        EXTERN, \"SystemInt32.__ToString__SystemString\"\n       
-    PUSH, __instance_2\n        PUSH, __value_1\n        EXTERN, \"UnityEngineUIText.__set_text__SystemString__SystemVoid\"\n       
-    JUMP, 0xFFFFFFFC\n    \n\n.code_end\n"
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 280c6d04ae0aee944ae455d58373f94a,
+    type: 2}
+  udonAssembly: ".data_start\r\n\r\n    .export uiText\r\n    .sync clickCount, none\r\n   
+    \r\n    __player_0: %VRCSDKBaseVRCPlayerApi, null\r\n    __obj_0: %UnityEngineGameObject,
+    this\r\n    __GameObject_0: %UnityEngineGameObject, this\r\n    __instance_0:
+    %VRCUdonUdonBehaviour, this\r\n    __symbolName_0: %SystemString, null\r\n   
+    __value_0: %SystemObject, null\r\n    __Int32_0: %SystemInt32, null\r\n    __Int32_1:
+    %SystemInt32, null\r\n    __instance_1: %VRCUdonUdonBehaviour, this\r\n    __instance_2:
+    %UnityEngineUIText, null\r\n    __value_1: %SystemString, null\r\n    __instance_3:
+    %SystemInt32, null\r\n    __name_0: %SystemString, null\r\n    uiText: %UnityEngineUIText,
+    null\r\n    clickCount: %SystemInt32, null\r\n    __returnValue: %SystemObject,
+    null\r\n\r\n.data_end\r\n\r\n.code_start\r\n\r\n    .export OnClick\r\n    \r\n   
+    OnClick:\r\n    \r\n        PUSH, __player_0\r\n        EXTERN, \"VRCSDKBaseNetworking.__get_LocalPlayer__VRCSDKBaseVRCPlayerApi\"\r\n       
+    PUSH, __GameObject_0\r\n        PUSH, __obj_0\r\n        COPY\r\n        PUSH,
+    __player_0\r\n        PUSH, __obj_0\r\n        EXTERN, \"VRCSDKBaseNetworking.__SetOwner__VRCSDKBaseVRCPlayerApi_UnityEngineGameObject__SystemVoid\"\r\n       
+    PUSH, clickCount\r\n        PUSH, __Int32_1\r\n        PUSH, __value_0\r\n       
+    EXTERN, \"SystemInt32.__op_Addition__SystemInt32_SystemInt32__SystemInt32\"\r\n       
+    PUSH, __instance_0\r\n        PUSH, __symbolName_0\r\n        PUSH, __value_0\r\n       
+    EXTERN, \"VRCUdonCommonInterfacesIUdonEventReceiver.__SetProgramVariable__SystemString_SystemObject__SystemVoid\"\r\n       
+    PUSH, __instance_1\r\n        EXTERN, \"VRCUdonCommonInterfacesIUdonEventReceiver.__RequestSerialization__SystemVoid\"\r\n       
+    JUMP, 0xFFFFFFFC\r\n    \r\n    .export _onVarChange_clickCount\r\n    \r\n   
+    _onVarChange_clickCount:\r\n    \r\n        PUSH, uiText\r\n        PUSH, __instance_2\r\n       
+    COPY\r\n        PUSH, clickCount\r\n        PUSH, __value_1\r\n        EXTERN,
+    \"SystemInt32.__ToString__SystemString\"\r\n        PUSH, __instance_2\r\n       
+    PUSH, __value_1\r\n        EXTERN, \"UnityEngineUIText.__set_text__SystemString__SystemVoid\"\r\n       
+    JUMP, 0xFFFFFFFC\r\n    \r\n\r\n.code_end\r\n"
   assemblyError: 
   graphData:
     name: 
@@ -276,5 +278,8 @@ MonoBehaviour:
     uid: 9cc4edc9-1c0f-477f-ac9a-bdacbd3b32bd
     jsonData: '{"uid":"9cc4edc9-1c0f-477f-ac9a-bdacbd3b32bd","layout":{"serializedVersion":"2","x":-490.0,"y":-190.0,"width":618.0,"height":324.0},"containedElements":["6db53f3c-a646-4f97-afc4-74fe64186239","14e655d5-733c-45aa-9c0b-161a18ead4a7","4b420ac5-0590-4ed1-b0c0-6c7136ddef8b","153012b4-7498-492e-befc-a44d596ad615"],"title":"Update
       Text when clickCount changes","layer":0,"elementTypeColor":{"r":0.0,"g":0.0,"b":0.0,"a":0.0}}'
+  viewTransform:
+    position: {x: 793.45886, y: 731.05963}
+    scale: 0.8695652
   version: 1.0.0
   showAssembly: 0

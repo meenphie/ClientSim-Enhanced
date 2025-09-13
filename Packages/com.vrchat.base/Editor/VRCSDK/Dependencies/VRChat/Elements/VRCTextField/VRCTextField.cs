@@ -86,6 +86,10 @@ namespace VRC.SDKBase.Editor.Elements
 
         private void ValueChanged(ChangeEvent<string> evt)
         {
+            if (IsPlaceholder() && !string.IsNullOrEmpty(evt.newValue))
+            {
+                RemoveFromClassList(PlaceholderClass);
+            }
             if (!_required) return;
             this.Q<TextInputBase>().EnableInClassList("border-red", string.IsNullOrWhiteSpace(evt.newValue));
         }
@@ -95,21 +99,20 @@ namespace VRC.SDKBase.Editor.Elements
             if (string.IsNullOrWhiteSpace(_placeholder)) return;
             if (!string.IsNullOrEmpty(text)) return;
             SetValueWithoutNotify(_placeholder);
-            AddToClassList(ussClassName + "__placeholder");
+            AddToClassList(PlaceholderClass);
         }
 
         private void FocusIn()
         {
             if (string.IsNullOrWhiteSpace(_placeholder)) return;
-            if (!this.ClassListContains(ussClassName + "__placeholder")) return;
+            if (!this.ClassListContains(PlaceholderClass)) return;
             this.value = string.Empty;
-            this.RemoveFromClassList(ussClassName + "__placeholder");
+            this.RemoveFromClassList(PlaceholderClass);
         }
         
         public bool IsPlaceholder()
         {
-            var placeholderClass = TextField.ussClassName + "__placeholder";
-            return ClassListContains(placeholderClass);
+            return ClassListContains(PlaceholderClass);
         }
     }
 }

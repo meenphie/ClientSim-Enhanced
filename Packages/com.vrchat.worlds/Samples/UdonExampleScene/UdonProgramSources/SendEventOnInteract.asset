@@ -12,15 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f11136daadff0b44ac2278a314682ab, type: 3}
   m_Name: SendEventOnInteract
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: da4260e185f26c4c3ae708992a2a9f5b, type: 2}
-  udonAssembly: ".data_start\n\n    .export target\n    .export eventName\n    \n   
-    __instance_0: %VRCUdonUdonBehaviour, this\n    __eventName_0: %SystemString,
-    null\n    target: %VRCUdonUdonBehaviour, this\n    eventName: %SystemString,
-    null\n\n.data_end\n\n.code_start\n\n    .export _interact\n    \n    _interact:\n   
-    \n        PUSH, target\n        PUSH, __instance_0\n        COPY\n        PUSH,
-    eventName\n        PUSH, __eventName_0\n        COPY\n        PUSH, __instance_0\n       
-    PUSH, __eventName_0\n        EXTERN, \"VRCUdonCommonInterfacesIUdonEventReceiver.__SendCustomEvent__SystemString__SystemVoid\"\n       
-    JUMP, 0xFFFFFFFC\n    \n\n.code_end\n"
+  serializedUdonProgramAsset: {fileID: 11400000, guid: a87df0515211a1a4db1341de0b2835dc,
+    type: 2}
+  udonAssembly: ".data_start\r\n\r\n    .export target\r\n    .export eventName\r\n   
+    \r\n    __instance_0: %VRCUdonUdonBehaviour, this\r\n    __eventName_0: %SystemString,
+    null\r\n    target: %VRCUdonUdonBehaviour, this\r\n    eventName: %SystemString,
+    null\r\n\r\n.data_end\r\n\r\n.code_start\r\n\r\n    .export _interact\r\n   
+    \r\n    _interact:\r\n    \r\n        PUSH, target\r\n        PUSH, __instance_0\r\n       
+    COPY\r\n        PUSH, eventName\r\n        PUSH, __eventName_0\r\n        COPY\r\n       
+    PUSH, __instance_0\r\n        PUSH, __eventName_0\r\n        EXTERN, \"VRCUdonCommonInterfacesIUdonEventReceiver.__SendCustomEvent__SystemString__SystemVoid\"\r\n       
+    JUMP, 0xFFFFFFFC\r\n    \r\n\r\n.code_end\r\n"
   assemblyError: 
   graphData:
     name: 
@@ -122,5 +123,8 @@ MonoBehaviour:
   - type: 4
     uid: 4b97c479-d8be-4671-b5c8-cae6434c1adf
     jsonData: '{"visible":true,"layout":{"serializedVersion":"2","x":10.0,"y":20.0,"width":0.0,"height":0.0}}'
+  viewTransform:
+    position: {x: 781.222, y: 334.74844}
+    scale: 1
   version: 1.0.0
   showAssembly: 0

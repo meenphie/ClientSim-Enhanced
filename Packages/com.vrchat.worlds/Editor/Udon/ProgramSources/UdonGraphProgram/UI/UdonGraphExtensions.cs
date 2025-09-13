@@ -420,6 +420,10 @@ namespace VRC.Udon.Editor.ProgramSources.UdonGraphProgram.UI
             typeString = typeString.Replace("VRCSDK3PlatformScreenUpdateData", "ScreenUpdateData");
             typeString = typeString.Replace("TextstringBuilder", "StringBuilder");
             typeString = typeString.Replace("TextRegularExpressionsRegex", "Regex");
+            typeString = typeString.Replace("SourceVRCDroneApi", "Drone");
+            typeString = typeString.Replace("SDK3NetworkStats", "NetworkStats");
+            typeString = typeString.Replace("SDK3UdonNetworkCalling", "NetworkCalling");
+            typeString = typeString.Replace("InterfacesNetworkEventTarget", "NetworkEventTarget");
             
             // ReSharper disable once StringLiteralTypo
             if (typeString.Replace("ector", "").Contains("ctor")) //Handle "Vector/vector"
@@ -674,6 +678,10 @@ namespace VRC.Udon.Editor.ProgramSources.UdonGraphProgram.UI
 
         public static string SanitizeVariableName(this string result)
         {
+            if (string.IsNullOrEmpty(result))
+            {
+                return result;
+            }
             result = result.Replace(" ", "");
             result = result.Replace("[]", "Array");
             if (char.IsNumber(result[0]))

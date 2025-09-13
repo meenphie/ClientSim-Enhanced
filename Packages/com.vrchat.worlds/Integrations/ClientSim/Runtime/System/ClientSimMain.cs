@@ -1,28 +1,27 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using Cysharp.Threading.Tasks;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using VRC.Core;
 using VRC.Economy;
+using VRC.SDK3.Components;
 using VRC.SDK3.Network;
 using VRC.SDK3.Platform;
+using VRC.SDK3.Rendering;
 using VRC.SDK3.Video.Components.AVPro;
 using VRC.SDKBase;
+using VRC.SDKBase.Network;
 using VRC.SDKBase.Platform;
 using VRC.Udon;
-using VRC.Economy;
-using VRC.SDKBase.Network;
-using VRC.Economy;
+using VRC.Udon.Security;
 using VRCNetworkBehaviour = VRC.SDK3.Network.VRCNetworkBehaviour;
-using System;
-using VRC.SDK3.Components;
 using VRCStation = VRC.SDKBase.VRCStation;
+using VRC.SDK3.UdonNetworkCalling;
 #if VRC_ENABLE_PLAYER_PERSISTENCE
 using VRC.SDK3.ClientSim.Persistence;
-using System.Linq;
 #endif
 
 namespace VRC.SDK3.ClientSim
@@ -143,9 +142,16 @@ namespace VRC.SDK3.ClientSim
             return _instance;
         }
 
-        internal static ClientSimMain GetInstance()
+        internal static bool TryGetInstance(out ClientSimMain instance)
         {
-            return _instance;
+            if (_instance != null)
+            {
+                instance = _instance;
+                return true;
+            }
+
+            instance = null;
+            return false;
         }
         
         public static void SpawnRemotePlayer(string name = null)
@@ -231,7 +237,9 @@ namespace VRC.SDK3.ClientSim
             
             _blacklistManager = new ClientSimBlacklistManager();
             _blacklistManager.AddObjectAndChildrenToBlackList(gameObject);
-
+            
+            Texture2DDefaultTextureHolder.BlacklistDefaultTextures(UdonManager.Instance);
+            
             _interactiveLayerProvider = new ClientSimInteractiveLayerProvider(_eventDispatcher);
             _sessionState = new ClientSimSessionState();
             
@@ -284,7 +292,7 @@ namespace VRC.SDK3.ClientSim
             Camera playerCamera = _player.GetCameraProvider().GetCamera();
             tooltipManager.Initialize(_settings, _player.GetTrackingProvider());
             highlightManager.Initialize(playerCamera);
-            stackedCameraSystem.Initialize(playerCamera, menu);
+            stackedCameraSystem.Initialize(playerCamera, menu, _eventDispatcher);
             
             storeManager = new ClientSimStoreManager(_eventDispatcher, new ClientSimUdonManagerEventSender(UdonManager.Instance), _playerManager);
 
@@ -305,6 +313,7 @@ namespace VRC.SDK3.ClientSim
                 if ((int)CurrentResolution.x != UnityEngine.Device.Screen.width || (int)CurrentResolution.y != UnityEngine.Device.Screen.height)
                 {
                     CurrentResolution = new Vector2(UnityEngine.Device.Screen.width, UnityEngine.Device.Screen.height);
+                    _udonEventSender.RunEvent("_onVRCCameraSettingsChanged", ("camera", VRCCameraSettings.ScreenCamera));
                 }
                 
                 var currentOrientation = DetermineOrientation();
@@ -371,7 +380,7 @@ namespace VRC.SDK3.ClientSim
                 {
                     _player.isInstanceOwner = _settings.isInstanceOwner;
                     _sceneManager.ResetSpawnOrder(); // Avoids any spawn offsets from pre-initialization of players
-                    _player.EnablePlayer(_sceneManager.GetSpawnPoint(false));
+                    _player.EnablePlayer(_sceneManager.GetSpawnPoint(false), _sceneManager.GetSpawnRadius());
                 }
             }
 
@@ -515,6 +524,14 @@ namespace VRC.SDK3.ClientSim
             behaviour.NetworkConfigure();
         }
 
+        private static bool IsSuffering() => false; // we did it chat, no more suffering
+
+        private static void SetShadowDistance(float low, float medium, float high, float mobile) => QualitySettings.shadowDistance = high;
+        private static void SetShadowDistanceAll(float distance) => QualitySettings.shadowDistance = distance;
+        private static void ResetShadowDistance() => QualitySettings.shadowDistance = 150; // TODO: base on project quality settings?
+        
+        private static void OpenAvatarListing(string id) => Debug.Log($"opening avatar listing for {id}");
+
         #region VRChat SDK Links
 
         // If adding to this list, be sure to also remove the link in the RemoveSDKLinks method 
@@ -533,6 +550,7 @@ namespace VRC.SDK3.ClientSim
             Networking._IsInstanceOwner += _playerManager.IsInstanceOwner;
             Networking._IsObjectReady += IsObjectReady;
             Networking._IsNetworkSettled += IsNetworkReady;
+            Networking._IsSuffering += IsSuffering;
             
             Networking._GetUniqueName += GetUniqueStringForObject;
             
@@ -552,6 +570,8 @@ namespace VRC.SDK3.ClientSim
             if (_player != null)
             {
                 VRC_UiShape.GetEventCamera += _player.GetCameraProvider().GetCameraForObject;
+                VRCCameraSettings.ScreenCameraRef = _player.GetCameraProvider().GetCamera();
+                VRCCameraSettings.ScreenCamera.GetCameraMode = () => VRCCameraMode.Screen;
             }
 
             VRC_Pickup.OnAwake += ClientSimPickupHelper.InitializePickup;
@@ -674,7 +694,16 @@ namespace VRC.SDK3.ClientSim
             Store._doesAnyPlayerOwnProduct += ClientSimStoreManager.DoesAnyPlayerOwnProduct;
             Store._getPlayersWhoOwnProduct += ClientSimStoreManager.GetPlayersWhoOwnProduct;
             Store._listProductOwners += ClientSimStoreManager.ListProductOwners;
+
+            VRCQualitySettings.SetShadowDistanceInternal += SetShadowDistance;
+            VRCQualitySettings.SetShadowDistanceInternalAll += SetShadowDistanceAll;
+            VRCQualitySettings.ResetShadowDistanceInternal += ResetShadowDistance;
+
+            NetworkCalling.GetAllQueuedEventsProxy += ClientSimNetworkCalling.GetAllQueuedEventsProxy;
+            NetworkCalling.GetQueuedEventsProxy += ClientSimNetworkCalling.GetQueuedEventsProxy;
+            NetworkCalling.SendCustomNetworkEventProxy += ClientSimNetworkCalling.SendCustomNetworkEventProxy;
             
+            VRC.SDK3.Components.VRCOpenMenu._OpenAvatarListingDelegate = OpenAvatarListing;
         }
 
         private void RemoveSDKLinks()
@@ -690,6 +719,7 @@ namespace VRC.SDK3.ClientSim
             Networking._IsInstanceOwner -= _playerManager.IsInstanceOwner;
             Networking._IsObjectReady -= IsObjectReady;
             Networking._IsNetworkSettled -= IsNetworkReady;
+            Networking._IsSuffering -= IsSuffering;
 
             Networking._GetUniqueName -= GetUniqueStringForObject;
 
@@ -819,6 +849,16 @@ namespace VRC.SDK3.ClientSim
             Store._doesPlayerOwnProduct -= ClientSimStoreManager.DoesPlayerOwnProduct;
             Store._doesAnyPlayerOwnProduct -= ClientSimStoreManager.DoesAnyPlayerOwnProduct;
             Store._getPlayersWhoOwnProduct -= ClientSimStoreManager.GetPlayersWhoOwnProduct;
+
+            VRCQualitySettings.SetShadowDistanceInternal -= SetShadowDistance;
+            VRCQualitySettings.SetShadowDistanceInternalAll -= SetShadowDistanceAll;
+            VRCQualitySettings.ResetShadowDistanceInternal -= ResetShadowDistance;
+
+            NetworkCalling.GetAllQueuedEventsProxy -= ClientSimNetworkCalling.GetAllQueuedEventsProxy;
+            NetworkCalling.GetQueuedEventsProxy -= ClientSimNetworkCalling.GetQueuedEventsProxy;
+            NetworkCalling.SendCustomNetworkEventProxy -= ClientSimNetworkCalling.SendCustomNetworkEventProxy;
+            
+            VRC.SDK3.Components.VRCOpenMenu._OpenAvatarListingDelegate -= OpenAvatarListing;
         }
 
         #endregion

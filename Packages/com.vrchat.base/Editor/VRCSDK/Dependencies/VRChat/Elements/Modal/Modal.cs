@@ -35,7 +35,13 @@ namespace VRC.SDKBase.Editor.Elements
         private readonly Label _title;
         private readonly Button _closeButton;
         private readonly VisualElement _container;
+        private readonly VisualElement _contentWrapper;
+        private readonly VisualElement _actionButtonWrapper;
+        private readonly Button _actionButton;
+        private readonly VisualElement _icon;
         private StyleLength _parentHeight;
+
+        private bool _hasActionButton;
         
         public override VisualElement contentContainer => _container;
 
@@ -43,6 +49,8 @@ namespace VRC.SDKBase.Editor.Elements
         public EventHandler OnClose;
         [PublicAPI]
         public bool IsOpen { get; private set; }
+        [PublicAPI]
+        public EventHandler OnCancel;
 
         private VisualElement _anchor;
         private VisualElement _originalParent;
@@ -60,7 +68,11 @@ namespace VRC.SDKBase.Editor.Elements
 
             _title = this.Q<Label>("modal-title");
             _closeButton = this.Q<Button>("modal-close-btn");
-            _container = this.Q("modal-content");
+            _contentWrapper = this.Q("modal-content-wrapper");
+            _container = _contentWrapper.Q("modal-content");
+            _icon = this.Q<VisualElement>("modal-icon");
+            _actionButtonWrapper = this.Q("modal-action-button-wrapper");
+            _actionButton = this.Q<Button>("modal-action-button");
             var backdrop = this.Q("modal-backdrop");
             
             
@@ -70,10 +82,22 @@ namespace VRC.SDKBase.Editor.Elements
                 if (_originalParent != null) return;
                 _originalParent = parent;
             });
-            _closeButton.clicked += Close;
+
+            void OnCloseCancel()
+            {
+                // If there is an action button, treat the backdrop/close click as a cancel
+                if (_hasActionButton)
+                {
+                    OnCancel?.Invoke(this, EventArgs.Empty);
+                }
+
+                Close();
+            }
+
+            _closeButton.clicked += OnCloseCancel;
             backdrop.RegisterCallback<MouseDownEvent>(_ =>
             {
-                Close();
+                OnCloseCancel();
             });
         }
 
@@ -100,6 +124,19 @@ namespace VRC.SDKBase.Editor.Elements
             }
         }
         
+        public Modal(string title, string content, Action buttonAction, string buttonActionText, VisualElement anchor) : this(title, content, anchor)
+        {
+            _actionButton.clicked += () =>
+            {
+                buttonAction?.Invoke();
+                Close();
+            };
+            _actionButtonWrapper.RemoveFromClassList("d-none");
+            _actionButton.text = !string.IsNullOrWhiteSpace(buttonActionText) ? buttonActionText : "OK";
+            _hasActionButton = true;
+            _container.AddToClassList("mr-2");
+        }
+        
         /// <summary>
         /// Shorthand method for creating and showing a modal in place
         /// Calling `Close` on such a modal - immediately removes it from the hierarchy
@@ -112,6 +149,28 @@ namespace VRC.SDKBase.Editor.Elements
         public static Modal CreateAndShow(string title, string content, VisualElement anchor)
         {
             var modal = new Modal(title, content, anchor)
+            {
+                _isTemporary = true
+            };
+            anchor.Add(modal);
+            modal.Open();
+            return modal;
+        }
+        
+        /// <summary>
+        /// Shorthand method for creating and showing a modal in place
+        /// Calling `Close` on such a modal - immediately removes it from the hierarchy
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="content"></param>
+        /// <param name="anchor"></param>
+        /// <param name="buttonAction">If provided - adds a button that calls this action</param>
+        /// <param name="buttonActionText">Sets the text of the action button if `buttonAction` is provided</param>
+        /// <returns></returns>
+        [PublicAPI]
+        public static Modal CreateAndShow(string title, string content, Action buttonAction, string buttonActionText, VisualElement anchor)
+        {
+            var modal = new Modal(title, content, buttonAction, buttonActionText, anchor)
             {
                 _isTemporary = true
             };
@@ -156,6 +215,11 @@ namespace VRC.SDKBase.Editor.Elements
             AddToClassList("d-none");
             parent.style.height = _parentHeight;
             OnClose?.Invoke(this, EventArgs.Empty);
+            // If there is no action button - treat any close as cancel
+            if (!_hasActionButton)
+            {
+                OnCancel?.Invoke(this, EventArgs.Empty);
+            }
             if (_isTemporary)
             {
                 RemoveFromHierarchy();
@@ -166,6 +230,13 @@ namespace VRC.SDKBase.Editor.Elements
         public void SetTitle(string title)
         {
             _title.text = title;
+        }
+
+        [PublicAPI]
+        public void SetIcon(string resourceName)
+        {
+            _icon.RemoveFromClassList("d-none");
+            _icon.style.backgroundImage = new StyleBackground(Resources.Load<Texture2D>(resourceName));
         }
     }
 }

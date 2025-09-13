@@ -265,7 +265,7 @@ public partial class VRCSdkControlPanel : EditorWindow, IVRCSdkPanelApi
         }
     }
     
-    private enum PanelTab
+    internal enum PanelTab
     {
         Account,
         Builder,
@@ -402,6 +402,8 @@ public partial class VRCSdkControlPanel : EditorWindow, IVRCSdkPanelApi
         VRCSettings.ActiveWindowPanel = (int) tab;
         RenderTabs();
     }
+    
+    internal PanelTab CurrentTab => (PanelTab) VRCSettings.ActiveWindowPanel;
 
     private void RenderTabs()
     {

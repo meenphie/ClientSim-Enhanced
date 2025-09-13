@@ -36,11 +36,6 @@
             </VisualElement>
             
             <VisualElement class="row justify-content-between">
-                <VisualElement class="row m-2">
-                    <Toggle name="accept-terms-toggle" />
-                    <Label text="The information provided above is accurate and I have the rights to upload this content to VRChat" class="ml-2 flex-shrink-1 white-space-normal pr-2 options-text-color text-left"  />
-                </VisualElement>
-    
                 <VisualElement class="row m-2 d-none">
                     <Label text="Run Performance Streaming" class="ml-2 flex-shrink-1 white-space-normal pr-2 options-text-color text-right"  />
                     <Toggle name="run-performance-streaming" />

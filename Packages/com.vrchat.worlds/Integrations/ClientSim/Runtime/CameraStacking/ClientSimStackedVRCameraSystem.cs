@@ -15,11 +15,13 @@ namespace VRC.SDK3.ClientSim
         private bool _isReady;
         private List<Camera> _cameras;
         private ClientSimMenu _clientSimMenu;
+        private IClientSimEventDispatcher _eventDispatcher;
 
-        public void Initialize(Camera playerCamera, ClientSimMenu menu)
+        public void Initialize(Camera playerCamera, ClientSimMenu menu, IClientSimEventDispatcher eventDispatcher)
         {
             _mainSceneCamera = playerCamera;
             _clientSimMenu = menu;
+            _eventDispatcher = eventDispatcher;
         }
 
         public void Ready()
@@ -49,6 +51,7 @@ namespace VRC.SDK3.ClientSim
             {
                 CreateCameraStack();
                 _isInitialized = true;
+                _eventDispatcher.SendEvent(new ClientSimStackedCameraReadyEvent());
             }
         }
 

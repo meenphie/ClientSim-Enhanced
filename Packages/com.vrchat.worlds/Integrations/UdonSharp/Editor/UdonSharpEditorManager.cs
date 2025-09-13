@@ -17,6 +17,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using VRC.SDKBase;
 using VRC.SDKBase.Editor;
+using VRC.SDKBase.Editor.BuildPipeline;
 using VRC.Udon;
 using VRC.Udon.Editor;
 using Object = UnityEngine.Object;
@@ -29,6 +30,9 @@ namespace UdonSharpEditor
 {
     [InitializeOnLoad]
     internal class UdonSharpEditorManager
+#if VRC_ENABLE_PROPS
+    : IVRCSDKPreprocessPropCallback
+#endif
     {
         static UdonSharpEditorManager()
         {
@@ -62,15 +66,17 @@ namespace UdonSharpEditor
             OnSceneBuildInternal(BuildPipeline.isBuildingPlayer);
         }
         
-        private static void OnSceneBuildInternal(bool isBuildingPlayer)
+        private static void OnSceneBuildInternal(bool isBuildingPlayer, GameObject[] gameObjects = null)
         {
-            Scene currentScene = SceneManager.GetActiveScene();
-
-            GameObject[] rootObjects = currentScene.GetRootGameObjects();
-
+            if (gameObjects == null)
+            {
+                Scene currentScene = SceneManager.GetActiveScene();
+                gameObjects = currentScene.GetRootGameObjects();
+            }
+            
             HashSet<UdonBehaviour> allBehaviours = new HashSet<UdonBehaviour>();
 
-            foreach (GameObject rootObject in rootObjects)
+            foreach (GameObject rootObject in gameObjects)
             {
                 foreach (UdonSharpBehaviour behaviour in rootObject.GetComponentsInChildren<UdonSharpBehaviour>(true))
                 {
@@ -98,9 +104,9 @@ namespace UdonSharpEditor
             if (!isBuildingPlayer)
                 return;
 
-            foreach (GameObject rootObject in rootObjects)
+            foreach (GameObject gameObject in gameObjects)
             {
-                foreach (UdonSharpBehaviour behaviour in rootObject.GetComponentsInChildren<UdonSharpBehaviour>(true))
+                foreach (UdonSharpBehaviour behaviour in gameObject.GetComponentsInChildren<UdonSharpBehaviour>(true))
                 {
                     Object.DestroyImmediate(behaviour);
                 }
@@ -2096,6 +2102,16 @@ namespace UdonSharpEditor
                 AssetDatabase.StopAssetEditing();
             }
         }
+
+        public int callbackOrder { get; }
+#if VRC_ENABLE_PROPS
+        public bool OnPreprocessProp(GameObject propGameObject)
+        {
+            OnSceneBuildInternal(true, new [] { propGameObject });
+            
+            return true;
+        }
+#endif
     }
     
     internal class UdonSharpPrefabPostprocessor : AssetPostprocessor

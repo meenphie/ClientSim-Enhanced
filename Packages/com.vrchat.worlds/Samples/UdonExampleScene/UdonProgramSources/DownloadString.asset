@@ -12,38 +12,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f11136daadff0b44ac2278a314682ab, type: 3}
   m_Name: DownloadString
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: d394d955b8a75630fa042bd08c26145c, type: 2}
-  udonAssembly: ".data_start\n\n    .export Url\n    .export TextField\n    \n   
-    __url_0: %VRCSDKBaseVRCUrl, null\n    __udonBehaviour_0: %VRCUdonUdonBehaviour,
-    this\n    __instance_0: %UnityEngineUIText, null\n    __value_0: %SystemString,
-    null\n    __instance_1: %VRCSDK3StringLoadingIVRCStringDownload, null\n    onStringLoadSuccessIVRCStringDownload:
-    %VRCSDK3StringLoadingIVRCStringDownload, null\n    __message_0: %SystemObject,
-    null\n    __String_0: %SystemString, null\n    __String_1: %SystemString, null\n   
-    __String_2: %SystemString, null\n    __String_3: %SystemString, null\n    __instance_2:
-    %VRCSDK3StringLoadingIVRCStringDownload, null\n    onStringLoadErrorIVRCStringDownload:
-    %VRCSDK3StringLoadingIVRCStringDownload, null\n    __value_1: %SystemInt32, null\n   
-    __instance_3: %VRCSDK3StringLoadingIVRCStringDownload, null\n    Url: %VRCSDKBaseVRCUrl,
-    null\n    TextField: %UnityEngineUIText, null\n\n.data_end\n\n.code_start\n\n   
-    .export _start\n    \n    _start:\n    \n        PUSH, Url\n        PUSH, __url_0\n       
-    COPY\n        PUSH, __url_0\n        PUSH, __udonBehaviour_0\n        EXTERN,
-    \"VRCSDK3StringLoadingVRCStringDownloader.__LoadUrl__VRCSDKBaseVRCUrl_VRCUdonCommonInterfacesIUdonEventReceiver__SystemVoid\"\n       
-    JUMP, 0xFFFFFFFC\n    \n    .export _onStringLoadSuccess\n    \n    _onStringLoadSuccess:\n   
-    \n        PUSH, TextField\n        PUSH, __instance_0\n        COPY\n       
-    PUSH, onStringLoadSuccessIVRCStringDownload\n        PUSH, __instance_1\n       
-    COPY\n        PUSH, __instance_1\n        PUSH, __value_0\n        EXTERN, \"VRCSDK3StringLoadingIVRCStringDownload.__get_Result__SystemString\"\n       
-    PUSH, __instance_0\n        PUSH, __value_0\n        EXTERN, \"UnityEngineUIText.__set_text__SystemString__SystemVoid\"\n       
-    JUMP, 0xFFFFFFFC\n    \n    .export _onStringLoadError\n    \n    _onStringLoadError:\n   
-    \n        PUSH, onStringLoadErrorIVRCStringDownload\n        PUSH, __instance_2\n       
-    COPY\n        PUSH, __instance_2\n        PUSH, __String_2\n        EXTERN, \"VRCSDK3StringLoadingIVRCStringDownload.__get_Error__SystemString\"\n       
-    PUSH, __String_2\n        PUSH, __String_3\n        PUSH, __String_0\n       
-    EXTERN, \"SystemString.__op_Addition__SystemString_SystemString__SystemString\"\n       
-    PUSH, onStringLoadErrorIVRCStringDownload\n        PUSH, __instance_3\n       
-    COPY\n        PUSH, __instance_3\n        PUSH, __value_1\n        EXTERN, \"VRCSDK3StringLoadingIVRCStringDownload.__get_ErrorCode__SystemInt32\"\n       
-    PUSH, __value_1\n        PUSH, __String_1\n        EXTERN, \"SystemConvert.__ToString__SystemInt32__SystemString\"\n       
-    PUSH, __String_0\n        PUSH, __String_1\n        PUSH, __message_0\n       
-    EXTERN, \"SystemString.__op_Addition__SystemString_SystemString__SystemString\"\n       
-    PUSH, __message_0\n        EXTERN, \"UnityEngineDebug.__Log__SystemObject__SystemVoid\"\n       
-    JUMP, 0xFFFFFFFC\n    \n\n.code_end\n"
+  serializedUdonProgramAsset: {fileID: 11400000, guid: e7c2ba5d67832be459d76016771e871b,
+    type: 2}
+  udonAssembly: ".data_start\r\n\r\n    .export Url\r\n    .export TextField\r\n   
+    \r\n    __url_0: %VRCSDKBaseVRCUrl, null\r\n    __udonBehaviour_0: %VRCUdonUdonBehaviour,
+    this\r\n    __instance_0: %UnityEngineUIText, null\r\n    __value_0: %SystemString,
+    null\r\n    __instance_1: %VRCSDK3StringLoadingIVRCStringDownload, null\r\n   
+    onStringLoadSuccessIVRCStringDownload: %VRCSDK3StringLoadingIVRCStringDownload,
+    null\r\n    __message_0: %SystemObject, null\r\n    __String_0: %SystemString,
+    null\r\n    __String_1: %SystemString, null\r\n    __String_2: %SystemString,
+    null\r\n    __String_3: %SystemString, null\r\n    __instance_2: %VRCSDK3StringLoadingIVRCStringDownload,
+    null\r\n    onStringLoadErrorIVRCStringDownload: %VRCSDK3StringLoadingIVRCStringDownload,
+    null\r\n    __value_1: %SystemInt32, null\r\n    __instance_3: %VRCSDK3StringLoadingIVRCStringDownload,
+    null\r\n    Url: %VRCSDKBaseVRCUrl, null\r\n    TextField: %UnityEngineUIText,
+    null\r\n\r\n.data_end\r\n\r\n.code_start\r\n\r\n    .export _start\r\n    \r\n   
+    _start:\r\n    \r\n        PUSH, Url\r\n        PUSH, __url_0\r\n        COPY\r\n       
+    PUSH, __url_0\r\n        PUSH, __udonBehaviour_0\r\n        EXTERN, \"VRCSDK3StringLoadingVRCStringDownloader.__LoadUrl__VRCSDKBaseVRCUrl_VRCUdonCommonInterfacesIUdonEventReceiver__SystemVoid\"\r\n       
+    JUMP, 0xFFFFFFFC\r\n    \r\n    .export _onStringLoadSuccess\r\n    \r\n    _onStringLoadSuccess:\r\n   
+    \r\n        PUSH, TextField\r\n        PUSH, __instance_0\r\n        COPY\r\n       
+    PUSH, onStringLoadSuccessIVRCStringDownload\r\n        PUSH, __instance_1\r\n       
+    COPY\r\n        PUSH, __instance_1\r\n        PUSH, __value_0\r\n        EXTERN,
+    \"VRCSDK3StringLoadingIVRCStringDownload.__get_Result__SystemString\"\r\n       
+    PUSH, __instance_0\r\n        PUSH, __value_0\r\n        EXTERN, \"UnityEngineUIText.__set_text__SystemString__SystemVoid\"\r\n       
+    JUMP, 0xFFFFFFFC\r\n    \r\n    .export _onStringLoadError\r\n    \r\n    _onStringLoadError:\r\n   
+    \r\n        PUSH, onStringLoadErrorIVRCStringDownload\r\n        PUSH, __instance_2\r\n       
+    COPY\r\n        PUSH, __instance_2\r\n        PUSH, __String_2\r\n        EXTERN,
+    \"VRCSDK3StringLoadingIVRCStringDownload.__get_Error__SystemString\"\r\n       
+    PUSH, __String_2\r\n        PUSH, __String_3\r\n        PUSH, __String_0\r\n       
+    EXTERN, \"SystemString.__op_Addition__SystemString_SystemString__SystemString\"\r\n       
+    PUSH, onStringLoadErrorIVRCStringDownload\r\n        PUSH, __instance_3\r\n       
+    COPY\r\n        PUSH, __instance_3\r\n        PUSH, __value_1\r\n        EXTERN,
+    \"VRCSDK3StringLoadingIVRCStringDownload.__get_ErrorCode__SystemInt32\"\r\n       
+    PUSH, __value_1\r\n        PUSH, __String_1\r\n        EXTERN, \"SystemConvert.__ToString__SystemInt32__SystemString\"\r\n       
+    PUSH, __String_0\r\n        PUSH, __String_1\r\n        PUSH, __message_0\r\n       
+    EXTERN, \"SystemString.__op_Addition__SystemString_SystemString__SystemString\"\r\n       
+    PUSH, __message_0\r\n        EXTERN, \"UnityEngineDebug.__Log__SystemObject__SystemVoid\"\r\n       
+    JUMP, 0xFFFFFFFC\r\n    \r\n\r\n.code_end\r\n"
   assemblyError: 
   graphData:
     name: 

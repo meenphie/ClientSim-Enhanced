@@ -1,10 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEditor;
 using VRC.Core;
+using VRC.SDKBase.Editor;
+using VRC.SDKBase.Editor.Api;
 
 // This file handles the Content tab of the SDK Panel
 
@@ -15,19 +19,31 @@ public partial class VRCSdkControlPanel : EditorWindow
     static List<ApiAvatar> uploadedAvatars = null;
     static List<ApiWorld> uploadedWorlds = null;
     static List<ApiAvatar> testAvatars = null;
-
+    
+#if VRC_ENABLE_PROPS
+    private static List<VRCProp> uploadedProps = null;
+#endif
+    
     public static Dictionary<string, Texture2D> ImageCache = new Dictionary<string, Texture2D>();
 
     static List<string> justDeletedContents;
     static List<ApiAvatar> justUpdatedAvatars;
 
     static EditorCoroutine fetchingAvatars = null, fetchingWorlds = null;
+    
+#if VRC_ENABLE_PROPS
+    private static bool fetchingProps = false;
+#endif
 
     private static string searchString = "";
     private static bool WorldsToggle = true;
     private static bool AvatarsToggle = true;
     private static bool TestAvatarsToggle = true;
 
+#if VRC_ENABLE_PROPS
+    private static bool PropsToggle = true;
+#endif
+    
     const string WORLDS_WEB_URL = "https://vrchat.com/home/content/worlds";
     const string WORLD_WEB_URL = "https://vrchat.com/home/content/worlds/";
     const string WORLD_WEB_URL_SUFFIX = "/edit";
@@ -61,12 +77,13 @@ public partial class VRCSdkControlPanel : EditorWindow
 
     public static void ClearContent()
     {
-        if (uploadedWorlds != null)
-            uploadedWorlds = null;
-        if (uploadedAvatars != null)
-            uploadedAvatars = null;
-        if (testAvatars != null)
-            testAvatars = null;
+        uploadedWorlds = null;
+        uploadedAvatars = null;
+        testAvatars = null;
+#if VRC_ENABLE_PROPS
+        uploadedProps = null;
+        fetchingProps = false;
+#endif
         ImageCache.Clear();
     }
 
@@ -155,6 +172,50 @@ public partial class VRCSdkControlPanel : EditorWindow
         testAvatars = new List<ApiAvatar>();
 #endif
     }
+
+#if VRC_ENABLE_PROPS
+    private static async Task<List<VRCProp>> FetchProps()
+    {
+        fetchingProps = true;
+        var offset = 0;
+        List<VRCProp> propsResponse;
+        var fetchedProps = new List<VRCProp>();
+        do
+        {
+            try
+            {
+                propsResponse = await VRCApi.GetProps(100, offset, true);
+                foreach (var prop in propsResponse)
+                {
+                    var image = await VRCApi.GetImage(prop.ThumbnailImageUrl);
+                    if (image != null)
+                    {
+                        ImageCache[prop.ID] = image;
+                    }
+                }
+
+                fetchedProps.AddRange(propsResponse);
+                offset += 100;
+                propsResponse.Clear();
+            }
+            catch (ApiErrorException e)
+            {
+                Debug.LogError($"[{e.StatusCode}] Error fetching props: {e.ErrorMessage}");
+                break;
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                break;
+            }
+        } while (propsResponse.Count > 0);
+        
+        fetchingProps = false;
+
+        uploadedProps = fetchedProps;
+        return fetchedProps;
+    }
+#endif
 
     private static void FetchWorlds(int offset = 0)
     {
@@ -316,6 +377,13 @@ public partial class VRCSdkControlPanel : EditorWindow
                 {
                     AvatarsListGUI(expandedLayout, ref updatedContent);
                 }
+
+#if VRC_ENABLE_PROPS
+                if (uploadedProps?.Count > 0)
+                {
+                    PropsListGUI(ref updatedContent);
+                }
+#endif
                 
                 if (testAvatars.Count > 0)
                 {
@@ -488,6 +556,90 @@ public partial class VRCSdkControlPanel : EditorWindow
             }
         }
     }
+#if VRC_ENABLE_PROPS
+    private void PropsListGUI(ref bool updatedContent)
+    {
+        EditorGUILayout.Space();
+
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            EditorGUILayout.LabelField("Props", EditorStyles.boldLabel, GUILayout.ExpandWidth(false),
+                GUILayout.Width(65));
+            PropsToggle = EditorGUILayout.Foldout(PropsToggle, new GUIContent(""));
+        }
+
+        EditorGUILayout.Space();
+
+        if (PropsToggle)
+        {
+            foreach (var prop in uploadedProps)
+            {
+                if (!prop.Name.ToLowerInvariant().Contains(searchString.ToLowerInvariant()))
+                    continue;
+
+                using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
+                {
+                    if (ImageCache.ContainsKey(prop.ID))
+                    {
+                        if (GUILayout.Button(ImageCache[prop.ID], GUILayout.Height(AVATAR_IMAGE_BUTTON_HEIGHT),
+                                GUILayout.Width(AVATAR_IMAGE_BUTTON_WIDTH)))
+                            Application.OpenURL(prop.ImageUrl);
+                    }
+                    else
+                    {
+                        if (GUILayout.Button("", GUILayout.Height(AVATAR_IMAGE_BUTTON_HEIGHT),
+                                GUILayout.Width(AVATAR_IMAGE_BUTTON_WIDTH)))
+                            Application.OpenURL(prop.ImageUrl);
+                    }
+
+                    using (new EditorGUILayout.VerticalScope())
+                    {
+                        using (new EditorGUILayout.HorizontalScope())
+                        {
+                            EditorGUILayout.LabelField(prop.Name, contentTitleStyle);
+                            if (GUILayout.Button("Open on web", GUILayout.Width(OPEN_ON_WEB_BUTTON_WIDTH)))
+                                Application.OpenURL(AVATAR_WEB_URL + prop.ID);
+                        }
+                        
+                        if (GUILayout.Button("Copy ID", GUILayout.Width(COPY_AVATAR_ID_BUTTON_WIDTH)))
+                        {
+                            TextEditor te = new TextEditor();
+                            te.text = prop.ID;
+                            te.SelectAll();
+                            te.Copy();
+                        }
+
+                        if (GUILayout.Button("Delete", GUILayout.Width(DELETE_AVATAR_BUTTON_WIDTH)))
+                        {
+                            if (EditorUtility.DisplayDialog("Delete " + prop.Name + "?",
+                                    "Are you sure you want to delete " + prop.Name + "? This cannot be undone.", "Delete",
+                                    "Cancel"))
+                            {
+                                foreach (VRC.Core.PipelineManager pm in FindObjectsOfType<VRC.Core.PipelineManager>()
+                                             .Where(pm => pm.blueprintId == prop.ID))
+                                {
+                                    pm.blueprintId = "";
+
+                                    EditorUtility.SetDirty(pm);
+                                    UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(pm.gameObject.scene);
+                                    UnityEditor.SceneManagement.EditorSceneManager.SaveScene(pm.gameObject.scene);
+                                }
+                                
+                                VRCApi.Delete("props/" + prop.ID).ConfigureAwait(false);
+                                uploadedProps.RemoveAll(p => p.ID == prop.ID);
+                                if (ImageCache.ContainsKey(prop.ID))
+                                    ImageCache.Remove(prop.ID);
+                                
+                                updatedContent = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+#endif
     
     private void TestAvatarsListGUI(bool expandedLayout, ref bool updatedContent)
     {
@@ -723,43 +875,63 @@ public partial class VRCSdkControlPanel : EditorWindow
         GUILayout.EndHorizontal();
         GUILayout.EndVertical();
 
-        if (uploadedWorlds == null || uploadedAvatars == null || testAvatars == null)
+        if (((PanelTab) VRCSettings.ActiveWindowPanel) == PanelTab.ContentManager)
         {
-            if (uploadedWorlds == null)
-                uploadedWorlds = new List<ApiWorld>();
-            if (uploadedAvatars == null)
-                uploadedAvatars = new List<ApiAvatar>();
-            if (testAvatars == null)
-                testAvatars = new List<ApiAvatar>();
+            if (uploadedWorlds == null || uploadedAvatars == null || testAvatars == null)
+            {
+                if (uploadedWorlds == null)
+                    uploadedWorlds = new List<ApiWorld>();
+                if (uploadedAvatars == null)
+                    uploadedAvatars = new List<ApiAvatar>();
+                if (testAvatars == null)
+                    testAvatars = new List<ApiAvatar>();
 
-            EditorCoroutine.Start(FetchUploadedData());
-        }
+                EditorCoroutine.Start(FetchUploadedData());
+            }
 
-        if (fetchingWorlds != null || fetchingAvatars != null)
-        {
-            GUILayout.BeginVertical(boxGuiStyle, GUILayout.Width(SdkWindowWidth - 8));
-            EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Fetching Records", titleGuiStyle);
-            EditorGUILayout.Space();
+#if VRC_ENABLE_PROPS
+            if (uploadedProps == null)
+            {
+                if (!fetchingProps && APIUser.CurrentUser != null && !string.IsNullOrEmpty(APIUser.CurrentUser.id))
+                {
+                    FetchProps().ConfigureAwait(false);
+                }
+            }
+#endif
+
+            if (
+                fetchingWorlds != null
+                || fetchingAvatars != null
+#if VRC_ENABLE_PROPS
+                || fetchingProps
+#endif
+            )
+            {
+                GUILayout.BeginVertical(boxGuiStyle, GUILayout.Width(SdkWindowWidth - 8));
+                EditorGUILayout.Space();
+                EditorGUILayout.LabelField("Fetching Records", titleGuiStyle);
+                EditorGUILayout.Space();
+                GUILayout.EndVertical();
+            }
+            else
+            {
+                GUILayout.BeginVertical(boxGuiStyle, GUILayout.Width(SdkWindowWidth - 8));
+                EditorGUILayout.Space();
+                EditorGUILayout.BeginHorizontal();
+                GUILayout.Label("Fetch updated records from the VRChat server");
+                if (GUILayout.Button("Fetch"))
+                    ClearContent();
+                EditorGUILayout.EndHorizontal();
+                EditorGUILayout.Space();
+                GUILayout.EndVertical();
+            }
+
             GUILayout.EndVertical();
-        }
-        else
-        {
-            GUILayout.BeginVertical(boxGuiStyle, GUILayout.Width(SdkWindowWidth - 8));
-            EditorGUILayout.Space();
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Label("Fetch updated records from the VRChat server");
-            if (GUILayout.Button("Fetch"))
-                ClearContent();
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.Space();
-            GUILayout.EndVertical();
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            OnGUIUserInfo();
         }
 
-        GUILayout.EndVertical();
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
-
-        OnGUIUserInfo();
     }
 }

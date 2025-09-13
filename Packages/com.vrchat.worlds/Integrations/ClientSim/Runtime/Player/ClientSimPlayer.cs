@@ -420,9 +420,10 @@ namespace VRC.SDK3.ClientSim
             }
         }
 
-        public void EnablePlayer(Transform spawnPoint)
+        public void EnablePlayer(Transform spawnPoint, float spawnRadius)
         {
-            playerController.Teleport(spawnPoint, false);
+            Vector3 position = ClientSimPlayerSpawner.GetRandomPositionAroundSpawn(spawnPoint.position, spawnRadius);
+            playerController.Teleport(position, spawnPoint.rotation, false);
             gameObject.SetActive(true);
         }
 

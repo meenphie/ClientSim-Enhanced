@@ -12,17 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f11136daadff0b44ac2278a314682ab, type: 3}
   m_Name: ToggleGameObject
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: dd24ae6447c6217a7b2c1fbe27a84cba, type: 2}
-  udonAssembly: ".data_start\n\n    .export targetGameObject\n    \n    __instance_0:
-    %UnityEngineGameObject, this\n    __value_0: %SystemBoolean, null\n    __Boolean_0:
-    %SystemBoolean, null\n    __instance_1: %UnityEngineGameObject, this\n    targetGameObject:
-    %UnityEngineGameObject, this\n\n.data_end\n\n.code_start\n\n    .export Toggle\n   
-    \n    Toggle:\n    \n        PUSH, targetGameObject\n        PUSH, __instance_0\n       
-    COPY\n        PUSH, targetGameObject\n        PUSH, __instance_1\n        COPY\n       
-    PUSH, __instance_1\n        PUSH, __Boolean_0\n        EXTERN, \"UnityEngineGameObject.__get_activeSelf__SystemBoolean\"\n       
-    PUSH, __Boolean_0\n        PUSH, __value_0\n        EXTERN, \"SystemBoolean.__op_UnaryNegation__SystemBoolean__SystemBoolean\"\n       
-    PUSH, __instance_0\n        PUSH, __value_0\n        EXTERN, \"UnityEngineGameObject.__SetActive__SystemBoolean__SystemVoid\"\n       
-    JUMP, 0xFFFFFFFC\n    \n\n.code_end\n"
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 70d903daab127274b909c5471a7c6a12,
+    type: 2}
+  udonAssembly: ".data_start\r\n\r\n    .export targetGameObject\r\n    \r\n    __instance_0:
+    %UnityEngineGameObject, this\r\n    __value_0: %SystemBoolean, null\r\n    __Boolean_0:
+    %SystemBoolean, null\r\n    __instance_1: %UnityEngineGameObject, this\r\n   
+    targetGameObject: %UnityEngineGameObject, this\r\n\r\n.data_end\r\n\r\n.code_start\r\n\r\n   
+    .export Toggle\r\n    \r\n    Toggle:\r\n    \r\n        PUSH, targetGameObject\r\n       
+    PUSH, __instance_0\r\n        COPY\r\n        PUSH, targetGameObject\r\n       
+    PUSH, __instance_1\r\n        COPY\r\n        PUSH, __instance_1\r\n        PUSH,
+    __Boolean_0\r\n        EXTERN, \"UnityEngineGameObject.__get_activeSelf__SystemBoolean\"\r\n       
+    PUSH, __Boolean_0\r\n        PUSH, __value_0\r\n        EXTERN, \"SystemBoolean.__op_UnaryNegation__SystemBoolean__SystemBoolean\"\r\n       
+    PUSH, __instance_0\r\n        PUSH, __value_0\r\n        EXTERN, \"UnityEngineGameObject.__SetActive__SystemBoolean__SystemVoid\"\r\n       
+    JUMP, 0xFFFFFFFC\r\n    \r\n\r\n.code_end\r\n"
   assemblyError: 
   graphData:
     name: 

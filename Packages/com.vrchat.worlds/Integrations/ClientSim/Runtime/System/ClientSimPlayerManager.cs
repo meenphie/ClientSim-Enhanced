@@ -100,13 +100,14 @@ namespace VRC.SDK3.ClientSim
             }
 
 #if VRC_ENABLE_PLAYER_PERSISTENCE 
-            clientSimPlayer.SetupPlayerPersistence(
-                ClientSimMain.GetInstance().GetEventDispatcher(),
-                ClientSimMain.GetInstance().GetUdonEventSender(), 
-                ClientSimMain.GetInstance().GetBlacklistManager(),
-                ClientSimMain.GetInstance().GetUdonManager(),
-                ClientSimMain.GetInstance().GetSyncedObjectManager(),
-                ClientSimMain.GetInstance().GetPlayerManager()
+            if (ClientSimMain.TryGetInstance(out var instance)) 
+                clientSimPlayer.SetupPlayerPersistence(
+                    instance.GetEventDispatcher(),
+                    instance.GetUdonEventSender(), 
+                    instance.GetBlacklistManager(),
+                instance.GetUdonManager(),
+                    instance.GetSyncedObjectManager(),
+                    instance.GetPlayerManager()
             );
 #endif
             

@@ -30,7 +30,7 @@ namespace VRC.SDKBase.Validation.Performance
                         case PerformanceRating.Good:
                         {
                             displayLevel = PerformanceInfoDisplayLevel.Info;
-                            statText = string.Format("Overall Performance: {0}", AvatarPerformanceStats.GetPerformanceRatingDisplayName(rating));
+                            statText = string.Format("Overall Performance Estimate: {0}", AvatarPerformanceStats.GetPerformanceRatingDisplayName(rating));
                             break;
                         }
                         case PerformanceRating.Medium:
@@ -38,7 +38,7 @@ namespace VRC.SDKBase.Validation.Performance
                         {
                             displayLevel = PerformanceInfoDisplayLevel.Warning;
                             statText = string.Format(
-                                "Overall Performance: {0} - This avatar may not perform well on many systems." +
+                                "Overall Performance Estimate: {0} - This avatar may not perform well on many systems." +
                                 " See additional warnings for suggestions on how to improve performance. Click 'Avatar Optimization Tips' below for more information.",
                                 AvatarPerformanceStats.GetPerformanceRatingDisplayName(rating)
                             );
@@ -51,7 +51,7 @@ namespace VRC.SDKBase.Validation.Performance
                             if(ValidationEditorHelpers.IsMobilePlatform())
                             {
                                 statText = string.Format(
-                                    "Overall Performance: {0} - This avatar does not meet minimum performance requirements for VRChat. " +
+                                    "Overall Performance Estimate: {0} - This avatar does not meet minimum performance requirements for VRChat. " +
                                     "It will be blocked by default on VRChat for Quest, and will not show unless a user chooses to show your avatar." +
                                     " See additional warnings for suggestions on how to improve performance. Click 'Avatar Optimization Tips' below for more information.",
                                     AvatarPerformanceStats.GetPerformanceRatingDisplayName(rating));
@@ -59,7 +59,7 @@ namespace VRC.SDKBase.Validation.Performance
                             else
                             {
                                 statText = string.Format(
-                                    "Overall Performance: {0} - This avatar does not meet minimum performance requirements for VRChat. " +
+                                    "Overall Performance Estimate: {0} - This avatar does not meet minimum performance requirements for VRChat. " +
                                     "It may be blocked by users depending on their Performance settings." +
                                     " See additional warnings for suggestions on how to improve performance. Click 'Avatar Optimization Tips' below for more information.",
                                     AvatarPerformanceStats.GetPerformanceRatingDisplayName(rating));

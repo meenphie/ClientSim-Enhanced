@@ -375,7 +375,9 @@ public partial class VRCSdkControlPanel : EditorWindow
         
         if (GUIStats.TryGetValue(subject, out issues))
         {
-            foreach (var issue in issues.Where(i => !string.IsNullOrWhiteSpace(i.issueText)))
+            // Stats need to be displayed in order from very poor to excellent
+            var sortedIssues = issues.OrderBy(i => -(int) i.performanceRating);
+            foreach (var issue in sortedIssues.Where(i => !string.IsNullOrWhiteSpace(i.issueText)))
             {
                 container.Add(CreateIssueBoxGUI(subject, issue, HelpBoxMessageType.Warning, GetPerformanceIconForRating(issue.performanceRating)));
             }
@@ -616,6 +618,8 @@ public partial class VRCSdkControlPanel : EditorWindow
         }
     }
 
+    private IVisualElementScheduledItem _builderPanelScheduledItem = null;
+    private IVisualElementScheduledItem _builderPanelFoldoutsScheduledItem = null;
     private void ShowBuilders()
     {
         
@@ -629,6 +633,7 @@ public partial class VRCSdkControlPanel : EditorWindow
             _builderPanelStyles = Resources.Load<StyleSheet>("VRCSdkBuilderStyles");
         }
 
+        _builderPanel.Clear();
         _builderPanelLayout.CloneTree(_builderPanel);
         _builderPanel.styleSheets.Add(_builderPanelStyles);
 
@@ -647,7 +652,9 @@ public partial class VRCSdkControlPanel : EditorWindow
         var validationsFoldout = _builderPanel.Q<Foldout>("validations-foldout");
         var validationsMounted = false;
 
-        _builderPanel.schedule.Execute(() =>
+        // Stop the previous schedule if it exists
+        _builderPanelScheduledItem?.Pause();
+        _builderPanelScheduledItem = _builderPanel.schedule.Execute(() =>
         {
             // scheduled job running when the UI has unmounted
             if (_builderPanel == null || _builderPanel.childCount == 0)
@@ -810,20 +817,18 @@ public partial class VRCSdkControlPanel : EditorWindow
             if (!validationsMounted)
             {
                 validationsMounted = true;
-
+                
                 // Initial validations check
                 RunValidations();
                 
+                // Avoid double-subscribing to the events
+                _selectedBuilder.OnContentChanged -= RunValidationsHandler;
+                _selectedBuilder.OnShouldRevalidate -= RunValidationsHandler;
+                
                 // Re-Validate on World/Avatar selection change
-                _selectedBuilder.OnContentChanged += (_, _) =>
-                {
-                    RunValidations();
-                };
+                _selectedBuilder.OnContentChanged += RunValidationsHandler;
                 // Re-validate on forced revalidations, e.g. project settings adjustment, etc
-                _selectedBuilder.OnShouldRevalidate += (_, _) =>
-                {
-                    RunValidations();
-                };
+                _selectedBuilder.OnShouldRevalidate += RunValidationsHandler;
 
                 // Re-validate on unity change publish
                 // Make sure we don't call RunValidations too often
@@ -840,6 +845,9 @@ public partial class VRCSdkControlPanel : EditorWindow
                 _validationsContainer.RegisterCallback<DetachFromPanelEvent>(_ =>
                 {
                     ObjectChangeEvents.changesPublished -= HandleSceneChanges;
+                    _selectedBuilder.OnContentChanged -= RunValidationsHandler;
+                    _selectedBuilder.OnShouldRevalidate -= RunValidationsHandler;
+                    validationsMounted = false;
                 });
             }
             
@@ -851,21 +859,11 @@ public partial class VRCSdkControlPanel : EditorWindow
             }
         }).Every(1000);
         
-        _builderPanel.schedule.Execute(() =>
+        _builderPanelFoldoutsScheduledItem?.Pause();
+        _builderPanelFoldoutsScheduledItem = _builderPanel.schedule.Execute(() =>
         {
             _builderPanel.schedule.Execute(() =>
             {
-                if (validationsFoldout != null &&
-                    validationsFoldout.contentRect.height < buildSectionHeightCollapseThreshold)
-                {
-                        validationsFoldout.value = false;
-                }
-
-                if (infoFoldout != null && infoFoldout.contentRect.height < buildSectionHeightCollapseThreshold)
-                {
-                    infoFoldout.value = false;
-                }
-
                 if (infoFoldout != null && validationsFoldout != null)
                 {
                     validationsFoldout.style.maxHeight = infoFoldout.value
@@ -873,16 +871,21 @@ public partial class VRCSdkControlPanel : EditorWindow
                         : new StyleLength(StyleKeyword.Auto);
                 }
             }).Every(200);
-        })
+        });
         // This is delayed with ExecuteLater because for whatever reason opening the SDK with an uncollapsed validations section will cause it to be automatically closed by collapsing behavior,
         // seemingly because it starts out with no size before the first update is ran
-        .ExecuteLater(0);  
+        _builderPanelFoldoutsScheduledItem.ExecuteLater(0);  
     }
 
     private void RunValidations()
     {
         CheckedForIssues = false;
         _selectedBuilder?.CreateValidationsGUI(_validationsContainer);
+    }
+
+    private void RunValidationsHandler(object sender, EventArgs e)
+    {
+        RunValidations();
     }
     
     private static void CleanUpPipelineSavers()

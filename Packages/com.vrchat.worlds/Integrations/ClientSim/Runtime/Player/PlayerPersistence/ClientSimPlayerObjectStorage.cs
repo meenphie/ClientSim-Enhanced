@@ -86,7 +86,7 @@ namespace VRC.SDK3.ClientSim.Persistence
         
         public void RequestSerializationHook(UdonBehaviour udonBehaviour)
         {
-            ClientSimNetworkEventSending.Instance.QueueRequest(udonBehaviour, this);
+            ClientSimPersistenceEventSending.Instance.QueueRequest(udonBehaviour, this);
         }
 
         private void OnPlayerJoined(ClientSimOnPlayerJoinedEvent payload)
@@ -148,7 +148,6 @@ namespace VRC.SDK3.ClientSim.Persistence
             ClientSimPlayer player = _player.GetClientSimPlayer();
             foreach (GameObject persistantObject in player.PlayerPersistenceObjects)
             {
-                if (!persistantObject) continue;
                 IClientSimNetworkId networkId = persistantObject.GetComponent<IClientSimNetworkId>();
                 if (networkId == null) continue;
                 int id = networkId.GetNetworkId();

@@ -52,6 +52,11 @@ namespace VRC.SDK3.Editor
             "https://creators.vrchat.com/worlds/submitting-a-world-to-be-made-public/#submitting-to-community-labs";
         private readonly string[] COMMUNITY_LABS_BLOCKED_TAGS = {"admin_approved", "system_labs", "admin_lock_labs", "system_troll"};
         private const int WORLD_MAX_CAPAITY = 80;
+        private const float WORLD_MAX_SPAWN_OFFSET = 1000f;
+        private const string WORLD_SPAWN_OFFSET_WARNING =
+            "The spawn position is too far from the World Origin: {0}. This can cause issues with Menus and Physbones.";
+        private const string WORLD_MULTI_SPAWN_OFFSET_WARNING =
+            "One of the spawn positions is too far from the World Origin: {0}. This can cause issues with Menus and Physbones.";
 
         #region Main Interface Methods
         
@@ -96,12 +101,9 @@ namespace VRC.SDK3.Editor
                 CheckBlueprintChanges();
                 return;
             }
-            
-            // Reset the accepted terms state when swapping between unattached scenes
-            AcceptedTerms = false;
-            _acceptTermsToggle.value = false;
-            // Revalidate
+			// Revalidate
             OnShouldRevalidate?.Invoke(this, EventArgs.Empty);
+            return;
         }
 
         // Gets called by "you must add a scene descriptor" SDK Panel code
@@ -162,10 +164,6 @@ namespace VRC.SDK3.Editor
             }
 
             _scenes = newScenes;
-        }
-
-        public virtual void ShowBuilder()
-        {
         }
 
         public void CreateValidationsGUI(VisualElement root)
@@ -721,6 +719,9 @@ namespace VRC.SDK3.Editor
 #if UNITY_2021_1_OR_NEWER
             VerifyTextureMipFiltering(scene);
 #endif
+
+            VerifySpawnPlacement(scene);
+            
             _validationsFoldout ??= _builder.rootVisualElement.Q<StepFoldout>("validations-foldout");
             _validationsFoldout?.SetTitle($"Review Any Alerts ({_builder.GUIAlertCount(scene)})");
         }
@@ -773,7 +774,54 @@ namespace VRC.SDK3.Editor
                     AssetDatabase.Refresh();
                 });
         }
+        
+        private void VerifySpawnPlacement(VRC_SceneDescriptor scene)
+        {
+            bool IsSpawnValid(Vector3 position)
+            {
+                return Mathf.Abs(position.x) < WORLD_MAX_SPAWN_OFFSET && 
+                       Mathf.Abs(position.y) < WORLD_MAX_SPAWN_OFFSET &&
+                       Mathf.Abs(position.z) < WORLD_MAX_SPAWN_OFFSET;
+            }
+            
+            if (scene.spawns.Length == 0)
+            {
+                var spawn = scene.transform.position;
+                if (!IsSpawnValid(spawn))
+                {
+                    _builder.OnGUIWarning(scene, 
+                        string.Format(WORLD_SPAWN_OFFSET_WARNING, spawn),
+                        () => { Selection.activeGameObject = scene.gameObject; }
+                    );
+                }
+                return;
+            }
+            
+            if (scene.spawnOrder is VRC_SceneDescriptor.SpawnOrder.First or VRC_SceneDescriptor.SpawnOrder.Demo)
+            {
+                var spawn = scene.spawns[0];
+                if (!IsSpawnValid(spawn.position))
+                {
+                    _builder.OnGUIWarning(scene, 
+                        string.Format(WORLD_SPAWN_OFFSET_WARNING, spawn.position),
+                        () => { Selection.activeGameObject = spawn.gameObject; }
+                    );
+                }
+                return;
+            }
 
+            foreach (Transform spawn in scene.spawns)
+            {
+                if (IsSpawnValid(spawn.position)) continue;
+
+                _builder.OnGUIWarning(scene,
+                    string.Format(WORLD_MULTI_SPAWN_OFFSET_WARNING, spawn.position),
+                    () => { Selection.activeGameObject = spawn.gameObject; }
+                );
+                return;
+            }
+        }
+        
         /// <summary>
         /// Get all components of a given type in loaded scenes, including disabled components.
         /// </summary>
@@ -986,6 +1034,7 @@ namespace VRC.SDK3.Editor
         
         #region World Builder UI (UIToolkit)
         
+        private const string ACCEPT_TERMS_BLOCK_TEXT = "You must accept the terms below to upload content to VRChat";
         private int _progressId;
         
         public void CreateBuilderErrorGUI(VisualElement root)
@@ -1042,6 +1091,7 @@ namespace VRC.SDK3.Editor
         private VRCWorld _originalWorldData;
         private VisualElement _saveChangesBlock;
         private VisualElement _visualRoot;
+        private VisualElement _buildVisualRoot;
         private TagsField _tagsField;
         private VRCTextField _nameField;
         private VRCTextField _descriptionField;
@@ -1060,7 +1110,6 @@ namespace VRC.SDK3.Editor
         protected VisualElement _v3Block;
         private VisualElement _visibilityBlock;
         private PopupField<string> _visibilityPopup;
-        private Toggle _acceptTermsToggle;
         private Modal _labsPublishModal;
         private Modal _unpublishModal;
         private Button _publishToLabsBtn;
@@ -1109,7 +1158,6 @@ namespace VRC.SDK3.Editor
                 _discardChangesButton.SetEnabled(value);
                 _thumbnailBlock.SetEnabled(value);
                 _visibilityBlock.SetEnabled(value);
-                _acceptTermsToggle?.SetEnabled(value);
             }
         }
 
@@ -1241,12 +1289,6 @@ namespace VRC.SDK3.Editor
                 Application.OpenURL(COMMUNITY_LABS_HELP_URL);
             };
             
-            AcceptedTerms = false;
-            if (_acceptTermsToggle != null)
-            {
-                _acceptTermsToggle.value = false;
-            }
-            
             _pipelineManagers = Tools.FindSceneObjectsOfTypeAll<PipelineManager>();
             if (_pipelineManagers.Length == 0)
             {
@@ -1269,13 +1311,7 @@ namespace VRC.SDK3.Editor
 
                     if (APIUser.CurrentUser != null && _worldData.AuthorId != APIUser.CurrentUser?.id)
                     {
-                        Core.Logger.LogError("Loaded data for a world we do not own, clearing blueprint ID");
-                        Undo.RecordObject(_pipelineManagers[0], "Cleared the blueprint ID we do not own");
-                        _pipelineManagers[0].blueprintId = "";
-                        worldId = "";
-                        _lastBlueprintId = "";
-                        _worldData = new VRCWorld();
-                        IsNewWorld = true;
+                        ClearWorldData(_pipelineManagers[0]);
                     }
 
                 }
@@ -1286,17 +1322,11 @@ namespace VRC.SDK3.Editor
                 }
                 catch (ApiErrorException ex)
                 {
+                    // 404 here with a defined blueprint usually means we do not own the content
+                    // so we clear the blueprint ID and treat it as a new world
                     if (ex.StatusCode == HttpStatusCode.NotFound)
                     {
-                        // 404 here with a defined blueprint usually means we do not own the content
-                        // so we clear the blueprint ID and treat it as a new avatar
-                        Core.Logger.LogWarning("Attempted to load the data for a world we do not own, clearing blueprint ID");
-                        Undo.RecordObject(_pipelineManagers[0], "Cleared the blueprint ID we do not own");
-                        _pipelineManagers[0].blueprintId = "";
-                        worldId = "";
-                        _lastBlueprintId = "";
-                        _worldData = new VRCWorld();
-                        IsNewWorld = true;
+                        ClearWorldData(_pipelineManagers[0]);
                     }
                     else
                     {
@@ -1435,6 +1465,20 @@ namespace VRC.SDK3.Editor
 
             root.schedule.Execute(CheckBlueprintChanges).Every(1000);
         }
+        
+        private void ClearWorldData(PipelineManager pm)
+        {
+            // Do not clear blueprint IDs during a build or upload
+            if (_buildState != SdkBuildState.Building && _uploadState != SdkUploadState.Uploading)
+            {
+                Core.Logger.LogError("Loaded data for an world we do not own, clearing blueprint ID");
+                Undo.RecordObject(pm, "Cleared the blueprint ID we do not own");
+                pm.blueprintId = "";
+                _lastBlueprintId = "";
+            }
+            _worldData = new VRCWorld();
+            IsNewWorld = true;
+        }
 
         private void RestoreSessionState()
         {
@@ -1444,7 +1488,7 @@ namespace VRC.SDK3.Editor
             _worldData.Description = WorldBuilderSessionState.WorldDesc;
             _descriptionField.SetValueWithoutNotify(_worldData.Description);
 
-            _worldData.Tags = new List<string>(WorldBuilderSessionState.WorldTags.Split(new [] { "|" }, StringSplitOptions.RemoveEmptyEntries));
+            _worldData.Tags = new List<string>(WorldBuilderSessionState.WorldTags.Split('|', StringSplitOptions.RemoveEmptyEntries).Where(t => !string.IsNullOrWhiteSpace(t)));
             _tagsField.tags = _contentWarningsField.SelectedOptions = _worldData.Tags;
 
             _worldData.Capacity = WorldBuilderSessionState.WorldCapacity;
@@ -1700,23 +1744,39 @@ namespace VRC.SDK3.Editor
                 _builderProgress.SetCancelButtonVisibility(true);
 
                 _newThumbnailImagePath = VRC_EditorTools.CropImage(_newThumbnailImagePath, 800, 600);
-                var updatedWorld = await VRCApi.UpdateWorldImage(
-                    _worldData.ID,
-                    _worldData,
-                    _newThumbnailImagePath,
-                    Progress, _worldUploadCancellationToken);
-                
-                // also need to update the base world data
-                if (!WorldDataEqual())
+                VRCWorld updatedWorld;
+                try
                 {
-                    _builderProgress.SetProgress(new BuilderProgress.ProgressBarStateData
+                    updatedWorld = await VRCApi.UpdateWorldImage(
+                        _worldData.ID,
+                        _worldData,
+                        _newThumbnailImagePath,
+                        Progress, _worldUploadCancellationToken);
+
+                    // also need to update the base world data
+                    if (!WorldDataEqual())
                     {
-                        Visible = true,
-                        Text = "Saving World Changes...",
-                        Progress = 1f
-                    });
-                    updatedWorld = await VRCApi.UpdateWorldInfo(_worldData.ID, _worldData, _worldUploadCancellationToken);
+                        _builderProgress.SetProgress(new BuilderProgress.ProgressBarStateData
+                        {
+                            Visible = true,
+                            Text = "Saving World Changes...",
+                            Progress = 1f
+                        });
+                        updatedWorld =
+                            await VRCApi.UpdateWorldInfo(_worldData.ID, _worldData, _worldUploadCancellationToken);
+                    }
                 }
+                catch (ApiErrorException e)
+                {
+                    InfoUpdateError(this, e.ErrorMessage);
+                    return;
+                }
+                catch (Exception e)
+                {
+                    InfoUpdateError(this, e.Message);
+                    return;
+                }
+                
                 _worldData = updatedWorld;
                 _originalWorldData = updatedWorld;
                 await _thumbnail.SetImageUrl(_worldData.ThumbnailImageUrl, _worldUploadCancellationToken);
@@ -1792,7 +1852,7 @@ namespace VRC.SDK3.Editor
                         "Something went wrong when publishing your world to Community Labs", message),
                     "red", 5000);
                 Debug.LogException(e);
-                Core.Logger.LogError(e.Message, DebugLevel.API);
+                Core.Logger.LogError(e.Message, API.LOG_CATEGORY);
             }
         }
 
@@ -1822,7 +1882,7 @@ namespace VRC.SDK3.Editor
                     new GenericBuilderNotification("Something went wrong when unpublishing your world",
                         message), "red", 5000);
                 Debug.LogException(e);
-                Core.Logger.LogError(e.Message, DebugLevel.API);
+                Core.Logger.LogError(e.Message, API.LOG_CATEGORY);
             }
         }
 
@@ -1871,22 +1931,6 @@ namespace VRC.SDK3.Editor
             _lastBlueprintId = blueprintId;
             OnContentChanged?.Invoke(this, EventArgs.Empty);
         }
-
-        private bool _acceptedTerms;
-        
-        private bool AcceptedTerms
-        {
-            get => _acceptedTerms;
-            set
-            {
-                _acceptedTerms = value;
-                if (_selectedSDKBuildAction?.BuildActionType != SDKBuildActionType.BuildAndPublish) return;
-                if (_acceptedTerms) return;
-                
-                _mainBuildActionDisabledText.text = "You must accept the terms above to upload content to VRChat";
-                _mainBuildActionDisabledBlock.RemoveFromClassList("d-none");
-            }
-        }
         
         #region SDK Build Action Types
 
@@ -1926,12 +1970,13 @@ namespace VRC.SDK3.Editor
         private void ResetOptionVisibility(VisualElement root)
         {
             var isAndroid = EditorUserBuildSettings.activeBuildTarget == BuildTarget.Android;
+            var isIOS = EditorUserBuildSettings.activeBuildTarget == BuildTarget.iOS;
             
             var forceNonVRToggle = root.Q<VisualElement>("force-non-vr-container");
             var numClientsContainer = root.Q<VisualElement>("num-clients-container");
             var enableWorldReloadContainer = root.Q<VisualElement>("enable-world-reload-container");
 
-            if (isAndroid)
+            if (isAndroid || isIOS)
             {
                 // Android doesn't use these settings for local builds
                 forceNonVRToggle.EnableInClassList("d-none", true);
@@ -2104,6 +2149,7 @@ namespace VRC.SDK3.Editor
         {
             var tree = Resources.Load<VisualTreeAsset>("VRCSdkWorldBuilderBuildLayout");
             tree.CloneTree(root);
+            _buildVisualRoot = root;
             var styles = Resources.Load<StyleSheet>("VRCSdkWorldBuilderBuildStyles");
             if (!root.styleSheets.Contains(styles))
             {
@@ -2112,12 +2158,6 @@ namespace VRC.SDK3.Editor
             
             _buildButtonsBlock = root.Q("build-buttons-block");
             _builderProgress = root.Q<BuilderProgress>("progress-bar");
-            _acceptTermsToggle = root.Q<Toggle>("accept-terms-toggle");
-            
-            _acceptTermsToggle.RegisterValueChangedCallback(evt =>
-            {
-                AcceptedTerms = evt.newValue;
-            });
             
             // Setup build types and their associated action when clicking the main action button
             _sdkBuildActions = new List<SDKBuildAction>()
@@ -2158,7 +2198,6 @@ namespace VRC.SDK3.Editor
                 }
 
                 _selectedSDKBuildAction = _sdkBuildActions[selectedBuildTypeIndex];
-                _acceptTermsToggle?.parent?.EnableInClassList("d-none", _selectedSDKBuildAction?.BuildActionType != SDKBuildActionType.BuildAndPublish);
 
                 buildTypeContainer.Insert(1, buildTypePopup);
 
@@ -2168,7 +2207,6 @@ namespace VRC.SDK3.Editor
                     SDKBuildAction selected = _sdkBuildActions
                         .FirstOrDefault(x => GetBuildTypeText(x.BuildActionType) == evt.newValue);
                     _selectedSDKBuildAction = selected;
-                    _acceptTermsToggle?.parent?.EnableInClassList("d-none", _selectedSDKBuildAction?.BuildActionType != SDKBuildActionType.BuildAndPublish);
                     mainActionButton.SetEnabled(true);
                     if (selected != null)
                     {
@@ -2183,15 +2221,6 @@ namespace VRC.SDK3.Editor
                         {
                             _selectedBuildTargets = new List<BuildTarget> { VRC_EditorTools.GetCurrentBuildTargetEnum() };
                             platformPopup.SelectedOptions = _selectedBuildTargets;
-                        }
-                        else
-                        {
-                            // immediately block the build button if targeting build & publish and have not accepted terms
-                            if (!AcceptedTerms)
-                            {
-                                _mainBuildActionDisabledText.text = "You must accept the terms below to upload content to VRChat";
-                                _mainBuildActionDisabledBlock.RemoveFromClassList("d-none");
-                            }
                         }
                     }
                     platformPopup.Refresh();
@@ -2335,13 +2364,7 @@ namespace VRC.SDK3.Editor
                 }
                 else
                 { // Online publishing
-                    if (!AcceptedTerms)
-                    {
-                        _mainBuildActionDisabledText.text = "You must accept the terms below to upload content to VRChat";
-                        _mainBuildActionDisabledBlock.RemoveFromClassList("d-none");
-                        return;
-                    }
-                    else if (IsNewWorld && (string.IsNullOrWhiteSpace(_worldData.Name) || string.IsNullOrWhiteSpace(_newThumbnailImagePath)))
+                    if (IsNewWorld && (string.IsNullOrWhiteSpace(_worldData.Name) || string.IsNullOrWhiteSpace(_newThumbnailImagePath)))
                     {
                         _mainBuildActionDisabledText.text = "Please set a name and thumbnail before uploading";
                         _mainBuildActionDisabledBlock.RemoveFromClassList("d-none");
@@ -2369,8 +2392,10 @@ namespace VRC.SDK3.Editor
 
         private bool PlatformSupportsBuildAndTest()
         {
-            return VRC_EditorTools.GetCurrentBuildTargetEnum() is BuildTarget.StandaloneWindows64
-                or BuildTarget.Android;
+            return VRC_EditorTools.GetCurrentBuildTargetEnum() is 
+                BuildTarget.StandaloneWindows64 or 
+                BuildTarget.Android or 
+                BuildTarget.iOS;
         }
 
         public virtual void SetupExtraPanelUI()
@@ -2466,23 +2491,15 @@ namespace VRC.SDK3.Editor
             AssetExporter.CleanupUnityPackageExport(); // force unity package rebuild on next publish
             VRC_SdkBuilder.shouldBuildUnityPackage = false;
             VRC_SdkBuilder.PreBuildBehaviourPackaging();
-            
+
             VRC_SdkBuilder.ClearCallbacks();
-            
+
             var successTask = new TaskCompletionSource<(string path, string hash)>();
             var errorTask = new TaskCompletionSource<string>();
-            VRC_SdkBuilder.RegisterBuildProgressCallback((sender, status) =>
-            {
-                OnSdkBuildProgress?.Invoke(sender, status);
-            });
-            VRC_SdkBuilder.RegisterBuildErrorCallback((sender, error) =>
-            {
-                errorTask.TrySetResult(error);
-            });
-            VRC_SdkBuilder.RegisterBuildSuccessCallback((sender, result) =>
-            {
-                successTask.TrySetResult(result);
-            });
+
+            VRC_SdkBuilder.RegisterBuildProgressCallback(OnBuildProgress);
+            VRC_SdkBuilder.RegisterBuildErrorCallback(OnBuildError);
+            VRC_SdkBuilder.RegisterBuildSuccessCallback(OnBuildSuccess);
             
             VRC_EditorTools.GetSetPanelBuildingMethod().Invoke(_builder, null);
             OnSdkBuildStart?.Invoke(this, EventArgs.Empty);
@@ -2490,7 +2507,7 @@ namespace VRC.SDK3.Editor
             OnSdkBuildStateChange?.Invoke(this, _buildState);
             
             await Task.Delay(100);
-
+            
             try
             {
                 if (!runAfterBuild)
@@ -2529,6 +2546,21 @@ namespace VRC.SDK3.Editor
             WorldSignatureOfLastBuild = worldSignature;
 
             return (bundlePath, worldSignature);
+
+            void OnBuildProgress(object sender, string buildStatus)
+            {
+                OnSdkBuildProgress?.Invoke(sender, buildStatus);
+            }
+
+            void OnBuildSuccess(object _, (string path, string signature) buildResult)
+            {
+                successTask.TrySetResult(buildResult);
+            }
+
+            void OnBuildError(object _, string buildError)
+            {
+                errorTask.TrySetResult(buildError);
+            }
         }
         
         private async Task FinishBuild()
@@ -2646,6 +2678,8 @@ namespace VRC.SDK3.Editor
                 pM.AssignId();
             }
 
+            await CheckCopyrightAgreement(pM, world);
+
             try
             {
                 if (creatingNewWorld)
@@ -2673,7 +2707,7 @@ namespace VRC.SDK3.Editor
                 AnalyticsSDK.WorldUploadFailed(pM.blueprintId, !creatingNewWorld);
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    Core.Logger.LogError("Request cancelled", DebugLevel.API);
+                    Core.Logger.LogError("Request cancelled", API.LOG_CATEGORY);
                     throw await HandleUploadError(new UploadException("Request Cancelled", e));
                 }
             }
@@ -2731,6 +2765,18 @@ namespace VRC.SDK3.Editor
 
             await FinishUpload();
             return exception;
+        }
+        
+        private async Task CheckCopyrightAgreement(PipelineManager pM, VRCWorld world)
+        {
+            try
+            {
+                await VRCCopyrightAgreement.CheckCopyrightAgreement(pM, world);
+            }
+            catch (Exception e)
+            {
+                throw await HandleUploadError(e);
+            }
         }
 
         
@@ -2914,6 +2960,31 @@ namespace VRC.SDK3.Editor
             );
         }
         
+        private async void InfoUpdateError(object sender, string error)
+        {
+            Core.Logger.Log("Failed to update world info!");
+            Core.Logger.LogError(error);
+            
+            await Task.Delay(100);
+            _builderProgress.SetCancelButtonVisibility(false);
+            _builderProgress.HideProgress();
+            UiEnabled = true;
+            _thumbnail.Loading = false;
+            RevertThumbnail();
+            
+            if (Progress.Exists(_platformProgressId))
+            {
+                Progress.Report(_platformProgressId, 2, 2, error);
+                Progress.Finish(_platformProgressId, Progress.Status.Failed);
+            }
+            
+            await _builder.ShowBuilderNotification(
+                "Update Failed",
+                new GenericBuilderNotification(error),
+                "red"
+            );
+        }
+        
         private void MultiPlatformUploadError(object sender, string error)
         {
             if (Progress.Exists(VRCMultiPlatformBuild.MPBProgress))
@@ -3015,6 +3086,21 @@ namespace VRC.SDK3.Editor
                 return;
             }
             
+            // Front-run the Copyright Agreement to avoid blocking the upload
+            var pms = Tools.FindSceneObjectsOfTypeAll<PipelineManager>();
+            if (pms.Length == 0)
+            {
+                throw await HandleUploadError(new UploadException("The scene does not have a PipelineManager component present, make sure to add a SceneDescriptor before building and uploading"));
+            }
+            
+            if (string.IsNullOrWhiteSpace(pms[0].blueprintId))
+            {
+                Undo.RecordObject(pms[0], "Assigning a new ID");
+                pms[0].AssignId();
+            }
+
+            await CheckCopyrightAgreement(pms[0], world);
+            
             var buildResult = await BuildWithSignature();
             world.UdonProducts = _scenes[0].udonProducts;
             await Upload(world, buildResult.path, buildResult.signature, thumbnailPath, cancellationToken);
@@ -3071,6 +3157,28 @@ namespace VRC.SDK3.Editor
             {
                 await VRCMultiPlatformBuild.SetUpNextMPBTarget(cancellationToken);
                 return;
+            }
+            
+            // Front-run the Copyright Agreement to avoid blocking the upload
+            var pms = Tools.FindSceneObjectsOfTypeAll<PipelineManager>();
+            if (pms.Length == 0)
+            {
+                throw await HandleUploadError(new UploadException("The scene does not have a PipelineManager component present, make sure to add a SceneDescriptor before building and uploading"));
+            }
+            
+            if (string.IsNullOrWhiteSpace(pms[0].blueprintId))
+            {
+                Undo.RecordObject(pms[0], "Assigning a new ID");
+                pms[0].AssignId();
+            }
+
+            try
+            {
+                await VRCCopyrightAgreement.CheckCopyrightAgreement(pms[0], world);
+            }
+            catch (Exception e)
+            {
+                throw await HandleUploadError(e);
             }
             
             var buildResult = await Build(false);

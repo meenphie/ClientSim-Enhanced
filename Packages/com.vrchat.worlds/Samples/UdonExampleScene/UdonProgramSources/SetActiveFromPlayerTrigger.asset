@@ -12,17 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f11136daadff0b44ac2278a314682ab, type: 3}
   m_Name: SetActiveFromPlayerTrigger
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: b49592c48696d6c40918c057b33fc191, type: 2}
-  udonAssembly: ".data_start\n\n    .export target\n    \n    __instance_0: %UnityEngineGameObject,
-    this\n    __value_0: %SystemBoolean, null\n    __instance_1: %UnityEngineGameObject,
-    this\n    __value_1: %SystemBoolean, null\n    target: %UnityEngineGameObject,
-    this\n\n.data_end\n\n.code_start\n\n    .export _onPlayerTriggerExit\n    \n   
-    _onPlayerTriggerExit:\n    \n        PUSH, target\n        PUSH, __instance_0\n       
-    COPY\n        PUSH, __instance_0\n        PUSH, __value_0\n        EXTERN, \"UnityEngineGameObject.__SetActive__SystemBoolean__SystemVoid\"\n       
-    JUMP, 0xFFFFFFFC\n    \n    .export _onPlayerTriggerEnter\n    \n    _onPlayerTriggerEnter:\n   
-    \n        PUSH, target\n        PUSH, __instance_1\n        COPY\n        PUSH,
-    __instance_1\n        PUSH, __value_1\n        EXTERN, \"UnityEngineGameObject.__SetActive__SystemBoolean__SystemVoid\"\n       
-    JUMP, 0xFFFFFFFC\n    \n\n.code_end\n"
+  serializedUdonProgramAsset: {fileID: 11400000, guid: b49592c48696d6c40918c057b33fc191,
+    type: 2}
+  udonAssembly: ".data_start\r\n\r\n    .export target\r\n    \r\n    __instance_0:
+    %UnityEngineGameObject, this\r\n    __value_0: %SystemBoolean, null\r\n    __instance_1:
+    %UnityEngineGameObject, this\r\n    __value_1: %SystemBoolean, null\r\n    target:
+    %UnityEngineGameObject, this\r\n\r\n.data_end\r\n\r\n.code_start\r\n\r\n    .export
+    _onPlayerTriggerExit\r\n    \r\n    _onPlayerTriggerExit:\r\n    \r\n       
+    PUSH, target\r\n        PUSH, __instance_0\r\n        COPY\r\n        PUSH, __instance_0\r\n       
+    PUSH, __value_0\r\n        EXTERN, \"UnityEngineGameObject.__SetActive__SystemBoolean__SystemVoid\"\r\n       
+    JUMP, 0xFFFFFFFC\r\n    \r\n    .export _onPlayerTriggerEnter\r\n    \r\n   
+    _onPlayerTriggerEnter:\r\n    \r\n        PUSH, target\r\n        PUSH, __instance_1\r\n       
+    COPY\r\n        PUSH, __instance_1\r\n        PUSH, __value_1\r\n        EXTERN,
+    \"UnityEngineGameObject.__SetActive__SystemBoolean__SystemVoid\"\r\n        JUMP,
+    0xFFFFFFFC\r\n    \r\n\r\n.code_end\r\n"
   assemblyError: 
   graphData:
     name: 
@@ -108,5 +111,8 @@ MonoBehaviour:
   - type: 4
     uid: e11a3f1c-d6c7-4ac3-b9f6-f31e2ab0b189
     jsonData: '{"visible":true,"layout":{"serializedVersion":"2","x":10.0,"y":20.0,"width":0.0,"height":0.0}}'
+  viewTransform:
+    position: {x: -64, y: 137}
+    scale: 1
   version: 1.0.0
   showAssembly: 0

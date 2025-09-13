@@ -118,8 +118,7 @@ namespace VRC.SDK3.ClientSim
             
             if(descriptor == null)
             {
-                VRC.Core.Logger.LogError("Unable to find scene descriptor in scene");
-                EditorApplication.isPlaying = false;
+                VRC.Core.Logger.LogWarning("Unable to find scene descriptor in scene - Playing without ClientSim");
                 return;
             }
 

@@ -4,22 +4,21 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using VRC.SDK3.ClientSim.Persistence;
 using VRC.Udon;
-using VRC.Udon.Common;
 
 namespace VRC.SDK3.ClientSim
 {
-    public class ClientSimNetworkEventSending
+    public class ClientSimPersistenceEventSending
     {
 #if VRC_ENABLE_PLAYER_PERSISTENCE
-        private static ClientSimNetworkEventSending _instance;
+        private static ClientSimPersistenceEventSending _instance;
         
-        public static ClientSimNetworkEventSending Instance
+        public static ClientSimPersistenceEventSending Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    _instance = new ClientSimNetworkEventSending();
+                    _instance = new ClientSimPersistenceEventSending();
                 }
 
                 return _instance;
@@ -32,13 +31,13 @@ namespace VRC.SDK3.ClientSim
         
         private const int TIME_BETWEEN_EVENTS = 50;
         
-        private ClientSimNetworkEventSending()
+        private ClientSimPersistenceEventSending()
         {
             _cancellationTokenSource = new CancellationTokenSource();
             SendNetworkEvents().Forget();
         }
         
-        ~ClientSimNetworkEventSending()
+        ~ClientSimPersistenceEventSending()
         {
             _cancellationTokenSource.Cancel();
         }
@@ -59,7 +58,7 @@ namespace VRC.SDK3.ClientSim
 
         private async UniTask SendNetworkEvents()
         {
-            UniTask.SwitchToMainThread();
+            await UniTask.SwitchToMainThread();
             
             while (!_cancellationTokenSource.IsCancellationRequested)
             {

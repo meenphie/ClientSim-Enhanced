@@ -83,4 +83,14 @@ namespace VRC.SDKBase.Editor
         {
         }
     }
+
+    /// <summary>
+    /// The user has not confirmed copyright ownership
+    /// </summary>
+    public class CopyrightOwnershipAgreementException : Exception
+    {
+        public CopyrightOwnershipAgreementException(string message) : base(message)
+        {
+        }
+    }
 }

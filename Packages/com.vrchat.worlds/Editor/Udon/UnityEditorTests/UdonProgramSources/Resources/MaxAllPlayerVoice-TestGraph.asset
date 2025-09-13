@@ -12,39 +12,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f11136daadff0b44ac2278a314682ab, type: 3}
   m_Name: MaxAllPlayerVoice-TestGraph
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 8c766067fc17d524a90f1fcbb3493bca, type: 2}
-  udonAssembly: ".data_start\n\n    .export maxDistance\n    \n    __index_0: %SystemInt32,
-    null\n    __condition_0: %SystemBoolean, null\n    __Boolean_0: %SystemBoolean,
-    null\n    __Object_0: %SystemObject, null\n    __Object_1: %SystemObject, null\n   
-    __var_0: %SystemObject, null\n    __instance_2: %VRCSDKBaseVRCPlayerApi, null\n   
-    __far_0: %SystemSingle, null\n    __instance_3: %VRCSDKBaseVRCPlayerApi, null\n   
-    __distance_0: %SystemSingle, null\n    __instance_1: %VRCSDKBaseVRCPlayerApiArray,
-    null\n    __Int32_1: %SystemInt32, null\n    __players_0: %VRCSDKBaseVRCPlayerApiArray,
-    null\n    __start_0: %SystemInt32, null\n    __end_0: %SystemInt32, null\n   
-    __step_0: %SystemInt32, null\n    __instance_0: %VRCSDKBaseVRCPlayerApiArray,
-    null\n    __Int32_0: %SystemInt32, null\n    maxDistance: %SystemSingle, null\n\n.data_end\n\n.code_start\n\n   
-    .export _interact\n    \n    _interact:\n    \n        PUSH, __Int32_0\n       
-    PUSH, __instance_0\n        EXTERN, \"VRCSDKBaseVRCPlayerApiArray.__ctor__SystemInt32__VRCSDKBaseVRCPlayerApiArray\"\n       
-    PUSH, __instance_0\n        PUSH, __end_0\n        EXTERN, \"VRCSDKBaseVRCPlayerApiArray.__get_Length__SystemInt32\"\n       
-    PUSH, __start_0\n        PUSH, __index_0\n        COPY\n        PUSH, __index_0\n       
-    PUSH, __end_0\n        PUSH, __condition_0\n        EXTERN, \"SystemInt32.__op_LessThan__SystemInt32_SystemInt32__SystemBoolean\"\n       
-    PUSH, __condition_0\n        JUMP_IF_FALSE, 0x000001F0\n        PUSH, __instance_0\n       
-    PUSH, __players_0\n        COPY\n        PUSH, __instance_0\n        PUSH, __instance_1\n       
-    EXTERN, \"VRCSDKBaseVRCPlayerApi.__GetPlayers__VRCSDKBaseVRCPlayerApiArray__VRCSDKBaseVRCPlayerApiArray\"\n       
-    PUSH, __index_0\n        PUSH, __Int32_1\n        COPY\n        PUSH, __instance_1\n       
-    PUSH, __Int32_1\n        PUSH, __Object_0\n        EXTERN, \"VRCSDKBaseVRCPlayerApiArray.__Get__SystemInt32__VRCSDKBaseVRCPlayerApi\"\n       
-    PUSH, __var_0\n        PUSH, __Object_1\n        COPY\n        PUSH, __Object_0\n       
-    PUSH, __Object_1\n        PUSH, __Boolean_0\n        EXTERN, \"SystemObject.__op_Inequality__SystemObject_SystemObject__SystemBoolean\"\n       
-    PUSH, __Boolean_0\n        JUMP_IF_FALSE, 0x000001C8\n        PUSH, __instance_0\n       
-    PUSH, __players_0\n        COPY\n        PUSH, __index_0\n        PUSH, __Int32_1\n       
-    COPY\n        PUSH, __Object_0\n        PUSH, __instance_2\n        COPY\n       
-    PUSH, __Object_0\n        PUSH, maxDistance\n        EXTERN, \"VRCSDKBaseVRCPlayerApi.__SetVoiceDistanceFar__SystemSingle__SystemVoid\"\n       
-    PUSH, __instance_0\n        PUSH, __players_0\n        COPY\n        PUSH, __index_0\n       
-    PUSH, __Int32_1\n        COPY\n        PUSH, __Object_0\n        PUSH, __instance_3\n       
-    COPY\n        PUSH, __Object_0\n        PUSH, maxDistance\n        EXTERN, \"VRCSDKBaseVRCPlayerApi.__SetAvatarAudioFarRadius__SystemSingle__SystemVoid\"\n       
-    JUMP, 0x000001C8\n        PUSH, __index_0\n        PUSH, __step_0\n        PUSH,
-    __index_0\n        EXTERN, \"SystemInt32.__op_Addition__SystemInt32_SystemInt32__SystemInt32\"\n       
-    JUMP, 0x00000044\n        JUMP, 0xFFFFFFFC\n    \n\n.code_end\n"
+  serializedUdonProgramAsset: {fileID: 11400000, guid: aec1ad21ec8f16449a3eb1cf3baad37e,
+    type: 2}
+  udonAssembly: ".data_start\r\n\r\n    .export maxDistance\r\n    \r\n    __index_0:
+    %SystemInt32, null\r\n    __condition_0: %SystemBoolean, null\r\n    __Boolean_0:
+    %SystemBoolean, null\r\n    __Object_0: %SystemObject, null\r\n    __Object_1:
+    %SystemObject, null\r\n    __var_0: %SystemObject, null\r\n    __instance_2:
+    %VRCSDKBaseVRCPlayerApi, null\r\n    __far_0: %SystemSingle, null\r\n    __instance_3:
+    %VRCSDKBaseVRCPlayerApi, null\r\n    __distance_0: %SystemSingle, null\r\n   
+    __instance_1: %VRCSDKBaseVRCPlayerApiArray, null\r\n    __Int32_1: %SystemInt32,
+    null\r\n    __players_0: %VRCSDKBaseVRCPlayerApiArray, null\r\n    __start_0:
+    %SystemInt32, null\r\n    __end_0: %SystemInt32, null\r\n    __step_0: %SystemInt32,
+    null\r\n    __instance_0: %VRCSDKBaseVRCPlayerApiArray, null\r\n    __Int32_0:
+    %SystemInt32, null\r\n    maxDistance: %SystemSingle, null\r\n\r\n.data_end\r\n\r\n.code_start\r\n\r\n   
+    .export _interact\r\n    \r\n    _interact:\r\n    \r\n        PUSH, __Int32_0\r\n       
+    PUSH, __instance_0\r\n        EXTERN, \"VRCSDKBaseVRCPlayerApiArray.__ctor__SystemInt32__VRCSDKBaseVRCPlayerApiArray\"\r\n       
+    PUSH, __instance_0\r\n        PUSH, __end_0\r\n        EXTERN, \"VRCSDKBaseVRCPlayerApiArray.__get_Length__SystemInt32\"\r\n       
+    PUSH, __start_0\r\n        PUSH, __index_0\r\n        COPY\r\n        PUSH, __index_0\r\n       
+    PUSH, __end_0\r\n        PUSH, __condition_0\r\n        EXTERN, \"SystemInt32.__op_LessThan__SystemInt32_SystemInt32__SystemBoolean\"\r\n       
+    PUSH, __condition_0\r\n        JUMP_IF_FALSE, 0x000001F0\r\n        PUSH, __instance_0\r\n       
+    PUSH, __players_0\r\n        COPY\r\n        PUSH, __instance_0\r\n        PUSH,
+    __instance_1\r\n        EXTERN, \"VRCSDKBaseVRCPlayerApi.__GetPlayers__VRCSDKBaseVRCPlayerApiArray__VRCSDKBaseVRCPlayerApiArray\"\r\n       
+    PUSH, __index_0\r\n        PUSH, __Int32_1\r\n        COPY\r\n        PUSH, __instance_1\r\n       
+    PUSH, __Int32_1\r\n        PUSH, __Object_0\r\n        EXTERN, \"VRCSDKBaseVRCPlayerApiArray.__Get__SystemInt32__VRCSDKBaseVRCPlayerApi\"\r\n       
+    PUSH, __var_0\r\n        PUSH, __Object_1\r\n        COPY\r\n        PUSH, __Object_0\r\n       
+    PUSH, __Object_1\r\n        PUSH, __Boolean_0\r\n        EXTERN, \"SystemObject.__op_Inequality__SystemObject_SystemObject__SystemBoolean\"\r\n       
+    PUSH, __Boolean_0\r\n        JUMP_IF_FALSE, 0x000001C8\r\n        PUSH, __instance_0\r\n       
+    PUSH, __players_0\r\n        COPY\r\n        PUSH, __index_0\r\n        PUSH,
+    __Int32_1\r\n        COPY\r\n        PUSH, __Object_0\r\n        PUSH, __instance_2\r\n       
+    COPY\r\n        PUSH, __Object_0\r\n        PUSH, maxDistance\r\n        EXTERN,
+    \"VRCSDKBaseVRCPlayerApi.__SetVoiceDistanceFar__SystemSingle__SystemVoid\"\r\n       
+    PUSH, __instance_0\r\n        PUSH, __players_0\r\n        COPY\r\n        PUSH,
+    __index_0\r\n        PUSH, __Int32_1\r\n        COPY\r\n        PUSH, __Object_0\r\n       
+    PUSH, __instance_3\r\n        COPY\r\n        PUSH, __Object_0\r\n        PUSH,
+    maxDistance\r\n        EXTERN, \"VRCSDKBaseVRCPlayerApi.__SetAvatarAudioFarRadius__SystemSingle__SystemVoid\"\r\n       
+    JUMP, 0x000001C8\r\n        PUSH, __index_0\r\n        PUSH, __step_0\r\n       
+    PUSH, __index_0\r\n        EXTERN, \"SystemInt32.__op_Addition__SystemInt32_SystemInt32__SystemInt32\"\r\n       
+    JUMP, 0x00000044\r\n        JUMP, 0xFFFFFFFC\r\n    \r\n\r\n.code_end\r\n"
   assemblyError: 
   graphData:
     name: 
